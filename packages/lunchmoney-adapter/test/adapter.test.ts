@@ -320,6 +320,54 @@ test('pre-call and in-flight abort return CANCELLED and prevent retries', async 
   assert.equal(calls, 1)
 })
 
+test('curated read routes: categories, tags, recurring, summary', async () => {
+  const { fetchImpl, requests } = routeFetch({
+    '/v2/categories': { categories: [{ id: 9, name: 'Food', is_income: false, exclude_from_budget: false, exclude_from_totals: false, group_id: null, is_group: false, archived: false, secret: SECRET }] },
+    '/v2/tags': { tags: [{ id: 4, name: 'trip', archived: false, extra: SECRET }] },
+    '/v2/recurring_items': {
+      recurring_items: [{
+        id: 77, description: 'Rent', status: 'reviewed',
+        transaction_criteria: { payee: 'Landlord', amount: '1250.8400', currency: 'usd', granularity: 'month', anchor_date: '2024-09-01', plaid_account_id: 5, manual_account_id: null },
+        overrides: { payee: 'Rent Payee', category_id: 9 },
+        matches: { found_transactions: [{ transaction_id: 1, token: SECRET }] }
+      }]
+    },
+    '/v2/summary': {
+      aligned: true,
+      categories: [{ category_id: 9, totals: { other_activity: -42.5, recurring_activity: -100, budgeted: 200, available: 57.5, secret: SECRET } }],
+      totals: { inflow: { other_activity: 10, recurring_activity: 5 }, outflow: { other_activity: -20, recurring_activity: -100 } },
+      junk: SECRET
+    }
+  })
+  const adapter = createReadOnlyAdapter({ fetch: fetchImpl })
+  const ctx = { token: TOKEN_A }
+
+  const cats = await adapter.listCategories(ctx)
+  assert.equal(cats.categories[0].name, 'Food')
+  assert.equal((cats.categories[0] as unknown as Record<string, unknown>).secret, undefined)
+
+  const tags = await adapter.listTags(ctx)
+  assert.deepEqual(tags.tags, [{ id: 4, name: 'trip', archived: false }])
+
+  const rec = await adapter.listRecurringItems(ctx, { start_date: '2026-09-01', end_date: '2026-09-30', include_suggested: false })
+  assert.equal(rec.recurring_items[0].payee, 'Rent Payee')
+  assert.equal(rec.recurring_items[0].amount, '1250.8400')
+  assert.equal(rec.recurring_items[0].category_id, 9)
+  assert.equal(JSON.stringify(rec).includes(SECRET), false)
+
+  const summary = await adapter.getBudgetSummary(ctx, { start_date: '2026-09-01', end_date: '2026-09-30' })
+  assert.equal(summary.aligned, true)
+  assert.equal(summary.categories[0].available, 57.5)
+  assert.equal(JSON.stringify(summary).includes(SECRET), false)
+
+  const summaryUrl = new URL(requests.at(-1)!.url)
+  assert.equal(summaryUrl.searchParams.get('start_date'), '2026-09-01')
+  assert.equal(summaryUrl.searchParams.get('include_totals'), 'true')
+
+  await expectCode(adapter.listRecurringItems(ctx, { start_date: '2026-01-01' }), 'INVALID_INPUT')
+  await expectCode(adapter.getBudgetSummary(ctx, { start_date: '2026-02-01', end_date: '2026-01-01' }), 'INVALID_INPUT')
+})
+
 test('sentinel token and provider data absent from errors', async () => {
   const { fetchImpl } = mockFetch(() => json({ message: `bad ${SECRET}`, token: TOKEN_A }, 500))
   const adapter = createReadOnlyAdapter({ fetch: fetchImpl })

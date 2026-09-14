@@ -10,7 +10,7 @@ import {
 } from '@lunchmoney-mcp/auth-contract'
 import type { createReadOnlyAdapter } from '@lunchmoney-mcp/adapter'
 import type { IdentityStore } from './identity.js'
-import type { CredentialProvider } from './credentials.js'
+import type { CredentialProvider, ConnectSessionProvider } from './credentials.js'
 import { createReadOnlyServer } from './tools.js'
 
 export interface ServerConfig {
@@ -18,6 +18,8 @@ export interface ServerConfig {
   metadataUrl: string
   store: IdentityStore
   credentials: CredentialProvider
+  connectSessions?: ConnectSessionProvider
+  environment?: 'development' | 'production'
   adapter: ReturnType<typeof createReadOnlyAdapter>
   verifyToken?: (authorization: string | null) => Promise<Principal>
   maxBodyBytes?: number
@@ -103,12 +105,38 @@ export function createMcpHttpServer(config: ServerConfig): Server {
     const connection = await config.store.getActiveConnection(user.userId)
 
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
+    const store = config.store
+    const environment = config.environment ?? 'development'
+    const sessions = config.connectSessions
     const server = createReadOnlyServer({
       adapter: config.adapter,
       connectionState: connection?.state ?? 'unconnected',
+      userId: user.userId,
       token: connection === undefined || connection.state !== 'active'
         ? ''
-        : (await config.credentials.getToken(connection.connectionId)) ?? ''
+        : (await config.credentials.getToken(connection.connectionId)) ?? '',
+      connect: sessions === undefined ? undefined : {
+        async createSession(userId: string) {
+          const active = await store.getActiveConnection(userId)
+          if (active !== undefined && active.state === 'pending') {
+            throw new Error('connection already pending')
+          }
+          const session = await sessions.createSession(userId)
+          return session
+        },
+        async onSessionCreated(userId: string) {
+          await store.replaceConnection(userId, `pending:${userId}`, environment)
+        },
+        async disconnect(userId: string) {
+          const active = await store.getActiveConnection(userId)
+          if (active === undefined) return 'none'
+          if (!active.connectionId.startsWith('pending:')) {
+            await sessions.deleteConnection(active.connectionId)
+          }
+          await store.markConnection(userId, active.connectionId, 'deleted')
+          return 'disconnected'
+        }
+      }
     })
     res.on('close', () => {
       transport.close().catch(() => undefined)

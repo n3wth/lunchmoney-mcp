@@ -101,7 +101,10 @@ export interface TransactionPage {
 
 const BASE_ORIGIN = 'https://api.lunchmoney.dev'
 const BASE_PATH = '/v2'
-const ALLOWED_PATHS = new Set(['/v2/me', '/v2/manual_accounts', '/v2/plaid_accounts', '/v2/transactions'])
+const ALLOWED_PATHS = new Set([
+  '/v2/me', '/v2/manual_accounts', '/v2/plaid_accounts', '/v2/transactions',
+  '/v2/categories', '/v2/tags', '/v2/recurring_items', '/v2/summary'
+])
 const MAX_BODY_BYTES = 1024 * 1024
 const RETRYABLE_STATUS = new Set([429, 502, 503, 504])
 const DEFAULT_TIMEOUT_MS = 8000
@@ -165,6 +168,150 @@ const transactionEnvelopeSchema = z.object({
   transactions: z.array(transactionSchema),
   has_more: z.boolean(),
   error: z.string().optional()
+})
+
+export interface CategoryOverview {
+  id: number
+  name: string
+  is_income: boolean
+  exclude_from_budget: boolean
+  exclude_from_totals: boolean
+  group_id: number | null
+  is_group: boolean
+  archived: boolean
+}
+
+export interface TagOverview {
+  id: number
+  name: string
+  archived: boolean
+}
+
+export interface RecurringOverview {
+  id: number
+  description: string | null
+  status: string
+  payee: string | null
+  amount: string
+  currency: string
+  granularity: string
+  anchor_date: string
+  plaid_account_id: number | null
+  manual_account_id: number | null
+  category_id: number | null
+}
+
+export interface RecurringQuery {
+  start_date?: string
+  end_date?: string
+  include_suggested?: boolean
+}
+
+export interface BudgetSummaryQuery {
+  start_date: string
+  end_date: string
+  include_totals?: boolean
+}
+
+export interface BudgetCategorySummary {
+  category_id: number
+  other_activity: number
+  recurring_activity: number
+  budgeted: number | null
+  available: number | null
+}
+
+export interface BudgetSummary {
+  aligned: boolean
+  categories: BudgetCategorySummary[]
+  totals?: {
+    inflow?: { other_activity?: number; recurring_activity?: number }
+    outflow?: { other_activity?: number; recurring_activity?: number }
+  }
+}
+
+const categorySchema = z.object({
+  id: positiveId,
+  name: z.string(),
+  is_income: z.boolean(),
+  exclude_from_budget: z.boolean(),
+  exclude_from_totals: z.boolean(),
+  group_id: nullableId,
+  is_group: z.boolean(),
+  archived: z.boolean()
+})
+
+const tagSchema = z.object({
+  id: positiveId,
+  name: z.string(),
+  archived: z.boolean()
+})
+
+const recurringSchema = z.object({
+  id: positiveId,
+  description: z.string().nullable(),
+  status: z.string(),
+  transaction_criteria: z.object({
+    payee: z.string().nullable().optional(),
+    amount: decimalString,
+    currency: currencyString,
+    granularity: z.string(),
+    anchor_date: dateString,
+    plaid_account_id: nullableId.optional(),
+    manual_account_id: nullableId.optional()
+  }),
+  overrides: z.object({
+    payee: z.string().optional(),
+    category_id: nullableId.optional()
+  }).nullable().optional()
+})
+
+const budgetCategorySchema = z.object({
+  category_id: positiveId,
+  totals: z.object({
+    other_activity: z.number().finite(),
+    recurring_activity: z.number().finite(),
+    budgeted: z.number().finite().nullable().optional(),
+    available: z.number().finite().nullable().optional()
+  })
+})
+
+const budgetSummarySchema = z.object({
+  aligned: z.boolean(),
+  categories: z.array(budgetCategorySchema).max(1000),
+  totals: z.object({
+    inflow: z.object({
+      other_activity: z.number().finite().optional(),
+      recurring_activity: z.number().finite().optional()
+    }).optional(),
+    outflow: z.object({
+      other_activity: z.number().finite().optional(),
+      recurring_activity: z.number().finite().optional()
+    }).optional()
+  }).optional()
+})
+
+const recurringQuerySchema = z.strictObject({
+  start_date: dateString.optional(),
+  end_date: dateString.optional(),
+  include_suggested: z.boolean().optional()
+}).superRefine((value, ctx) => {
+  if ((value.start_date === undefined) !== (value.end_date === undefined)) {
+    ctx.addIssue({ code: 'custom', message: 'start_date and end_date must be provided together' })
+  }
+  if (value.start_date !== undefined && value.end_date !== undefined && value.start_date > value.end_date) {
+    ctx.addIssue({ code: 'custom', message: 'start_date must be on or before end_date' })
+  }
+})
+
+const budgetQuerySchema = z.strictObject({
+  start_date: dateString,
+  end_date: dateString,
+  include_totals: z.boolean().optional()
+}).superRefine((value, ctx) => {
+  if (value.start_date > value.end_date) {
+    ctx.addIssue({ code: 'custom', message: 'start_date must be on or before end_date' })
+  }
 })
 
 const querySchema = z.strictObject({
@@ -323,7 +470,15 @@ export function createReadOnlyAdapter(options: AdapterOptions = {}) {
               ? await raw.GET('/manual_accounts' as never, {} as never)
               : path === '/plaid_accounts'
                 ? await raw.GET('/plaid_accounts' as never, {} as never)
-                : await raw.GET('/transactions' as never, { params: { query } } as never)
+                : path === '/categories'
+                  ? await raw.GET('/categories' as never, { params: { query } } as never)
+                  : path === '/tags'
+                    ? await raw.GET('/tags' as never, {} as never)
+                    : path === '/recurring_items'
+                      ? await raw.GET('/recurring_items' as never, { params: { query } } as never)
+                      : path === '/summary'
+                        ? await raw.GET('/summary' as never, { params: { query } } as never)
+                        : await raw.GET('/transactions' as never, { params: { query } } as never)
           status = result.response.status
           retryAfter = parseRetryAfter(result.response.headers)
           data = result.data ?? result.error
@@ -418,6 +573,78 @@ export function createReadOnlyAdapter(options: AdapterOptions = {}) {
         }
       })
       return page
+    },
+
+    async listCategories(context: ReadContext): Promise<{ categories: CategoryOverview[] }> {
+      const data = await run(context, '/categories', { format: 'flattened' }, parseWith(z.object({
+        categories: z.array(categorySchema)
+      })))
+      if (data.categories.length > 1000) throw invalidResponse()
+      return data
+    },
+
+    async listTags(context: ReadContext): Promise<{ tags: TagOverview[] }> {
+      const data = await run(context, '/tags', undefined, parseWith(z.object({
+        tags: z.array(tagSchema)
+      })))
+      if (data.tags.length > 1000) throw invalidResponse()
+      return data
+    },
+
+    async listRecurringItems(context: ReadContext, query?: RecurringQuery): Promise<{ recurring_items: RecurringOverview[] }> {
+      const parsed = recurringQuerySchema.safeParse(query ?? {})
+      if (!parsed.success) throw invalidInput()
+      const params: Record<string, string | number | boolean> = {}
+      for (const [key, value] of Object.entries(parsed.data)) {
+        if (value !== undefined) params[key] = value
+      }
+      const data = await run(context, '/recurring_items', params, (raw) => {
+        const result = z.object({ recurring_items: z.array(recurringSchema) }).safeParse(raw)
+        if (!result.success) throw invalidResponse()
+        if (result.data.recurring_items.length > 1000) throw invalidResponse()
+        return result.data
+      })
+      return {
+        recurring_items: data.recurring_items.map((item) => ({
+          id: item.id,
+          description: item.description,
+          status: item.status,
+          payee: item.overrides?.payee ?? item.transaction_criteria.payee ?? null,
+          amount: item.transaction_criteria.amount,
+          currency: item.transaction_criteria.currency,
+          granularity: item.transaction_criteria.granularity,
+          anchor_date: item.transaction_criteria.anchor_date,
+          plaid_account_id: item.transaction_criteria.plaid_account_id ?? null,
+          manual_account_id: item.transaction_criteria.manual_account_id ?? null,
+          category_id: item.overrides?.category_id ?? null
+        }))
+      }
+    },
+
+    async getBudgetSummary(context: ReadContext, query: BudgetSummaryQuery): Promise<BudgetSummary> {
+      const parsed = budgetQuerySchema.safeParse(query)
+      if (!parsed.success) throw invalidInput()
+      const params: Record<string, string | number | boolean> = {
+        start_date: parsed.data.start_date,
+        end_date: parsed.data.end_date,
+        include_totals: parsed.data.include_totals ?? true
+      }
+      const data = await run(context, '/summary', params, (raw) => {
+        const result = budgetSummarySchema.safeParse(raw)
+        if (!result.success) throw invalidResponse()
+        return result.data
+      })
+      return {
+        aligned: data.aligned,
+        categories: data.categories.map((c) => ({
+          category_id: c.category_id,
+          other_activity: c.totals.other_activity,
+          recurring_activity: c.totals.recurring_activity,
+          budgeted: c.totals.budgeted ?? null,
+          available: c.totals.available ?? null
+        })),
+        ...(data.totals !== undefined ? { totals: data.totals } : {})
+      }
     }
   }
 }

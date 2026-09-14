@@ -143,9 +143,17 @@ test('initialize and tools/list succeed with valid token', async () => {
     assert.ok(names.includes('lunchmoney_get_overview'))
     assert.ok(names.includes('lunchmoney_list_accounts'))
     assert.ok(names.includes('lunchmoney_list_transactions'))
-    for (const t of list.data.result.tools) {
+    const dataTools = list.data.result.tools.filter((t: { name: string }) =>
+      ['lunchmoney_get_overview', 'lunchmoney_list_accounts', 'lunchmoney_list_transactions',
+        'lunchmoney_list_categories', 'lunchmoney_list_tags', 'lunchmoney_list_recurring_items',
+        'lunchmoney_budget_summary', 'lunchmoney_connection_status'].includes(t.name))
+    assert.equal(dataTools.length, 8)
+    for (const t of dataTools) {
       assert.equal(t.annotations.readOnlyHint, true)
     }
+    const lifecycle = list.data.result.tools.filter((t: { name: string }) =>
+      ['lunchmoney_connect', 'lunchmoney_disconnect'].includes(t.name))
+    assert.equal(lifecycle.length, 2)
   } finally {
     server.close()
   }
@@ -198,6 +206,72 @@ test('two-user isolation: each sees only own connection token', async () => {
     assert.notEqual(a.userId, b.userId)
     const connB = await store.getActiveConnection(b.userId)
     assert.equal(connB, undefined)
+  } finally {
+    server.close()
+  }
+})
+
+test('connect returns bounded session link; disconnect deletes connection', async () => {
+  const { publicKey, privateKey } = await generateKeyPair('RS256')
+  const jwks = { keys: [{ ...(await exportJWK(publicKey)), kid: 'k1', alg: 'RS256' }] }
+  const resolver = createLocalJWKSet(jwks as Parameters<typeof createLocalJWKSet>[0])
+  const verify = createAccessTokenVerifier({ issuer: ISSUER, resource: RESOURCE, jwksUri: JWKS_URI }, resolver)
+  const sign = (sub: string) => new SignJWT({ iss: ISSUER, aud: RESOURCE, sub, scope: 'lunchmoney:read' })
+    .setProtectedHeader({ alg: 'RS256', kid: 'k1' }).setIssuedAt().setExpirationTime('5m').sign(privateKey)
+
+  const sessions: string[] = []
+  const deleted: string[] = []
+  const store = new InMemoryIdentityStore()
+  const server = createMcpHttpServer({
+    auth: { issuer: ISSUER, resource: RESOURCE, jwksUri: JWKS_URI },
+    metadataUrl: METADATA_URL,
+    store,
+    credentials: { getToken: async () => TOKEN },
+    connectSessions: {
+      createSession: async (endUserId) => {
+        sessions.push(endUserId)
+        return { sessionToken: 'st', connectLink: 'https://connect.nango.dev/s/abc', expiresAt: '2026-09-14T12:00:00Z' }
+      },
+      deleteConnection: async (id) => { deleted.push(id) }
+    },
+    adapter: createReadOnlyAdapter({ fetch: upstreamFetch().impl }),
+    verifyToken: verify
+  })
+  const base = await listen(server)
+  try {
+    const token = await sign('auth0|connector')
+    const out = await rpcJson(base, {
+      jsonrpc: '2.0', id: 1, method: 'tools/call',
+      params: { name: 'lunchmoney_connect', arguments: {} }
+    }, token)
+    const payload = JSON.parse(out.data.result.content[0].text)
+    assert.equal(payload.connect_url, 'https://connect.nango.dev/s/abc')
+    assert.equal(sessions.length, 1)
+    assert.ok(sessions[0].startsWith('usr_'))
+
+    const user = await store.getOrCreateUser(ISSUER, 'auth0|connector')
+    const pending = await store.getActiveConnection(user.userId)
+    assert.equal(pending?.state, 'pending')
+
+    const status = await rpcJson(base, {
+      jsonrpc: '2.0', id: 2, method: 'tools/call',
+      params: { name: 'lunchmoney_connection_status', arguments: {} }
+    }, token)
+    assert.equal(JSON.parse(status.data.result.content[0].text).state, 'pending')
+
+    const disc = await rpcJson(base, {
+      jsonrpc: '2.0', id: 3, method: 'tools/call',
+      params: { name: 'lunchmoney_disconnect', arguments: {} }
+    }, token)
+    assert.equal(JSON.parse(disc.data.result.content[0].text).result, 'disconnected')
+    assert.equal(deleted.length, 0)
+    assert.equal((await store.getActiveConnection(user.userId)), undefined)
+
+    const disc2 = await rpcJson(base, {
+      jsonrpc: '2.0', id: 4, method: 'tools/call',
+      params: { name: 'lunchmoney_disconnect', arguments: {} }
+    }, token)
+    assert.equal(JSON.parse(disc2.data.result.content[0].text).result, 'none')
   } finally {
     server.close()
   }

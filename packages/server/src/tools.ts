@@ -7,6 +7,13 @@ type Adapter = ReturnType<typeof createReadOnlyAdapter>
 export interface ToolContext {
   adapter: Adapter
   token: string
+  connectionState?: string
+  userId?: string
+  connect?: {
+    createSession(userId: string): Promise<{ sessionToken: string; connectLink: string; expiresAt: string }>
+    onSessionCreated(userId: string): Promise<void>
+    disconnect(userId: string): Promise<'disconnected' | 'none'>
+  }
 }
 
 function fail(message: string): { content: { type: 'text'; text: string }[]; isError: true } {
@@ -109,6 +116,147 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
         return ok(await context.adapter.listTransactions(ctx, args))
       } catch (error) {
         return fail(describe(error))
+      }
+    }
+  )
+
+  server.registerTool(
+    'lunchmoney_list_categories',
+    {
+      title: 'List categories',
+      description: 'Budget categories and groups with income/exclusion flags.',
+      inputSchema: {},
+      annotations: readonly
+    },
+    async () => {
+      const unconnected = requireConnection()
+      if (unconnected) return unconnected
+      try {
+        return ok(await context.adapter.listCategories(ctx))
+      } catch (error) {
+        return fail(describe(error))
+      }
+    }
+  )
+
+  server.registerTool(
+    'lunchmoney_list_tags',
+    {
+      title: 'List tags',
+      description: 'Transaction tag names and archived flags.',
+      inputSchema: {},
+      annotations: readonly
+    },
+    async () => {
+      const unconnected = requireConnection()
+      if (unconnected) return unconnected
+      try {
+        return ok(await context.adapter.listTags(ctx))
+      } catch (error) {
+        return fail(describe(error))
+      }
+    }
+  )
+
+  server.registerTool(
+    'lunchmoney_list_recurring_items',
+    {
+      title: 'List recurring items',
+      description: 'Expected recurring transactions with payee, amount, currency and cadence.',
+      inputSchema: {
+        start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('YYYY-MM-DD, requires end_date'),
+        end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('YYYY-MM-DD, requires start_date'),
+        include_suggested: z.boolean().optional()
+      },
+      annotations: readonly
+    },
+    async (args) => {
+      const unconnected = requireConnection()
+      if (unconnected) return unconnected
+      try {
+        return ok(await context.adapter.listRecurringItems(ctx, args))
+      } catch (error) {
+        return fail(describe(error))
+      }
+    }
+  )
+
+  server.registerTool(
+    'lunchmoney_budget_summary',
+    {
+      title: 'Budget summary',
+      description: 'Per-category activity vs budget for a date range, in the primary currency.',
+      inputSchema: {
+        start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe('YYYY-MM-DD'),
+        end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe('YYYY-MM-DD')
+      },
+      annotations: readonly
+    },
+    async (args) => {
+      const unconnected = requireConnection()
+      if (unconnected) return unconnected
+      try {
+        return ok(await context.adapter.getBudgetSummary(ctx, args))
+      } catch (error) {
+        return fail(describe(error))
+      }
+    }
+  )
+
+  server.registerTool(
+    'lunchmoney_connection_status',
+    {
+      title: 'Connection status',
+      description: 'Current Lunch Money connection state for this account.',
+      inputSchema: {},
+      annotations: readonly
+    },
+    async () => ok({ state: context.connectionState ?? 'unconnected' })
+  )
+
+  server.registerTool(
+    'lunchmoney_connect',
+    {
+      title: 'Connect Lunch Money',
+      description: 'Start a secure connection flow. Returns a link to enter your Lunch Money token; never send the token in chat.',
+      inputSchema: {},
+      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true }
+    },
+    async () => {
+      if (context.connect === undefined || context.userId === undefined) {
+        return fail('Connection flow is not configured on this deployment.')
+      }
+      try {
+        const session = await context.connect.createSession(context.userId)
+        await context.connect.onSessionCreated(context.userId)
+        return ok({
+          connect_url: session.connectLink,
+          expires_at: session.expiresAt,
+          note: 'Open this link in a browser to enter your Lunch Money token securely. The link expires shortly.'
+        })
+      } catch {
+        return fail('Could not start the connection flow. Retry shortly.')
+      }
+    }
+  )
+
+  server.registerTool(
+    'lunchmoney_disconnect',
+    {
+      title: 'Disconnect Lunch Money',
+      description: 'Stop access and remove the stored connection. Also revoke the token in Lunch Money to fully revoke.',
+      inputSchema: {},
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: false }
+    },
+    async () => {
+      if (context.connect === undefined || context.userId === undefined) {
+        return fail('Disconnect is not configured on this deployment.')
+      }
+      try {
+        const result = await context.connect.disconnect(context.userId)
+        return ok({ result })
+      } catch {
+        return fail('Disconnect failed. Retry or contact the operator.')
       }
     }
   )
