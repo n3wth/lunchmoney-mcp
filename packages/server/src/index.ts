@@ -10,7 +10,7 @@ import {
 } from '@lunchmoney-mcp/auth-contract'
 import type { createReadOnlyAdapter } from '@lunchmoney-mcp/adapter'
 import type { IdentityStore } from './identity.js'
-import type { CredentialProvider, ConnectSessionProvider } from './credentials.js'
+import { validateAndActivateConnection, type CredentialProvider, type ConnectSessionProvider } from './credentials.js'
 import { createReadOnlyServer } from './tools.js'
 
 export interface ServerConfig {
@@ -134,7 +134,25 @@ export function createMcpHttpServer(config: ServerConfig): Server {
       return
     }
     emit('request', user.userId)
-    const connection = await config.store.getActiveConnection(user.userId)
+    let connection = await config.store.getActiveConnection(user.userId)
+    if (connection !== undefined && connection.state === 'pending' &&
+        !connection.connectionId.startsWith('pending:')) {
+      // Connect-session reconciliation: a real Nango connection ID exists but
+      // no webhook has activated it. Validate the credential with Lunch Money
+      // first; rejected credentials mark the connection 'invalid'.
+      try {
+        const result = await validateAndActivateConnection({
+          credentials: config.credentials,
+          store: config.store,
+          userId: user.userId,
+          connectionId: connection.connectionId
+        })
+        emit(result === 'active' ? 'connection_activated' : 'connection_invalid', user.userId)
+      } catch {
+        emit('connection_validation_failed', user.userId)
+      }
+      connection = await config.store.getActiveConnection(user.userId)
+    }
 
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
     const store = config.store

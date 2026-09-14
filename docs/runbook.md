@@ -38,8 +38,12 @@ loopback callback ports; Auth0 does not allow port wildcards).
   `private-api-bearer`, auth type API Key. Nango Connect UI prompts the
   user for the bearer token; no client/secret config is required.
 - There is no prebuilt Lunch Money provider; the generic bearer template
-  performs no upstream validation. The server must validate credentials
-  itself with `GET /v2/me` before activating a connection (N-625).
+  performs no upstream validation. The server validates credentials itself
+  with `GET https://api.lunchmoney.dev/v2/me` before activating a connection
+  (N-625). The API_KEY credential is read from `credentials.apiKey` on
+  `GET /connections/{id}?provider_config_key=lunch-money`; pending
+  connections with a real Nango connection ID are reconciled lazily on the
+  next MCP request (no webhook required).
 - API Keys tab holds a "Default - Full access" key; copy it into
   `NANGO_SECRET_KEY`. Key values were not exfiltrated to this repo.
 - Webhooks tab: signing key exists (use it to verify
