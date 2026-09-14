@@ -29,6 +29,26 @@ Auth0 staging objects (tenant `newth`):
 Codex must pin `mcp_oauth_callback_port` to 1455 or 8414 (registered
 loopback callback ports; Auth0 does not allow port wildcards).
 
+## Nango (configured 2026-09-14)
+
+- Account: `app.nango.dev`, owner `oliver@newth.ai`.
+- Environment `dev` (ID `e75ce2f6-c384-4e55-af68-e5e2429c01b7`); `prod`
+  is a separate environment — staging uses `dev` keys only.
+- Integration `lunch-money` (display name "Lunch Money"), template
+  `private-api-bearer`, auth type API Key. Nango Connect UI prompts the
+  user for the bearer token; no client/secret config is required.
+- There is no prebuilt Lunch Money provider; the generic bearer template
+  performs no upstream validation. The server must validate credentials
+  itself with `GET /v2/me` before activating a connection (N-625).
+- API Keys tab holds a "Default - Full access" key; copy it into
+  `NANGO_SECRET_KEY`. Key values were not exfiltrated to this repo.
+- Webhooks tab: signing key exists (use it to verify
+  `Nango-Signature`); Primary URL is unset pending a deployed staging
+  endpoint, so the "Auth: new connection" and "Auth: connection
+  deletion" subscriptions remain disabled. Until a URL is configured,
+  connection completion must rely on server-side connect-session
+  reconciliation, not webhook trust.
+
 ## Health checks
 
 - `GET /.well-known/oauth-protected-resource` -> 200 JSON.
