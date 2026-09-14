@@ -16,7 +16,7 @@ verified**. Accordingly, this site:
 - has no signup or token-entry forms
 - has no install or connect button (the `mcp.lunchmoney.sh` address is shown
   as planned text only — it is not live)
-- collects no analytics and sends no data anywhere
+- adds no analytics or third-party tracking; Vercel may retain standard request logs including IP addresses
 - renders the chat preview locally with fictional sample data
 
 ## Layout
