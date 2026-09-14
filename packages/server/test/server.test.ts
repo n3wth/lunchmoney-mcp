@@ -277,6 +277,41 @@ test('connect returns bounded session link; disconnect deletes connection', asyn
   }
 })
 
+test('per-user rate limiting returns 429 with retry-after', async () => {
+  const { publicKey, privateKey } = await generateKeyPair('RS256')
+  const jwks = { keys: [{ ...(await exportJWK(publicKey)), kid: 'k1', alg: 'RS256' }] }
+  const resolver = createLocalJWKSet(jwks as Parameters<typeof createLocalJWKSet>[0])
+  const verify = createAccessTokenVerifier({ issuer: ISSUER, resource: RESOURCE, jwksUri: JWKS_URI }, resolver)
+  const sign = (sub: string) => new SignJWT({ iss: ISSUER, aud: RESOURCE, sub, scope: 'lunchmoney:read' })
+    .setProtectedHeader({ alg: 'RS256', kid: 'k1' }).setIssuedAt().setExpirationTime('5m').sign(privateKey)
+  const events: { type: string; userId?: string }[] = []
+  const server = createMcpHttpServer({
+    auth: { issuer: ISSUER, resource: RESOURCE, jwksUri: JWKS_URI },
+    metadataUrl: METADATA_URL,
+    store: new InMemoryIdentityStore(),
+    credentials: { getToken: async () => TOKEN },
+    adapter: createReadOnlyAdapter({ fetch: upstreamFetch().impl }),
+    verifyToken: verify,
+    rateLimit: { windowMs: 60000, maxPerUser: 2, maxTotal: 100 },
+    onEvent: (e) => events.push(e)
+  })
+  const base = await listen(server)
+  try {
+    const tokenA = await sign('auth0|rl-a')
+    const tokenB = await sign('auth0|rl-b')
+    const call = (t: string) => rpc({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} }, t)(base)
+    assert.equal((await call(tokenA)).status, 200)
+    assert.equal((await call(tokenA)).status, 200)
+    const limited = await call(tokenA)
+    assert.equal(limited.status, 429)
+    assert.equal(limited.headers.get('retry-after'), '60')
+    assert.equal((await call(tokenB)).status, 200)
+    assert.ok(events.some((e) => e.type === 'rate_limited'))
+  } finally {
+    server.close()
+  }
+})
+
 test('connection lifecycle: pending not usable, replace revokes old, mark states', async () => {
   const store = new InMemoryIdentityStore()
   const u = await store.getOrCreateUser(ISSUER, 'auth0|u')

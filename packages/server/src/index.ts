@@ -20,6 +20,8 @@ export interface ServerConfig {
   credentials: CredentialProvider
   connectSessions?: ConnectSessionProvider
   environment?: 'development' | 'production'
+  rateLimit?: { windowMs: number; maxPerUser: number; maxTotal: number }
+  onEvent?: (event: { type: string; userId?: string; status?: number }) => void
   adapter: ReturnType<typeof createReadOnlyAdapter>
   verifyToken?: (authorization: string | null) => Promise<Principal>
   maxBodyBytes?: number
@@ -59,6 +61,30 @@ export function createMcpHttpServer(config: ServerConfig): Server {
   const verify = config.verifyToken ?? createAccessTokenVerifier(config.auth)
   const metadata = protectedResourceMetadata(config.auth)
   const maxBodyBytes = config.maxBodyBytes ?? 256 * 1024
+  const rateWindowMs = config.rateLimit?.windowMs ?? 60000
+  const maxPerUser = config.rateLimit?.maxPerUser ?? 60
+  const maxTotal = config.rateLimit?.maxTotal ?? 600
+  const hits = new Map<string, number[]>()
+  const emit = (type: string, userId?: string, status?: number) => {
+    config.onEvent?.({ type, userId, status })
+  }
+
+  function rateLimited(userId: string): boolean {
+    const now = Date.now()
+    const cutoff = now - rateWindowMs
+    let total = 0
+    for (const [key, list] of hits) {
+      const kept = list.filter((t) => t > cutoff)
+      if (kept.length === 0) hits.delete(key)
+      else hits.set(key, kept)
+      total += kept.length
+    }
+    const mine = hits.get(userId) ?? []
+    if (mine.length >= maxPerUser || total >= maxTotal) return true
+    mine.push(now)
+    hits.set(userId, mine)
+    return false
+  }
 
   return createHttpServer(async (req, res) => {
     const url = new URL(req.url ?? '/', 'http://localhost')
@@ -102,6 +128,12 @@ export function createMcpHttpServer(config: ServerConfig): Server {
     }
 
     const user = await config.store.getOrCreateUser(principal.issuer, principal.subject)
+    if (rateLimited(user.userId)) {
+      emit('rate_limited', user.userId, 429)
+      send(res, 429, { error: 'rate_limited' }, { 'retry-after': '60' })
+      return
+    }
+    emit('request', user.userId)
     const connection = await config.store.getActiveConnection(user.userId)
 
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
