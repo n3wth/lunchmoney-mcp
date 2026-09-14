@@ -1,0 +1,11 @@
+{
+  "name": "lunchmoney-mcp-site",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Static landing page for lunchmoney.sh — an unofficial, pre-release Lunch Money MCP connector",
+  "scripts": {
+    "build": "node build.js",
+    "preview": "node build.js --serve"
+  },
+  "license": "MIT"
+}
