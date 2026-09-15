@@ -105,12 +105,13 @@ and explains connection troubleshooting.
 
 ## Work on the project
 
-Use Node.js 22 or later for server development. The site is plain HTML, CSS,
-and JavaScript with a dependency-free build.
+Use Node.js 22 or later. The site is static HTML and CSS with a small React
+conversation preview built from Vercel AI Elements.
 
 ```bash
 git clone https://github.com/n3wth/lunchmoney-mcp.git
 cd lunchmoney-mcp
+npm ci
 npm run preview
 ```
 

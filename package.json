@@ -7,5 +7,15 @@
     "build": "node build.js",
     "preview": "node build.js --serve"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@tailwindcss/cli": "^4.3.3",
+    "clsx": "^2.1.1",
+    "esbuild": "^0.28.2",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwind-merge": "^3.7.0",
+    "tailwindcss": "^4.3.3",
+    "use-stick-to-bottom": "^1.1.3"
+  }
 }
