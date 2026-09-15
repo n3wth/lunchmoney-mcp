@@ -50,6 +50,14 @@ loopback callback ports; Auth0 does not allow port wildcards).
 - Verified 2026-09-14: full-access dev key creates Connect sessions and
   reads connection credentials; dashboard-created `lunch-money` connection
   `e0eeb7b1` credential validated live against `GET /v2/me` (200).
+- Verified 2026-09-15 end-to-end: real Auth0 auth-code + PKCE token
+  (aud `https://mcp-staging.lunchmoney.sh/mcp`, scope `lunchmoney:read`)
+  accepted by `POST /mcp`; `lunchmoney_connect` -> Connect UI -> lazy
+  reconciliation discovers the connection via `tags.end_user_id` and
+  activates it; all 8 read tools returned live Lunch Money data.
+- Placeholder pending connections (`pending:<userId>`) are reconciled on
+  the next authenticated request by listing Nango connections and matching
+  `tags.end_user_id`; webhooks remain optional, not required.
 - Webhooks tab: signing key exists (use it to verify
   `Nango-Signature`); Primary URL is unset pending a deployed staging
   endpoint, so the "Auth: new connection" and "Auth: connection
