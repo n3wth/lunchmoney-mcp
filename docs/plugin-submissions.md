@@ -8,6 +8,7 @@
 - Description: Connect your own Lunch Money account through a secure browser flow, then query transactions, categories, accounts, tags, and budget summaries. Financial data tools are read-only. Connection management can connect or disconnect the account; account deletion removes connector data.
 - Website: https://lunchmoney.sh
 - Privacy: https://lunchmoney.sh/privacy
+- Terms: https://lunchmoney.sh/terms
 - Support: https://github.com/n3wth/lunchmoney-mcp/issues
 - MCP endpoint: https://mcp.lunchmoney.sh/mcp
 - Source: https://github.com/n3wth/lunchmoney-mcp
@@ -22,10 +23,10 @@ and [submission portal](https://platform.openai.com/plugins).
 Choose **Create plugin > With MCP**. Local marketplace registration is not a
 directory submission.
 
-On 2026-09-15, the portal's Newth organization blocked draft creation with:
-“You need a verified developer identity before you can create or upload a plugin.”
-The publisher must complete identity verification before submission can proceed.
-No OpenAI submission was created.
+On 2026-09-15, the verified Newth organization under oliver@newth.ai created
+draft `asdk_app_6aa8cbdf58e48191937aea475faa17e2`, with publisher identity n3wth.
+Listing preparation, domain verification, OAuth tool scanning, and the required
+Developer Mode demo are in progress. Submission and approval are not yet confirmed.
 
 The review also requires public privacy and terms URLs, domain verification,
 accurate tool annotations, test access, supported countries, and policy
