@@ -1,3 +1,8 @@
+# Routes
+/ → src/app/App.tsx, prerendered by src/app/render.tsx and hydrated by src/app/client.tsx. /privacy and /terms → site/privacy/index.html and site/terms/index.html, legacy static legal pages with site/styles.css. No router config. build.js copies static assets and replaces root HTML body only.
+
+## build.js
+```
 #!/usr/bin/env node
 // Prerender the Astryx landing page and bundle its interactive demo.
 // Usage: node build.js          build into dist/
@@ -99,3 +104,5 @@ function serve() {
 
 build();
 if (process.argv.includes('--serve')) serve();
+
+```

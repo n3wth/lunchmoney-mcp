@@ -1,4 +1,6 @@
 dist/
+.cache/
+.superdesign/tmp/
 node_modules/
 .vercel/
 .env*

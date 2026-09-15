@@ -1,0 +1,8 @@
+@font-face { font-family: 'Geist Sans'; src: url('/fonts/Geist-Regular.woff2') format('woff2'); font-weight: 400; font-display: swap; }
+@font-face { font-family: 'Geist Sans'; src: url('/fonts/Geist-SemiBold.woff2') format('woff2'); font-weight: 600; font-display: swap; }
+@font-face { font-family: 'Mona Sans'; src: url('/fonts/MonaSans-Variable.woff2') format('woff2'); font-weight: 200 900; font-display: swap; }
+@layer base {
+  body { margin: 0; }
+  .skip-link { position: absolute; transform: translateY(-200%); }
+  .skip-link:focus { transform: none; }
+}

@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "targets": {
+    "/": {
+      "targetKind": "existing-ui",
+      "projectId": "4092c93f-492b-4eb0-a529-29d3186b031a",
+      "baselineDraftId": "f3d08fe6-5ac5-46e6-a457-0b7e8147cb75",
+      "activeDraftId": "f3d08fe6-5ac5-46e6-a457-0b7e8147cb75",
+      "designSystemPath": ".superdesign/design-system.md",
+      "contextFiles": [
+        ".superdesign/design-system.md",
+        "src/app/App.tsx",
+        "src/app/shell-top-nav/page.tsx",
+        "src/app/ai-chat/page.tsx",
+        "src/app/client.tsx",
+        "src/app/render.tsx",
+        "src/app/fonts.css",
+        "src/themes/neutral/neutralTheme.ts",
+        "src/themes/neutral/icons.tsx",
+        "src/themes/neutral/neutralPaletteRefs.generated.ts",
+        "build.js",
+        "package.json"
+      ],
+      "fingerprints": {
+        ".superdesign/design-system.md": "6d47308dbe8d34402a1246223eadd688c6353e42fd196e376db22be5a35dcd38",
+        "src/app/App.tsx": "020c2212109123049dc9aa30a19199bde56eaea0397377348a37e878625a3fa5",
+        "src/app/shell-top-nav/page.tsx": "c3c402ccf19e73b9c858c4887fced865bec30daf6056ab794fefd949a09894aa",
+        "src/app/ai-chat/page.tsx": "9919b35eb9854d90f03649c4e66ae772905794cafe93618fc7ea00d3f1140496",
+        "src/app/client.tsx": "3cc5599367073760791048320377e91d39c534bf53901824c7a6c742ba5c81e4",
+        "src/app/render.tsx": "967dddf9514a909b80fa502970adfa8e00646f99954408f5ca685950e786c408",
+        "src/app/fonts.css": "dea553ee394b5699d462136b53b8a08d9eed5fcf38f8d113d617c4f327c1c127",
+        "src/themes/neutral/neutralTheme.ts": "e0fb125ca8ad02cd06d3b230807adedebc631c64b211e3d52a412afc5b969850",
+        "src/themes/neutral/icons.tsx": "11955429dfaf547a78ad1356fdca48250ceff64fe932495f4e02262a3f032cf8",
+        "src/themes/neutral/neutralPaletteRefs.generated.ts": "2382a7f2a19fe53e925982e07f01d835ea6430b5459c842aa5159493fa57ef04",
+        "build.js": "63b1371ba8ea1df238f77c47e8750717aeb23c3f39a1adb439015753afd2f047",
+        "package.json": "e4c4d9087c685966d56662788f8a86d2a6cc3474a5bc3b2a4c12913a20538744"
+      },
+      "components": [
+        {
+          "name": "ShellTopNav",
+          "id": "8f354a35-b3dd-47bf-ac98-1adbd497cb96",
+          "sourcePath": "src/app/shell-top-nav/page.tsx"
+        }
+      ],
+      "drafts": {
+        "f3d08fe6-5ac5-46e6-a457-0b7e8147cb75": {
+          "title": "Current landing page",
+          "visualDirection": "Current neutral baseline",
+          "currentVersion": 1
+        }
+      }
+    }
+  }
+}
