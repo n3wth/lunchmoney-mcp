@@ -37,6 +37,7 @@ same icon, derived from `site/favicon.svg`.
 
 - [Codex plugin and manual configuration](packages/codex-plugin/README.md)
 - [Claude Code plugin](packages/claude-plugin/README.md)
+- [Cursor plugin and MCP configuration](packages/cursor-plugin/README.md)
 - MCP endpoint: `https://mcp.lunchmoney.sh/mcp`
 - Login: `https://auth.n3wth.com/`
 

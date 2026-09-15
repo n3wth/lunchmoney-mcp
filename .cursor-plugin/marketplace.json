@@ -1,0 +1,14 @@
+{
+  "name": "lunchmoney-mcp",
+  "owner": { "name": "Oliver Newth", "email": "oliver@newth.ai" },
+  "metadata": {
+    "description": "Unofficial read-only Lunch Money connector for Cursor"
+  },
+  "plugins": [
+    {
+      "name": "lunchmoney",
+      "source": "packages/cursor-plugin",
+      "description": "Read-only Lunch Money MCP connector (unofficial)"
+    }
+  ]
+}
