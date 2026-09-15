@@ -69,3 +69,15 @@ A submitted form must return a confirmation or submission record before its
 status is recorded as submitted. Acceptance and publication are separate steps.
 The Claude manifest has no documented logo field, so the shared logo is bundled
 and displayed in its README and supplied to the submission form when requested.
+
+## Official MCP Registry
+
+Published version `0.1.0` on 2026-09-15 as `io.github.n3wth/lunchmoney-mcp`.
+The registry API confirms status `active` and `isLatest: true`.
+[Publishing run](https://github.com/n3wth/lunchmoney-mcp/actions/runs/34928352424).
+
+## Publisher permission
+
+The creator of Lunch Money has been contacted to request written permission
+for directory listings and descriptive use of the product name. A response is
+pending; no endorsement or permission is claimed.

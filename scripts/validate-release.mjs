@@ -48,6 +48,34 @@ for (const [directory, manifestPath] of [
   console.log(`${directory}: release contract passed`)
 }
 
+// Cursor's documented static OAuth uses auth.CLIENT_ID, not oauth.clientId.
+const cursorManifest = await readJson('packages/cursor-plugin/.cursor-plugin/plugin.json')
+assert.match(cursorManifest.name, /^[a-z0-9]+(?:-[a-z0-9]+)*$/)
+assert.match(cursorManifest.version, /^\d+\.\d+\.\d+$/)
+assert.match(cursorManifest.description, /unofficial/i)
+assert.equal(cursorManifest.mcpServers, 'mcp.json')
+assert.equal(cursorManifest.logo, 'assets/icon.png')
+for (const path of [cursorManifest.mcpServers, cursorManifest.logo]) {
+  const base = resolve(root, 'packages/cursor-plugin')
+  const target = resolve(base, path)
+  assert.ok(target.startsWith(`${base}${sep}`), 'Cursor path escapes plugin directory')
+  await access(target)
+}
+const cursorConfig = await readJson('packages/cursor-plugin/mcp.json')
+assert.deepEqual(Object.keys(cursorConfig.mcpServers), ['lunchmoney'])
+const cursorServer = cursorConfig.mcpServers.lunchmoney
+assert.equal(cursorServer.url, endpoint)
+assert.deepEqual(Object.keys(cursorServer).sort(), ['auth', 'url'])
+assert.deepEqual(Object.keys(cursorServer.auth).sort(), ['CLIENT_ID', 'scopes'])
+assert.match(cursorServer.auth.CLIENT_ID, /^[A-Za-z0-9_-]{8,}$/)
+assert.deepEqual(cursorServer.auth.scopes, ['openid', 'offline_access', 'lunchmoney:read'])
+const cursorMarketplace = await readJson('.cursor-plugin/marketplace.json')
+assert.equal(cursorMarketplace.name, 'lunchmoney-mcp')
+assert.deepEqual(cursorMarketplace.plugins.map(({ name, source }) => ({ name, source })), [
+  { name: cursorManifest.name, source: 'packages/cursor-plugin' }
+])
+console.log('cursor-plugin: static OAuth and package paths passed')
+
 // These JSONC files deliberately use strict JSON syntax, so invalid edits fail here.
 const staging = await readJson('packages/server/wrangler.jsonc')
 const production = await readJson('packages/server/wrangler.production.jsonc')
@@ -72,7 +100,7 @@ assert.ok(staging.analytics_engine_datasets.every((binding) => binding.dataset !
 console.log('production: configuration isolation checks passed')
 
 const canonicalIcon = await readFile(resolve(root, 'site/icon.png'))
-for (const directory of ['codex-plugin', 'claude-plugin']) {
+for (const directory of ['codex-plugin', 'claude-plugin', 'cursor-plugin']) {
   const icon = await readFile(resolve(root, `packages/${directory}/assets/icon.png`))
   assert.ok(icon.equals(canonicalIcon), `${directory}: icon must match the website`)
 }
