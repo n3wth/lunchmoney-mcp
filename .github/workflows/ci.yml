@@ -1,0 +1,24 @@
+name: Read-only beta checks
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: packages/*/package-lock.json
+      - run: npm ci && npm run build && npm test
+        working-directory: packages/auth-contract
+      - run: npm ci && npm run build && npm test
+        working-directory: packages/lunchmoney-adapter
+      - run: npm ci && npm run build && npm test && npx wrangler deploy --dry-run
+        working-directory: packages/server
+      - run: npm run build

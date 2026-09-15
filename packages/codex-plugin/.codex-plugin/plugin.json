@@ -1,0 +1,16 @@
+{
+  "name": "codex-plugin",
+  "version": "0.2.0",
+  "description": "Read-only Lunch Money MCP server (unofficial beta)",
+  "author": { "name": "Oliver Newth" },
+  "mcpServers": "./.mcp.json",
+  "interface": {
+    "displayName": "Lunch Money MCP",
+    "shortDescription": "Read-only access to your Lunch Money data",
+    "longDescription": "Connect Lunch Money through Nango and query financial data with read-only MCP tools.",
+    "developerName": "Oliver Newth",
+    "category": "Productivity",
+    "capabilities": ["Read"],
+    "defaultPrompt": ["Check my Lunch Money connection status"]
+  }
+}
