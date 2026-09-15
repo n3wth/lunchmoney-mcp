@@ -8,6 +8,43 @@ const API_TOKEN = 'lm-user-token-shhh'
 const CONNECTION_ID = 'e0eeb7b1-ee2c-4410-9a72-1ed1a8291197'
 const ISSUER = 'https://issuer.example.com/'
 
+test('credential requests time out before headers and do not retry lifecycle writes', async () => {
+  for (const operation of ['getToken', 'findConnectionId', 'createSession', 'deleteConnection', 'validateToken'] as const) {
+    let calls = 0
+    let signal: AbortSignal | null | undefined
+    const nango = new NangoProvider({
+      secretKey: SECRET,
+      timeoutMs: 10,
+      fetch: (async (_input, init) => {
+        calls++
+        signal = init?.signal
+        return new Promise<Response>(() => {})
+      }) as typeof fetch
+    })
+    await assert.rejects(nango[operation](CONNECTION_ID), (error: Error) => {
+      assert.ok(!error.message.includes(SECRET))
+      assert.match(error.message, /failed/)
+      return true
+    })
+    assert.equal(signal?.aborted, true)
+    assert.equal(calls, 1)
+  }
+})
+
+test('credential deadline covers a stalled body and cancels its reader', async () => {
+  let cancelled = false
+  const nango = new NangoProvider({
+    secretKey: SECRET,
+    timeoutMs: 10,
+    fetch: (async () => new Response(new ReadableStream({
+      start(controller) { controller.enqueue(new TextEncoder().encode('{"credentials":')) },
+      cancel() { cancelled = true }
+    }))) as typeof fetch
+  })
+  await assert.rejects(nango.getToken(CONNECTION_ID), /nango connection lookup failed/)
+  assert.equal(cancelled, true)
+})
+
 interface SeenRequest {
   url: string
   method: string

@@ -1,4 +1,4 @@
-name: Read-only beta checks
+name: Release checks
 on:
   pull_request:
   push:
@@ -15,10 +15,18 @@ jobs:
           node-version: '22'
           cache: npm
           cache-dependency-path: packages/*/package-lock.json
-      - run: npm ci && npm run build && npm test
+      - run: npm ci && npm test
         working-directory: packages/auth-contract
-      - run: npm ci && npm run build && npm test
+      - run: npm ci && npm test
         working-directory: packages/lunchmoney-adapter
-      - run: npm ci && npm run build && npm test && npx wrangler deploy --dry-run
+      - run: npm ci && npm test
         working-directory: packages/server
       - run: npm run build
+      - name: Validate plugin packages and production isolation
+        run: node scripts/validate-release.mjs
+      - name: Bundle staging Worker
+        run: npx wrangler deploy --dry-run
+        working-directory: packages/server
+      - name: Bundle production Worker
+        run: npx wrangler deploy --dry-run --config wrangler.production.jsonc
+        working-directory: packages/server

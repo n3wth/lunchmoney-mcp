@@ -1,4 +1,88 @@
-# Operator runbook (staging)
+# Operator runbook
+
+## Production promotion (2026-09-15 UTC)
+
+Production provisioning is in progress. Do not infer release readiness from a
+successful bundle or unauthenticated smoke check. Linear N-617 tracks the
+remaining live lifecycle, rollback, capacity, and external-user gates.
+
+| Resource | Production value |
+| --- | --- |
+| Public MCP | `https://mcp.lunchmoney.sh/mcp` |
+| Worker | `lunchmoney-mcp-production` |
+| Wrangler config | `packages/server/wrangler.production.jsonc` |
+| D1 | `lunchmoney-mcp-production-identity` |
+| Database ID | `b3f05c40-2e28-4e3b-93cf-4f44cb79c162` |
+| Telemetry | `lunchmoney_mcp_production` |
+| Nango environment | `prod` |
+| OAuth audience | `https://mcp.lunchmoney.sh/mcp` |
+
+Production D1 was created with read replication disabled. Migration
+`0001_identity.sql` was applied through the Cloudflare connector and read back
+from `d1_migrations`; tables and uniqueness indexes were verified. Staging data
+and credentials are not copied to production. Users must connect separately.
+
+Auth0 production API `6aa8bf18085cb3823c3b0038` uses RS256. Native public client
+`xDAFMwYkwjC3GiWoKsrQvZaEqOg8sbxI` has user-delegated `lunchmoney:read`,
+authorization code and refresh grants, and no client-credentials grant.
+Registered callbacks are `http://127.0.0.1:1455/callback`,
+`http://127.0.0.1:8414/callback`, and `http://localhost:8414/callback`.
+Configuration was saved and read back; live production OAuth still needs a
+separate check after the endpoint is deployed.
+
+From `packages/server`, use an explicit config for every production command:
+
+```bash
+npx wrangler d1 migrations apply IDENTITY_DB --remote --config wrangler.production.jsonc
+npx wrangler deploy --dry-run --config wrangler.production.jsonc
+npx wrangler deploy --config wrangler.production.jsonc
+```
+
+Before deployment, install the **prod** Nango key and distinct webhook signing
+key as Worker secrets `NANGO_SECRET_KEY` and `NANGO_WEBHOOK_SIGNING_KEY`.
+Never use the staging `.env` for this. Production secret material may be held
+temporarily in gitignored `.env.production` with permissions 0600. Secrets must
+not appear in Wrangler vars, plugin packages, command arguments, or logs.
+
+Vercel project `lunchmoney-mcp` must own `mcp.lunchmoney.sh` and route it to
+`https://lunchmoney-mcp-production.newth.workers.dev`. The host-conditioned
+rewrite preserves the staging route. The apex landing page remains separate.
+
+After deployment, from the repository root:
+
+```bash
+node scripts/validate-release.mjs
+node scripts/smoke-public.mjs https://mcp.lunchmoney.sh/mcp
+node scripts/smoke-public.mjs https://mcp-staging.lunchmoney.sh/mcp
+```
+
+These smoke checks cover discovery, unauthorized/invalid-token rejection, and
+forged webhook rejection. They do not prove OAuth login, downstream reads,
+real webhook delivery, or client installation. Record those separately.
+
+### Rollback
+
+Record the current Worker version before each release with
+`npx wrangler deployments list --config wrangler.production.jsonc`. To restore
+the previous compatible Worker version, use
+`npx wrangler rollback <version-id> --config wrangler.production.jsonc`, then
+repeat public smoke and authenticated lifecycle checks. Rollback does not undo
+D1 migrations or Nango/Auth0 configuration; retain backward-compatible schema
+changes. Do not delete the production database to roll back code.
+
+If no previous healthy production version exists, remove the production host
+rewrite and redeploy routing to disable public access while diagnosing. Never
+point production traffic at the staging database or Worker. A rollback drill
+has not yet been demonstrated; N-617 remains open until it is recorded.
+
+### Capacity limits
+
+Current request rate limiting is per Worker isolate (60/user and 600 total
+per minute). It is not a globally shared quota and does not prove upstream
+egress capacity under multiple isolates. Shared limits and measured beta
+capacity remain tracked under N-612/N-617.
+
+## Staging
 
 Status: staging is live at `https://mcp-staging.lunchmoney.sh/mcp`.
 Vercel project `lunchmoney-mcp` owns the staging hostname and rewrites requests

@@ -1,8 +1,12 @@
 {
   "name": "codex-plugin",
-  "version": "0.2.0",
-  "description": "Read-only Lunch Money MCP server (unofficial beta)",
+  "version": "0.3.0",
+  "description": "Read-only Lunch Money MCP server (unofficial)",
   "author": { "name": "Oliver Newth" },
+  "homepage": "https://lunchmoney.sh",
+  "repository": "https://github.com/n3wth/lunchmoney-mcp",
+  "license": "MIT",
+  "keywords": ["lunchmoney", "finance", "mcp"],
   "mcpServers": "./.mcp.json",
   "interface": {
     "displayName": "Lunch Money MCP",

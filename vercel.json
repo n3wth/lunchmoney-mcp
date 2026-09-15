@@ -4,6 +4,10 @@
   "framework": null,
   "rewrites": [{
     "source": "/:path*",
+    "has": [{ "type": "host", "value": "mcp.lunchmoney.sh" }],
+    "destination": "https://lunchmoney-mcp-production.newth.workers.dev/:path*"
+  }, {
+    "source": "/:path*",
     "has": [{ "type": "host", "value": "mcp-staging.lunchmoney.sh" }],
     "destination": "https://lunchmoney-mcp-staging.newth.workers.dev/:path*"
   }],

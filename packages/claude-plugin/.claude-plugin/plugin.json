@@ -1,0 +1,11 @@
+{
+  "name": "lunchmoney",
+  "version": "0.1.0",
+  "description": "Read-only Lunch Money MCP server (unofficial)",
+  "author": { "name": "Oliver Newth" },
+  "homepage": "https://lunchmoney.sh",
+  "repository": "https://github.com/n3wth/lunchmoney-mcp",
+  "license": "MIT",
+  "keywords": ["lunchmoney", "finance", "mcp"],
+  "mcpServers": "./.mcp.json"
+}
