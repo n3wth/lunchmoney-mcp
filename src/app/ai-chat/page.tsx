@@ -1,4 +1,4 @@
-import {useEffect, useState} from 'react'
+import {useEffect, useRef, useState} from 'react'
 import {VStack, HStack} from '@astryxdesign/core/Stack'
 import {Text} from '@astryxdesign/core/Text'
 import {ChatMessage, ChatMessageBubble} from '@astryxdesign/core/Chat'
@@ -13,14 +13,41 @@ const demos = [
 export default function AIChat() {
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
+  const timerAnimation = useRef<Animation | null>(null)
+  const isPaused = useRef(paused)
+  isPaused.current = paused
 
   useEffect(() => {
-    if (paused || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
-    const timer = window.setInterval(() => {
-      if (!document.hidden) setActive(value => (value + 1) % demos.length)
-    }, 7000)
-    return () => window.clearInterval(timer)
-  }, [paused, active])
+    const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
+    const button = document.getElementById('demo-tab-' + active)
+    if (!button) return
+    const start = () => {
+      timerAnimation.current?.cancel()
+      timerAnimation.current = null
+      if (reduced.matches) return
+      const animation = button.animate([{backgroundSize: '0% 100%'}, {backgroundSize: '100% 100%'}], {duration: 7000, easing: 'linear', fill: 'forwards'})
+      timerAnimation.current = animation
+      animation.onfinish = () => setActive(value => (value + 1) % demos.length)
+      if (isPaused.current || document.hidden) animation.pause()
+    }
+    const visibility = () => {
+      if (document.hidden || isPaused.current) timerAnimation.current?.pause()
+      else timerAnimation.current?.play()
+    }
+    start()
+    reduced.addEventListener('change', start)
+    document.addEventListener('visibilitychange', visibility)
+    return () => {
+      timerAnimation.current?.cancel()
+      reduced.removeEventListener('change', start)
+      document.removeEventListener('visibilitychange', visibility)
+    }
+  }, [active])
+
+  useEffect(() => {
+    if (paused || document.hidden) timerAnimation.current?.pause()
+    else timerAnimation.current?.play()
+  }, [paused])
 
   useEffect(() => {
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
@@ -83,7 +110,7 @@ export default function AIChat() {
     </VStack>)}
     </VStack>
     <HStack gap={2} hAlign="center" as="nav" aria-label="Try another question">
-      {demos.map((item, index) => <Button key={item.name} label={item.name} size="sm" variant={index === active ? 'primary' : 'secondary'} aria-pressed={index === active} onClick={() => setActive(index)} />)}
+      {demos.map((item, index) => <Button key={item.name} id={'demo-tab-' + index} className={index === active ? 'astryx-demo-timer' : undefined} label={item.name} size="sm" variant={index === active ? 'primary' : 'secondary'} aria-pressed={index === active} onClick={() => setActive(index)} />)}
     </HStack>
   </VStack>
 }

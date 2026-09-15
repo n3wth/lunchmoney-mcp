@@ -14,6 +14,7 @@ import type { createReadOnlyAdapter } from '@lunchmoney-mcp/adapter'
 import type { Connection, IdentityStore, User } from './identity.js'
 import { validateAndActivateConnection, type CredentialProvider, type ConnectSessionProvider, type ConnectionDiscovery } from './credentials.js'
 import { createReadOnlyServer } from './tools.js'
+import { toolCallEvent } from './observability.js'
 
 export interface ServerConfig {
   auth: AuthConfig
@@ -275,6 +276,8 @@ export function createMcpFetchHandler(
       if ('error' in resolved) return json(resolved.error.status, resolved.error.body, resolved.error.headers)
 
       const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined })
+      const usage = toolCallEvent(body)
+      if (usage) config.onEvent?.({ type: usage })
       const server = await pipeline.buildServer(resolved.user, resolved.connection)
       await server.connect(transport)
       const response = await transport.handleRequest(request, { parsedBody: body })
@@ -326,6 +329,8 @@ export function createMcpHttpServer(config: ServerConfig): Server {
     }
 
     const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
+    const usage = toolCallEvent(body)
+    if (usage) config.onEvent?.({ type: usage })
     const server = await pipeline.buildServer(resolved.user, resolved.connection)
     res.on('close', () => {
       transport.close().catch(() => undefined)

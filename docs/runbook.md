@@ -259,6 +259,19 @@ by guessing their owner. Subsequent deploys preserve D1 connection state.
 
 ## Observability
 
+Production tool usage (admitted authenticated requests, including unsuccessful calls):
+
+```sql
+SELECT blob1 AS tool, SUM(_sample_interval) AS calls
+FROM lunchmoney_mcp_production
+WHERE timestamp > NOW() - INTERVAL '7' DAY AND startsWith(blob1, 'tool_call:')
+GROUP BY blob1
+ORDER BY calls DESC
+```
+
+Tool labels are allowlisted; arguments and user identities are never included.
+Website PostHog events use the `lunchmoney_` prefix and are opt-in; they do not measure MCP usage.
+
 Analytics Engine stores `blob1` = allowlisted event type and `double1` = status
 (0 when absent). Use the Analytics Engine SQL API or dashboard to query:
 

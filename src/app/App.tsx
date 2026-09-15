@@ -12,6 +12,7 @@ import ShellTopNav from './shell-top-nav/page'
 import AIChat from './ai-chat/page'
 import SetupPrompt from './SetupPrompt'
 import HeroShader from './HeroShader'
+import AnalyticsSettings from './AnalyticsSettings'
 
 const repo = 'https://github.com/n3wth/lunchmoney-mcp'
 
@@ -117,6 +118,7 @@ export default function App() {
               <Link href="/privacy" type="supporting" color="secondary">Privacy</Link>
             </HStack>
           </HStack>
+          <AnalyticsSettings />
         </VStack>
       </VStack>
     </AppShell>
