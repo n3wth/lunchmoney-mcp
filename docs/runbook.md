@@ -1,4 +1,113 @@
-# Operator runbook (staging)
+# Operator runbook
+
+## Production promotion (2026-09-15 UTC)
+
+Production is deployed. Do not infer release readiness from a
+successful bundle or unauthenticated smoke check. Linear N-617 tracks the
+remaining live lifecycle, rollback, capacity, and external-user gates.
+
+| Resource | Production value |
+| --- | --- |
+| Public MCP | `https://mcp.lunchmoney.sh/mcp` |
+| Worker | `lunchmoney-mcp-production` |
+| Wrangler config | `packages/server/wrangler.production.jsonc` |
+| D1 | `lunchmoney-mcp-production-identity` |
+| Database ID | `b3f05c40-2e28-4e3b-93cf-4f44cb79c162` |
+| Telemetry | `lunchmoney_mcp_production` |
+| Nango environment | `prod` |
+| OAuth audience | `https://mcp.lunchmoney.sh/mcp` |
+| OAuth issuer | `https://auth.n3wth.com/` |
+
+Production D1 was created with read replication disabled. Migration
+`0001_identity.sql` was applied through the Cloudflare connector and read back
+from `d1_migrations`; tables and uniqueness indexes were verified. Staging data
+and credentials are not copied to production. Users must connect separately.
+
+Auth0 production API `6aa8bf18085cb3823c3b0038` uses RS256. Native public client
+`xDAFMwYkwjC3GiWoKsrQvZaEqOg8sbxI` has user-delegated `lunchmoney:read`,
+authorization code and refresh grants, and no client-credentials grant.
+Registered callbacks are `http://127.0.0.1:1455/callback`,
+`http://127.0.0.1:8414/callback`, and `http://localhost:8414/callback`.
+Configuration was saved and read back. Codex CLI 0.154.0 completed live
+authorization-code + PKCE login through `auth.n3wth.com` after deployment.
+
+The custom domain `auth.n3wth.com` is verified and the default domain in the
+same Auth0 tenant. Its discovery issuer and signing keys were checked against
+the tenant domain. Production trusts the custom-domain issuer only; staging
+retains its existing tenant-domain issuer. Tokens from before the production
+issuer switch require login again, and identities are keyed by issuer+subject.
+No production Lunch Money connections existed at the time of this switch.
+
+Nango production environment ID is `fed477bf-7ac3-4be3-9cad-fc827e8cb026`.
+Integration `lunch-money` uses `private-api-bearer`; auth creation and deletion
+webhooks are enabled at `https://mcp.lunchmoney.sh/webhooks/nango`. The prod key
+was tested against `/connections` (200, initially empty) and both secret names
+were read back from Wrangler as `secret_text`. Credential requests now have a
+10-second deadline including consumed bodies, without automatic lifecycle retries.
+
+Vercel production routing deployment is `dpl_EdSDH6QUnRmcxiKGaBvYGNcoiHx7`
+(`https://lunchmoney-4wnbansde-n3wth.vercel.app`), READY. Domain verification
+passed. Production and staging public smoke checks passed after routing.
+The custom-domain Worker version is `9bf4f694-29dd-43a4-9da3-6c7a5da6c784`.
+
+From `packages/server`, use an explicit config for every production command:
+
+```bash
+npx wrangler d1 migrations apply IDENTITY_DB --remote --config wrangler.production.jsonc
+npx wrangler deploy --dry-run --config wrangler.production.jsonc
+npx wrangler deploy --config wrangler.production.jsonc
+```
+
+Before deployment, install the **prod** Nango key and distinct webhook signing
+key as Worker secrets `NANGO_SECRET_KEY` and `NANGO_WEBHOOK_SIGNING_KEY`.
+Never use the staging `.env` for this. Production secret material may be held
+temporarily in gitignored `.env.production` with permissions 0600. Secrets must
+not appear in Wrangler vars, plugin packages, command arguments, or logs.
+
+Vercel project `lunchmoney-mcp` must own `mcp.lunchmoney.sh` and route it to
+`https://lunchmoney-mcp-production.newth.workers.dev`. The host-conditioned
+rewrite preserves the staging route. The apex landing page remains separate.
+
+After deployment, from the repository root:
+
+```bash
+node scripts/validate-release.mjs
+node scripts/smoke-public.mjs https://mcp.lunchmoney.sh/mcp
+node scripts/smoke-public.mjs https://mcp-staging.lunchmoney.sh/mcp
+```
+
+These smoke checks cover discovery, unauthorized/invalid-token rejection, and
+forged webhook rejection. They do not prove OAuth login, downstream reads,
+real webhook delivery, or client installation. Record those separately.
+
+### Rollback
+
+Record the current Worker version before each release with
+`npx wrangler deployments list --config wrangler.production.jsonc`. To restore
+the previous compatible Worker version, use
+`npx wrangler rollback <version-id> --config wrangler.production.jsonc`, then
+repeat public smoke and authenticated lifecycle checks. Rollback does not undo
+D1 migrations or Nango/Auth0 configuration; retain backward-compatible schema
+changes. Do not delete the production database to roll back code.
+
+If no previous healthy production version exists, remove the production host
+rewrite and redeploy routing to disable public access while diagnosing. Never
+point production traffic at the staging database or Worker.
+
+Rollback drill on 2026-09-15: deployed equivalent custom-domain version
+`0279d713-23ec-46dd-940a-83ef3bfe19c6`, passed public smoke, then rolled back
+100% of traffic to `9bf4f694-29dd-43a4-9da3-6c7a5da6c784`. Production and
+staging smoke passed afterward. This proves the code deployment rollback
+mechanism; it does not test reversing a D1 schema change or a provider outage.
+
+### Capacity limits
+
+Current request rate limiting is per Worker isolate (60/user and 600 total
+per minute). It is not a globally shared quota and does not prove upstream
+egress capacity under multiple isolates. Shared limits and measured beta
+capacity remain tracked under N-612/N-617.
+
+## Staging
 
 Status: staging is live at `https://mcp-staging.lunchmoney.sh/mcp`.
 Vercel project `lunchmoney-mcp` owns the staging hostname and rewrites requests
