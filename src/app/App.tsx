@@ -3,7 +3,6 @@ import {AppShell} from '@astryxdesign/core/AppShell'
 import {VStack, HStack} from '@astryxdesign/core/Stack'
 import {Grid} from '@astryxdesign/core/Grid'
 import {Section} from '@astryxdesign/core/Section'
-import {Card} from '@astryxdesign/core/Card'
 import {Heading, Text} from '@astryxdesign/core/Text'
 import {Button} from '@astryxdesign/core/Button'
 import {Link} from '@astryxdesign/core/Link'
@@ -11,6 +10,8 @@ import {Collapsible} from '@astryxdesign/core/Collapsible'
 import {neutralTheme} from '../../.cache/neutral'
 import ShellTopNav from './shell-top-nav/page'
 import AIChat from './ai-chat/page'
+import SetupPrompt from './SetupPrompt'
+import HeroShader from './HeroShader'
 
 const repo = 'https://github.com/n3wth/lunchmoney-mcp'
 
@@ -19,33 +20,31 @@ export default function App() {
     <AppShell height="auto" variant="surface" topNav={<ShellTopNav />}>
       <VStack hAlign="center" paddingInline={3} gap={6}>
         <Theme theme={neutralTheme} mode="dark">
-        <Section variant="muted" width="100%" padding={6}>
-        <VStack as="section" id="intro" width="100%" hAlign="center" gap={10} paddingBlockStart={10}>
+        <Section variant="muted" width="100%" padding={6} className="astryx-hero-surface">
+        <HeroShader />
+        <VStack as="section" id="intro" className="astryx-hero-content" width="100%" hAlign="center" gap={10} paddingBlockStart={10}>
           <VStack width="100%" maxWidth={840} gap={6} hAlign="center">
               <Heading level={1} type="display-1" textWrap="balance" justify="center">Ask more of your money.</Heading>
               <Button label="Connect Lunch Money" href="#connect" variant="primary" size="lg" />
           </VStack>
           <VStack as="section" id="conversation" width="100%" maxWidth={840}>
-            <Theme theme={neutralTheme} mode="light">
-            <Card padding={0}>
             <VStack padding={6}>
             <AIChat />
             </VStack>
-            </Card>
-            </Theme>
           </VStack>
         </VStack>
         </Section>
         </Theme>
-        <Text type="supporting" color="secondary" justify="center">Independent. Read-only.</Text>
+        <Text type="supporting" color="secondary" justify="center">Independently developed.</Text>
 
         <VStack width="100%" maxWidth={1120} paddingInline={6}>
           <VStack as="section" id="connect" gap={10} paddingBlock={10}>
             <VStack hAlign="center" paddingBlockStart={10}>
               <VStack gap={5} maxWidth={650}>
-                <Heading level={2} type="display-2" justify="center" textWrap="balance">Less digging.<br />More understanding.</Heading>
+                <Heading level={2} type="display-2" justify="center" textWrap="balance">Get connected.</Heading>
               </VStack>
             </VStack>
+            <SetupPrompt />
             <Grid columns={{minWidth: 240, max: 2, repeat: 'fit'}} gap={10}>
               <VStack gap={4}>
                 <Text type="supporting">Step 1</Text><Heading level={3}>Add the connector</Heading>
@@ -78,10 +77,10 @@ export default function App() {
             </Section>
           </VStack>
 
-          <Section variant="muted" padding={6}>
-          <VStack as="section" id="privacy" gap={10} paddingBlock={10}>
+          <Section variant="transparent" padding={0}>
+          <VStack as="section" id="privacy" className="astryx-privacy-surface" gap={10} padding={8} paddingBlock={10}>
               <VStack gap={5} hAlign="center">
-                <Heading level={2} type="display-2" justify="center" textWrap="balance">A little more clarity.<br />The same control.</Heading>
+                <Heading level={2} type="display-2" justify="center" textWrap="balance">Stay in control.</Heading>
               </VStack>
               <Grid columns={{minWidth: 240, max: 2, repeat: 'fit'}} gap={10}>
                 <VStack gap={3}>
@@ -89,8 +88,8 @@ export default function App() {
                   <Text as="p" color="secondary" textWrap="pretty">Your AI can read your finances, but can’t change records or move money.</Text>
                 </VStack>
                 <VStack gap={3}>
-                  <Heading level={3}>Your AI sees what it needs</Heading>
-                  <Text as="p" color="secondary">The details needed to answer your question go to your AI app. Your AI app’s privacy settings still apply.</Text>
+                  <Heading level={3}>Your AI receives records</Heading>
+                  <Text as="p" color="secondary">Retrieved records are sent to your AI app. How it stores and uses them depends on your AI provider’s policies and settings.</Text>
                 </VStack>
                 <VStack gap={3}>
                   <Heading level={3}>No financial history stored</Heading>
@@ -105,13 +104,13 @@ export default function App() {
           </Section>
 
           <Section variant="transparent" padding={0}>
-            <VStack gap={6} hAlign="center" paddingBlock={10}>
-              <Heading level={2} type="display-2" justify="center">Where did your money go?</Heading>
+            <VStack gap={6} hAlign="center" className="astryx-final-cta">
+              <Heading level={2} type="display-2" justify="center">See what’s possible.</Heading>
               <Button label="Connect Lunch Money" href="#connect" variant="primary" size="lg" />
             </VStack>
           </Section>
           <HStack as="footer" gap={6} wrap="wrap" hAlign="between" paddingBlock={8}>
-            <Text type="supporting">Lunch Money for Agents, by <Link href="https://n3wth.com" type="inherit" color="inherit">n3wth</Link>.</Text>
+            <Text type="supporting">A creation from <Link href="https://n3wth.com" type="inherit" color="inherit">n3wth</Link></Text>
             <HStack gap={5}>
               <Link href={repo} type="supporting" color="secondary">GitHub</Link>
               <Link href="/terms" type="supporting" color="secondary">Terms</Link>
