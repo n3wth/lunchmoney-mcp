@@ -452,7 +452,7 @@ export const neutralTheme = defineTheme({
       borderRadius: 'var(--spacing-5)',
     }},
     'demo-slide': {base: {gridArea: '1 / 1', alignSelf: 'start', minWidth: '0'}},
-    'demo-hidden': {base: {visibility: 'hidden', pointerEvents: 'none'}},
+    'demo-hidden': {base: {opacity: '0', pointerEvents: 'none'}},
     'demo-answer': {base: {
       '--container-padding-inline-start': '0px',
       '--container-padding-inline-end': '0px',

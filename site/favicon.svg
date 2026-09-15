@@ -1,11 +1,1 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none">
-  <title>Lunch Money MCP</title>
-  <rect width="64" height="64" rx="14" fill="#08090b"/>
-  <g stroke="#f2f3f5" stroke-width="3.5" stroke-linejoin="round">
-    <path d="M25 23v-5a4 4 0 0 1 4-4h6a4 4 0 0 1 4 4v5"/>
-    <rect x="13" y="23" width="38" height="28" rx="7"/>
-    <path d="M14 33h36"/>
-  </g>
-  <circle cx="32" cy="41.5" r="6" fill="#ffd60a"/>
-  <path d="M32 38.5v6" stroke="#08090b" stroke-width="2" stroke-linecap="round"/>
-</svg>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><title>Lunch Money for Agents</title><rect width="64" height="64" rx="14" fill="#141d1b"/><path fill="#b9e3d3" transform="translate(17.629808933832813 48.549668874172184) scale(0.046357615894039736 -0.046357615894039736)" d="M280 810V737C165 730 45 669 45 534C45 406 143 350 242 327L280 318V94C220 102 169 148 169 241H34C32 99 134 1 280 -11V-96H337V-12C468 -5 586 69 586 208C586 354 453 401 345 427L337 429V630C394 620 442 577 442 495H576C576 627 482 723 337 736V810ZM457 199C457 128 400 95 337 93V304C412 284 457 258 457 199ZM174 541C174 602 227 630 280 632V442L272 444C217 457 174 487 174 541Z"/></svg>

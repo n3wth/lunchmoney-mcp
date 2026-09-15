@@ -19,7 +19,7 @@ export default function App() {
   return <Theme theme={neutralTheme} mode="light">
     <AppShell height="auto" variant="surface" topNav={<ShellTopNav />}>
       <VStack hAlign="center" paddingInline={3} gap={6}>
-        <VStack width="100%">
+        <VStack width="100%" maxWidth={1120} paddingInline={6}>
         <Theme theme={neutralTheme} mode="dark">
         <Section variant="muted" width="100%" padding={6} className="astryx-hero-surface">
         <HeroShader />
