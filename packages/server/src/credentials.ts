@@ -23,13 +23,17 @@ export interface CredentialValidator {
   validateToken(token: string): Promise<boolean>
 }
 
+export interface ConnectionDiscovery {
+  findConnectionId(endUserId: string): Promise<string | undefined>
+}
+
 function nangoError(operation: string, status?: number): Error {
   return new Error(status === undefined
     ? `nango ${operation} failed`
     : `nango ${operation} failed (status ${status})`)
 }
 
-export class NangoProvider implements CredentialProvider, ConnectSessionProvider, CredentialValidator {
+export class NangoProvider implements CredentialProvider, ConnectSessionProvider, CredentialValidator, ConnectionDiscovery {
   private readonly secretKey: string
   private readonly baseUrl: string
   private readonly lunchmoneyUrl: string
@@ -70,6 +74,42 @@ export class NangoProvider implements CredentialProvider, ConnectSessionProvider
     const credentials = (body as { credentials?: Record<string, unknown> } | null)?.credentials
     const token = credentials?.apiKey ?? credentials?.access_token ?? credentials?.token
     return typeof token === 'string' && token.length > 0 ? token : undefined
+  }
+
+  async findConnectionId(endUserId: string): Promise<string | undefined> {
+    let response: Response
+    try {
+      response = await this.fetchImpl(new URL('/connections', this.baseUrl), {
+        headers: { authorization: `Bearer ${this.secretKey}` }
+      })
+    } catch {
+      throw nangoError('connection list')
+    }
+    if (!response.ok) throw nangoError('connection list', response.status)
+    let body: unknown
+    try {
+      body = await response.json()
+    } catch {
+      throw nangoError('connection list')
+    }
+    const connections = (body as { connections?: unknown[] } | null)?.connections ?? []
+    let newest: { id: string; created: string } | undefined
+    for (const conn of connections) {
+      const c = conn as {
+        connection_id?: unknown
+        provider_config_key?: unknown
+        created?: unknown
+        tags?: { end_user_id?: unknown } | null
+      }
+      if (c.provider_config_key !== INTEGRATION_KEY) continue
+      if (c.tags?.end_user_id !== endUserId) continue
+      if (typeof c.connection_id !== 'string') continue
+      const created = typeof c.created === 'string' ? c.created : ''
+      if (newest === undefined || created > newest.created) {
+        newest = { id: c.connection_id, created }
+      }
+    }
+    return newest?.id
   }
 
   async validateToken(token: string): Promise<boolean> {

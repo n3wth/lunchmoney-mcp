@@ -277,6 +277,61 @@ test('connect returns bounded session link; disconnect deletes connection', asyn
   }
 })
 
+test('placeholder pending connection reconciles via end_user_id discovery', async () => {
+  const { publicKey, privateKey } = await generateKeyPair('RS256')
+  const jwks = { keys: [{ ...(await exportJWK(publicKey)), kid: 'k1', alg: 'RS256' }] }
+  const resolver = createLocalJWKSet(jwks as Parameters<typeof createLocalJWKSet>[0])
+  const verify = createAccessTokenVerifier({ issuer: ISSUER, resource: RESOURCE, jwksUri: JWKS_URI }, resolver)
+  const sign = (sub: string) => new SignJWT({ iss: ISSUER, aud: RESOURCE, sub, scope: 'lunchmoney:read' })
+    .setProtectedHeader({ alg: 'RS256', kid: 'k1' }).setIssuedAt().setExpirationTime('5m').sign(privateKey)
+
+  const discovered: string[] = []
+  const store = new InMemoryIdentityStore()
+  const upstream = upstreamFetch()
+  const credentials: CredentialProvider & {
+    validateToken(t: string): Promise<boolean>
+    findConnectionId(endUserId: string): Promise<string | undefined>
+  } = {
+    getToken: async (id) => id === 'conn-real' ? TOKEN : undefined,
+    validateToken: async (t) => t === TOKEN,
+    findConnectionId: async (endUserId) => {
+      discovered.push(endUserId)
+      return 'conn-real'
+    }
+  }
+  const server = createMcpHttpServer({
+    auth: { issuer: ISSUER, resource: RESOURCE, jwksUri: JWKS_URI },
+    metadataUrl: METADATA_URL,
+    store,
+    credentials,
+    adapter: createReadOnlyAdapter({ fetch: upstream.impl }),
+    verifyToken: verify
+  })
+  const base = await listen(server)
+  try {
+    const token = await sign('auth0|reconciler')
+    const user = await store.getOrCreateUser(ISSUER, 'auth0|reconciler')
+    await store.replaceConnection(user.userId, `pending:${user.userId}`, 'development')
+
+    const status = await rpcJson(base, {
+      jsonrpc: '2.0', id: 1, method: 'tools/call',
+      params: { name: 'lunchmoney_connection_status', arguments: {} }
+    }, token)
+    assert.deepEqual(discovered, [user.userId])
+    assert.equal(JSON.parse(status.data.result.content[0].text).state, 'active')
+
+    const out = await rpcJson(base, {
+      jsonrpc: '2.0', id: 2, method: 'tools/call',
+      params: { name: 'lunchmoney_get_overview', arguments: {} }
+    }, token)
+    assert.notEqual(out.data.result.isError, true)
+    assert.deepEqual(JSON.parse(out.data.result.content[0].text), userBody)
+    assert.equal(upstream.seen[0], `Bearer ${TOKEN}`)
+  } finally {
+    server.close()
+  }
+})
+
 test('per-user rate limiting returns 429 with retry-after', async () => {
   const { publicKey, privateKey } = await generateKeyPair('RS256')
   const jwks = { keys: [{ ...(await exportJWK(publicKey)), kid: 'k1', alg: 'RS256' }] }

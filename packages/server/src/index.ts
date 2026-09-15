@@ -10,7 +10,7 @@ import {
 } from '@lunchmoney-mcp/auth-contract'
 import type { createReadOnlyAdapter } from '@lunchmoney-mcp/adapter'
 import type { IdentityStore } from './identity.js'
-import { validateAndActivateConnection, type CredentialProvider, type ConnectSessionProvider } from './credentials.js'
+import { validateAndActivateConnection, type CredentialProvider, type ConnectSessionProvider, type ConnectionDiscovery } from './credentials.js'
 import { createReadOnlyServer } from './tools.js'
 
 export interface ServerConfig {
@@ -135,6 +135,22 @@ export function createMcpHttpServer(config: ServerConfig): Server {
     }
     emit('request', user.userId)
     let connection = await config.store.getActiveConnection(user.userId)
+    if (connection !== undefined && connection.state === 'pending' &&
+        connection.connectionId.startsWith('pending:') &&
+        typeof (config.credentials as { findConnectionId?: unknown }).findConnectionId === 'function') {
+      // Placeholder pending record: the Connect UI completed out-of-band and
+      // no webhook told us the real Nango connection ID. Discover it by the
+      // end_user_id tag we set on the connect session.
+      try {
+        const discovered = await (config.credentials as CredentialProvider & ConnectionDiscovery).findConnectionId(user.userId)
+        if (discovered !== undefined) {
+          connection = await config.store.replaceConnection(
+            user.userId, discovered, connection.environment)
+        }
+      } catch {
+        emit('connection_discovery_failed', user.userId)
+      }
+    }
     if (connection !== undefined && connection.state === 'pending' &&
         !connection.connectionId.startsWith('pending:')) {
       // Connect-session reconciliation: a real Nango connection ID exists but
