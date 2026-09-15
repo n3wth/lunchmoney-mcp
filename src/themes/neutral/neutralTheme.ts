@@ -438,6 +438,7 @@ export const neutralTheme = defineTheme({
       'type:display-3': {fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', lineHeight: '1.15'},
       'level:3': {fontSize: '1.25rem', lineHeight: '1.3'},
     },
+    'app-shell-header': {base: {backgroundColor: 'transparent'}},
     'top-nav': {base: {
       '--text-label-size': 'var(--text-supporting-size)',
       paddingInline: 'var(--spacing-5)',
@@ -447,7 +448,10 @@ export const neutralTheme = defineTheme({
       width: 'calc(100% - var(--spacing-6))',
       maxWidth: '70rem',
       borderRadius: 'var(--radius-full)',
-      backgroundColor: 'var(--color-background-surface)',
+      backgroundColor: 'color-mix(in srgb, var(--color-background-surface) 75%, transparent)',
+      backdropFilter: 'blur(var(--spacing-5))',
+      WebkitBackdropFilter: 'blur(var(--spacing-5))',
+      border: 'var(--border-width-thin, 1px) solid color-mix(in srgb, var(--color-border-default) 50%, transparent)',
     }},
   },
 

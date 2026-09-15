@@ -23,10 +23,7 @@ export default function App() {
         <VStack as="section" id="intro" width="100%" hAlign="center" gap={10} paddingBlockStart={10}>
           <VStack width="100%" maxWidth={840} gap={6} hAlign="center">
               <Heading level={1} type="display-1" textWrap="balance" justify="center">Ask more of your money.</Heading>
-            <HStack gap={4} wrap="wrap" vAlign="center" hAlign="center">
               <Button label="Connect Lunch Money" href="#connect" variant="primary" size="lg" />
-              <Text type="supporting">Independent. Read-only.</Text>
-            </HStack>
           </VStack>
           <VStack as="section" id="conversation" width="100%" maxWidth={840}>
             <Theme theme={neutralTheme} mode="light">
@@ -40,6 +37,7 @@ export default function App() {
         </VStack>
         </Section>
         </Theme>
+        <Text type="supporting" color="secondary" justify="center">Independent. Read-only.</Text>
 
         <VStack width="100%" maxWidth={1120} paddingInline={6}>
           <VStack as="section" id="connect" gap={10} paddingBlock={10}>
