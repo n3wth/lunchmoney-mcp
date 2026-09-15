@@ -1,7 +1,7 @@
 {
   "name": "codex-plugin",
   "version": "0.3.1",
-  "description": "Read-only Lunch Money MCP server (unofficial)",
+  "description": "Lunch Money for Agents: an unofficial, open-source MCP integration by n3wth with read-only financial access",
   "author": { "name": "Oliver Newth" },
   "homepage": "https://lunchmoney.sh",
   "repository": "https://github.com/n3wth/lunchmoney-mcp",
@@ -9,7 +9,7 @@
   "keywords": ["lunchmoney", "finance", "mcp"],
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Lunch Money MCP",
+    "displayName": "Lunch Money for Agents",
     "shortDescription": "Read-only access to your Lunch Money data",
     "longDescription": "Connect Lunch Money through Nango and query financial data with read-only MCP tools.",
     "developerName": "Oliver Newth",

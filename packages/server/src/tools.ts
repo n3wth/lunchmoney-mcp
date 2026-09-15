@@ -44,7 +44,7 @@ function describe(error: unknown): string {
 export function createReadOnlyServer(context: ToolContext & { connectionState?: string }): McpServer {
   const server = new McpServer({
     name: 'lunchmoney-mcp',
-    title: 'Lunch Money MCP',
+    title: 'Lunch Money for Agents',
     version: '0.1.0',
     icons: [{ src: 'https://lunchmoney.sh/icon.png', mimeType: 'image/png', sizes: ['512x512'] }]
   })

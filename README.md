@@ -1,12 +1,16 @@
-# Lunch Money MCP
+# Lunch Money for Agents
 
-<img src="site/icon.png" alt="Lunch Money MCP icon" width="64" height="64">
+<img src="site/icon.png" alt="Lunch Money for Agents icon" width="64" height="64">
 
 [Website](https://lunchmoney.sh) · [Privacy](https://lunchmoney.sh/privacy) · [Setup guide](docs/user-guide.md)
 
-An independent, unofficial project providing a read-only
-[Model Context Protocol](https://modelcontextprotocol.io) connector
-for [Lunch Money](https://lunchmoney.app).
+An unofficial, open-source MCP integration by n3wth, built from a desire to make
+[Lunch Money](https://lunchmoney.app) easier to use with AI agents.
+
+Explore transactions, budgets, accounts, and recurring expenses through
+natural-language conversations in MCP-compatible tools. Connect your own
+account; financial access is read-only. The connector uses
+[Model Context Protocol](https://modelcontextprotocol.io) (MCP).
 
 This project is **not affiliated with, endorsed by, or sponsored by Lunch
 Money**. The official product is at <https://lunchmoney.app>.
@@ -20,9 +24,8 @@ two users other than the developer. See the [operator runbook](docs/runbook.md)
 for deployment evidence and outstanding gates; production deployment does not
 mean those user acceptance gates are complete.
 
-Start with the [user guide](docs/user-guide.md),
-[Codex package](packages/codex-plugin/README.md), or
-[Claude Code package](packages/claude-plugin/README.md).
+Start with the [user guide](docs/user-guide.md) or the client-specific
+installation instructions below.
 
 The server permits financial reads only. Users enter their Lunch Money token
 in Nango's browser UI, never in chat. Financial results reach the requesting
@@ -50,7 +53,7 @@ Claude Cowork has not yet been validated.
 
 ```
 site/          # source: index.html, styles.css, main.js, favicon.svg
-packages/      # MCP server, auth contract, adapter, Codex and Claude plugins
+packages/      # MCP server, auth contract, adapter, and client plugins
 docs/          # user guide, operator runbook, architecture and release gates
 scripts/       # release validation
 build.js       # dependency-free Node build script

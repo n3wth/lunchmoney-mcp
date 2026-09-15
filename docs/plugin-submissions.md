@@ -2,9 +2,9 @@
 
 ## Listing materials
 
-- Name: Lunch Money MCP
+- Name: Lunch Money for Agents
 - Publisher: Oliver Newth (independent; not affiliated with Lunch Money)
-- Summary: Read-only access to your Lunch Money data.
+- Summary: An unofficial, open-source MCP integration by n3wth for read-only Lunch Money data in AI agents.
 - Description: Connect your own Lunch Money account through a secure browser flow, then query transactions, categories, accounts, tags, and budget summaries. Financial data tools are read-only. Connection management can connect or disconnect the account; account deletion removes connector data.
 - Website: https://lunchmoney.sh
 - Privacy: https://lunchmoney.sh/privacy
@@ -25,8 +25,13 @@ directory submission.
 
 On 2026-09-15, the verified Newth organization under oliver@newth.ai created
 draft `asdk_app_6aa8cbdf58e48191937aea475faa17e2`, with publisher identity n3wth.
-Listing preparation, domain verification, OAuth tool scanning, and the required
-Developer Mode demo are in progress. Submission and approval are not yet confirmed.
+Version 0.3.1 was submitted successfully under the name Lunch Money on 2026-09-15;
+the portal shows Review. Approval and publication are pending. The repository and
+site now use Lunch Money for Agents; the submitted version has not been renamed.
+The reviewer demo is https://r2.n3wth.com/lunchmoney/chatgpt-louis-demo.mp4.
+
+The community catalog contribution is pending maintainer review:
+https://github.com/lunch-money/awesome-lunchmoney/pull/29.
 
 The review also requires public privacy and terms URLs, domain verification,
 accurate tool annotations, test access, supported countries, and policy
