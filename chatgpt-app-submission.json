@@ -148,7 +148,7 @@
     },
     {
       "description": "Read transactions with pagination.",
-      "user_prompt": "List my transactions from September 1 through September 7, 2026, 20 at a time.",
+      "user_prompt": "List my transactions from September 1 through September 7, 2026, 3 at a time.",
       "file_attachment_urls": null,
       "tools_triggered": "lunchmoney_list_transactions",
       "expected_output": "For a connected review account, returns actual matching transactions and follows next_offset if further pages are requested; does not claim an incomplete page is the full total or combine currencies.",
