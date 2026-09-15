@@ -49,7 +49,9 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
     icons: [{ src: 'https://lunchmoney.sh/icon.png', mimeType: 'image/png', sizes: ['512x512'] }]
   })
   const ctx = { token: context.token }
-  const readonly = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }
+  // Financial requests are GET-only; shared request processing updates identity
+  // and connection lifecycle records, so the complete operation changes state.
+  const readonly = { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false }
   const requireConnection = () => context.token === ''
     ? fail(`No active Lunch Money connection (state: ${context.connectionState ?? 'unconnected'}). Connect your account first.`)
     : undefined
@@ -223,9 +225,9 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
     'lunchmoney_connect',
     {
       title: 'Connect Lunch Money',
-      description: 'Start a secure connection flow. Returns a link to enter your Lunch Money token; never send the token in chat.',
+      description: 'Start a connection flow, replacing the current connector connection if present. Returns a private, expiring browser link to enter your Lunch Money token; never send the token in chat.',
       inputSchema: {},
-      annotations: { readOnlyHint: false, destructiveHint: false, idempotentHint: false, openWorldHint: true }
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true }
     },
     async () => {
       if (context.connect === undefined || context.userId === undefined) {
@@ -249,9 +251,9 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
     'lunchmoney_disconnect',
     {
       title: 'Disconnect Lunch Money',
-      description: 'Stop access and remove the stored connection. Also revoke the token in Lunch Money to fully revoke.',
+      description: 'Delete the Nango connection and mark the connector connection deleted after success. If deletion fails, retry; access may remain active. Revoke the original token in Lunch Money to fully revoke.',
       inputSchema: {},
-      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: false }
+      annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true }
     },
     async () => {
       if (context.connect === undefined || context.userId === undefined) {
