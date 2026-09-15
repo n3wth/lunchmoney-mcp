@@ -21,7 +21,7 @@ jobs:
         working-directory: packages/lunchmoney-adapter
       - run: npm ci && npm test
         working-directory: packages/server
-      - run: npm run build
+      - run: npm ci && npm run build
       - name: Validate plugin packages and production isolation
         run: node scripts/validate-release.mjs
       - name: Bundle staging Worker

@@ -3,19 +3,37 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Lunch Money for Agents — lunchmoney.sh</title>
-  <meta name="description" content="An unofficial, open-source MCP integration by n3wth. Explore your Lunch Money transactions, budgets, accounts, and recurring expenses with AI agents. Financial access is read-only.">
+  <title>Lunch Money for Agents — Read-only MCP integration</title>
+  <meta name="description" content="Connect Lunch Money to your AI agent. Explore transactions, budgets, accounts, and recurring expenses with an unofficial, open-source, read-only MCP integration.">
   <link rel="canonical" href="https://lunchmoney.sh/">
   <meta name="color-scheme" content="dark">
   <meta property="og:title" content="Lunch Money for Agents">
   <meta property="og:description" content="Make Lunch Money easier to use with AI agents. An unofficial, open-source MCP integration by n3wth with read-only financial access.">
-  <meta property="og:image" content="https://lunchmoney.sh/icon.png">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Lunch Money for Agents">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:image" content="https://lunchmoney.sh/social-card.png">
+  <meta property="og:image:secure_url" content="https://lunchmoney.sh/social-card.png">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Lunch Money for Agents — an unofficial, read-only MCP integration by n3wth">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Lunch Money for Agents">
+  <meta name="twitter:description" content="Explore your Lunch Money data in conversation. An unofficial, open-source MCP integration with read-only financial access.">
+  <meta name="twitter:image" content="https://lunchmoney.sh/social-card.png">
+  <meta name="twitter:image:alt" content="Lunch Money for Agents — an unofficial, read-only MCP integration by n3wth">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#08090b">
+  <meta name="author" content="Oliver Newth">
   <meta property="og:url" content="https://lunchmoney.sh/">
+  <script type="application/ld+json">{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://lunchmoney.sh/#website","url":"https://lunchmoney.sh/","name":"Lunch Money for Agents","inLanguage":"en","publisher":{"@type":"Person","name":"Oliver Newth","url":"https://n3wth.com"}},{"@type":"SoftwareApplication","@id":"https://lunchmoney.sh/#application","name":"Lunch Money for Agents","url":"https://lunchmoney.sh/","description":"An unofficial, open-source MCP integration by n3wth for reading Lunch Money transactions, budgets, accounts, and recurring expenses through AI agents.","applicationCategory":"FinanceApplication","operatingSystem":"MCP-compatible clients","image":"https://lunchmoney.sh/social-card.png","author":{"@type":"Person","name":"Oliver Newth","url":"https://n3wth.com"},"sameAs":"https://github.com/n3wth/lunchmoney-mcp"}]}</script>
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
   <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
-  <script src="main.js" defer></script>
+  <link rel="stylesheet" href="conversation-preview.css">
+  <script src="conversation-preview.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
@@ -26,31 +44,32 @@
   <main id="main" class="wrap">
     <section class="hero">
       <div class="hero-copy">
-        <h1>Lunch Money<br>for Agents.</h1>
+        <h1>Lunch Money<br>for Agents</h1>
         <p class="lede">Make sense of your <a href="https://lunchmoney.app">Lunch Money</a> data in the conversation you're already having.</p>
-        <div class="actions"><a class="button primary" href="#connect">Install</a><a class="text-link" href="https://github.com/n3wth/lunchmoney-mcp">View source</a></div>
+        <div class="actions"><a class="button primary" href="#connect">Install</a></div>
       </div>
-      <div class="preview" aria-label="Fictional conversation example">
+      <div class="preview" id="conversation-preview" aria-label="Fictional conversation example">
         <div class="panel" id="spending"><p class="question">Where did my grocery budget go this month?</p><p class="tool-step"><img src="favicon.svg" width="18" height="18" alt="">Reading sample transactions</p><div class="answer"><p>You spent <strong>$512.40</strong> on groceries. Here's the breakdown:</p><table><caption class="sr-only">Fictional grocery spending</caption><thead><tr><th>Merchant</th><th>Amount</th></tr></thead><tbody><tr><td>Corner Market</td><td>$188.20</td></tr><tr><td>Green Grocer</td><td>$141.75</td></tr><tr><td>Harbor Foods</td><td>$182.45</td></tr></tbody></table><p class="takeaway">That's <strong>$12.40 over</strong> your $500 budget.</p></div></div>
       </div>
     </section>
     <section class="section" id="connect">
-      <div class="section-intro"><h2>Get started.</h2></div>
+      <div class="section-intro"><h2>Get started</h2></div>
       <ol class="steps">
         <li><h3>Add to your AI tool</h3><p>Follow the <a href="https://github.com/n3wth/lunchmoney-mcp#client-specific-installation">installation instructions</a>, then sign in at <strong>auth.n3wth.com</strong> when prompted.</p></li>
         <li><h3>Link Lunch Money</h3><p>Ask your agent to connect Lunch Money. Open its browser link and enter your API token there, never in chat.</p></li>
         <li><h3>Ask a question</h3><p>Start with “List my accounts.” Your agent reads the requested records from Lunch Money to answer.</p></li>
       </ol>
-      <details class="manual-setup"><summary>Adding an MCP server manually?</summary><p>Use this remote server URL, then complete the sign-in prompt.</p><code>https://mcp.lunchmoney.sh/mcp</code><p><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Full setup guide</a></p></details>
+      <details class="manual-setup"><summary>Manual MCP setup</summary><p>Use this remote server URL, then complete the sign-in prompt.</p><code>https://mcp.lunchmoney.sh/mcp</code><p><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Full setup guide</a></p></details>
     </section>
     <section class="section privacy" id="privacy">
-      <div class="section-intro"><h2>Get answers.<br>Keep control.</h2></div>
+      <div class="section-intro"><h2>Get answers, keep control</h2></div>
       <div class="privacy-grid">
         <div><h3>Your finances stay unchanged</h3><p>The connector can read your records, but cannot edit transactions, change budgets, or move money.</p></div>
         <div><h3>Results go to your agent</h3><p>The connector does not save financial responses. Your AI client and its model provider receive the results; their privacy and retention settings apply.</p></div>
         <div><h3>Disconnect when you want</h3><p>Run <code>lunchmoney_disconnect</code> and retry if deletion fails. Revoke the original token in Lunch Money separately. Uninstalling a plugin does neither.</p></div>
       </div>
-      <div class="provider-details"><h3>How sign-in and token storage work</h3><p>Auth0 handles sign-in at auth.n3wth.com, separately from your Lunch Money login. Nango stores your API token. Cloudflare runs the connector and keeps identity and connection records; Vercel hosts this website. Financial reads are enforced by the connector, even if your token has broader permissions.</p></div>
+    </section>
+    <section class="section provider-details" aria-labelledby="providers-heading"><h2 id="providers-heading">How sign-in and token storage work</h2><div class="provider-copy"><p><a href="https://auth0.com">Auth0</a> handles sign-in at <a href="https://auth.n3wth.com">auth.n3wth.com</a>, separately from your Lunch Money login. <a href="https://nango.dev">Nango</a> stores your API token.</p><p><a href="https://cloudflare.com">Cloudflare</a> runs the connector and keeps identity and connection records. <a href="https://vercel.com">Vercel</a> hosts this website.</p><p>The connector enforces financial reads only, even if your token has broader permissions.</p></div>
     </section>
   </main>
   <footer class="wrap site-footer">

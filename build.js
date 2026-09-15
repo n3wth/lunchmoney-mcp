@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Dependency-free build: copies everything in site/ into dist/.
+// Copy the static site and bundle the isolated AI Elements conversation.
 // Usage: node build.js          build into dist/
 //        node build.js --serve  build, then serve dist/ locally
 
@@ -19,6 +19,8 @@ const MIME = {
   '.ico': 'image/x-icon',
   '.woff2': 'font/woff2',
   '.json': 'application/json; charset=utf-8',
+  '.xml': 'application/xml; charset=utf-8',
+  '.mp4': 'video/mp4',
   '.txt': 'text/plain; charset=utf-8',
 };
 
@@ -44,6 +46,22 @@ function build() {
   fs.rmSync(OUT, { recursive: true, force: true });
   console.log('building into dist/');
   copyDir(SRC, OUT);
+  require('esbuild').buildSync({
+    entryPoints: [path.join(__dirname, 'preview/index.tsx')],
+    outfile: path.join(OUT, 'conversation-preview.js'),
+    bundle: true,
+    minify: true,
+    format: 'esm',
+    jsx: 'automatic',
+    define: { 'process.env.NODE_ENV': '"production"' },
+    legalComments: 'linked',
+  });
+  require('child_process').execFileSync(process.execPath, [
+    path.join(__dirname, 'node_modules/@tailwindcss/cli/dist/index.mjs'),
+    '-i', path.join(__dirname, 'preview/styles.css'),
+    '-o', path.join(OUT, 'conversation-preview.css'), '--minify',
+  ], { stdio: 'inherit' });
+  fs.copyFileSync(path.join(__dirname, 'preview/ai-elements/LICENSE'), path.join(OUT, 'ai-elements-LICENSE.txt'));
   console.log('done');
 }
 
