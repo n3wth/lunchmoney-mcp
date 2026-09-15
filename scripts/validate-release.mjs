@@ -70,3 +70,13 @@ const telemetry = production.analytics_engine_datasets.find((binding) => binding
 assert.ok(telemetry, 'production telemetry required')
 assert.ok(staging.analytics_engine_datasets.every((binding) => binding.dataset !== telemetry.dataset), 'production must not use staging telemetry')
 console.log('production: configuration isolation checks passed')
+
+const canonicalIcon = await readFile(resolve(root, 'site/icon.png'))
+for (const directory of ['codex-plugin', 'claude-plugin']) {
+  const icon = await readFile(resolve(root, `packages/${directory}/assets/icon.png`))
+  assert.ok(icon.equals(canonicalIcon), `${directory}: icon must match the website`)
+}
+const registry = await readJson('server.json')
+assert.equal(registry.remotes[0].url, endpoint)
+assert.equal(registry.icons[0].src, 'https://lunchmoney.sh/icon.png')
+console.log('branding: canonical plugin icons and registry references match')

@@ -42,7 +42,12 @@ function describe(error: unknown): string {
 }
 
 export function createReadOnlyServer(context: ToolContext & { connectionState?: string }): McpServer {
-  const server = new McpServer({ name: 'lunchmoney-mcp', version: '0.1.0' })
+  const server = new McpServer({
+    name: 'lunchmoney-mcp',
+    title: 'Lunch Money MCP',
+    version: '0.1.0',
+    icons: [{ src: 'https://lunchmoney.sh/icon.png', mimeType: 'image/png', sizes: ['512x512'] }]
+  })
   const ctx = { token: context.token }
   const readonly = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }
   const requireConnection = () => context.token === ''

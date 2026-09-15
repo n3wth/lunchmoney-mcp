@@ -1,5 +1,9 @@
 # Lunch Money MCP
 
+<img src="site/icon.png" alt="Lunch Money MCP icon" width="64" height="64">
+
+[Website](https://lunchmoney.sh) · [Privacy](https://lunchmoney.sh/privacy) · [Setup guide](docs/user-guide.md)
+
 An independent, unofficial project providing a read-only
 [Model Context Protocol](https://modelcontextprotocol.io) connector
 for [Lunch Money](https://lunchmoney.app).
@@ -24,8 +28,22 @@ The server permits financial reads only. Users enter their Lunch Money token
 in Nango's browser UI, never in chat. Financial results reach the requesting
 MCP client and may be sent to its model provider.
 
-The separate static landing page remains pre-release, with fictional sample
-data, no token-entry form, and no analytics or third-party tracking.
+The landing page follows n3wth UI, with a clearly labeled fictional preview,
+direct setup guides, no token-entry form, and no third-party tracking.
+The website, MCP metadata, registry listing, and plugin packages share the
+same icon, derived from `site/favicon.svg`.
+
+## Client setup
+
+- [Codex plugin and manual configuration](packages/codex-plugin/README.md)
+- [Claude Code plugin](packages/claude-plugin/README.md)
+- MCP endpoint: `https://mcp.lunchmoney.sh/mcp`
+- Login: `https://auth.n3wth.com/`
+
+Plugin packages are available in this public source repository. Directory
+submissions and acceptance are tracked separately in the
+[submission record](docs/plugin-submissions.md); no store publication is claimed.
+Claude Cowork has not yet been validated.
 
 ## Layout
 

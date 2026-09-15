@@ -1,6 +1,6 @@
 {
   "name": "lunchmoney",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Read-only Lunch Money MCP server (unofficial)",
   "author": { "name": "Oliver Newth" },
   "homepage": "https://lunchmoney.sh",

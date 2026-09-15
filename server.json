@@ -1,0 +1,21 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.n3wth/lunchmoney-mcp",
+  "title": "Lunch Money MCP (Unofficial)",
+  "description": "Read-only Lunch Money accounts, transactions, categories and budgets. Unofficial connector.",
+  "version": "0.1.0",
+  "websiteUrl": "https://lunchmoney.sh",
+  "repository": {
+    "url": "https://github.com/n3wth/lunchmoney-mcp",
+    "source": "github"
+  },
+  "icons": [{
+    "src": "https://lunchmoney.sh/icon.png",
+    "mimeType": "image/png",
+    "sizes": ["512x512"]
+  }],
+  "remotes": [{
+    "type": "streamable-http",
+    "url": "https://mcp.lunchmoney.sh/mcp"
+  }]
+}
