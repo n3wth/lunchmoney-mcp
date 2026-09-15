@@ -28,9 +28,8 @@
       <div class="hero-copy">
         <p class="byline">Unofficial, open-source <a href="https://lunchmoney.app">Lunch Money</a> MCP integration by <a href="https://n3wth.com">n3wth</a></p>
         <h1>Lunch Money<br>for Agents.</h1>
-        <p class="lede">Built to make Lunch Money easier to use with AI agents. Explore your transactions, budgets, accounts, and recurring expenses through conversation in MCP-compatible tools.</p>
+        <p class="lede">Ask your AI agent about your spending, budgets, and accounts. Read-only access to your own Lunch Money data.</p>
         <div class="actions"><a class="button primary" href="#connect">Connect Lunch Money</a><a class="button" href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Read the guide</a></div>
-        <p class="meta">Read-only access. Your own Lunch Money account.</p>
       </div>
       <div class="preview" aria-label="Fictional conversation example">
         <div class="preview-heading"><img src="favicon.svg" width="24" height="24" alt=""><span>Lunch Money</span><span class="sample">Sample data</span></div>
@@ -41,23 +40,22 @@
       </div>
     </section>
     <section class="section" id="connect">
-      <div class="section-intro"><h2>A connection you control.</h2></div>
-      <div class="clients"><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md"><h3>MCP-compatible tools</h3><p>Connection guide</p></a><a href="https://github.com/n3wth/lunchmoney-mcp#client-setup"><h3>Client plugins</h3><p>Installation instructions</p></a><a href="https://github.com/n3wth/lunchmoney-mcp"><h3>Open source</h3><p>Explore the code</p></a></div>
+      <div class="section-intro"><h2>Connect your account.</h2></div>
+      <div class="setup-links"><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Setup guide</a><a href="https://github.com/n3wth/lunchmoney-mcp#client-setup">Client plugins</a></div>
       <p class="endpoint"><span>Remote MCP endpoint</span><code>https://mcp.lunchmoney.sh/mcp</code></p>
       <ol class="steps">
-        <li><h3>Sign in to the connector</h3><p>Auth0 handles sign-in at <strong>auth.n3wth.com</strong>, this project's custom login domain. It identifies your connector account; it does not sign you in to Lunch Money. The connector verifies your signed login and limits requests to your account's connection.</p></li>
+        <li><h3>Sign in</h3><p>Auth0 signs you in at <strong>auth.n3wth.com</strong>. This connector account is separate from your Lunch Money login.</p></li>
         <li><h3>Link your Lunch Money account</h3><p>Run <code>lunchmoney_connect</code> and open the returned browser link. Nango handles token entry and storage. Enter your Lunch Money token there, never in chat.</p></li>
-        <li><h3>Ask about your finances</h3><p>The connector reads the requested data from Lunch Money and returns it to your AI client. Your client and its model provider use those results to answer.</p></li>
+        <li><h3>Ask a question</h3><p>Start with “List my accounts.” Your agent reads the requested records from Lunch Money to answer.</p></li>
       </ol>
-      <p class="meta">Direct setup is available. Marketplace listings are not yet published.</p>
+      <p class="meta">Beta · Direct setup available</p>
     </section>
     <section class="section privacy" id="privacy">
-      <div class="section-intro"><h2>Your data. Clear boundaries.</h2></div>
+      <div class="section-intro"><h2>Privacy and access.</h2></div>
       <div class="privacy-grid">
-        <div><h3>Reads enforced by the service</h3><p>Cloudflare runs the connector. It retrieves your token from Nango temporarily and uses it for allowed reads from Lunch Money's API. The service cannot edit your finances, but the underlying token may have broader permissions.</p></div>
-        <div><h3>A separate website and connection</h3><p>Vercel hosts this website and routes MCP requests to Cloudflare. There is no token field on this page. Auth0 identifies your connector account; Nango stores the credential used to access Lunch Money.</p></div>
-        <div><h3>Results leave the connector</h3><p>The connector does not persist financial responses. Requested results go to your AI client and may be sent to its model provider. Their privacy and retention settings apply; hosting and authentication providers may also keep operational logs.</p></div>
-        <div><h3>Disconnect and revoke separately</h3><p>Run <code>lunchmoney_disconnect</code> to block further reads and request deletion of the Nango connection. Retry if deletion is pending. Revoke the token itself in Lunch Money. Uninstalling a plugin does neither.</p></div>
+        <div><h3>Read-only financial access</h3><p>Cloudflare runs the connector; Vercel hosts this site. The connector uses your Nango-stored token for financial reads only, even if the token has broader permissions.</p></div>
+        <div><h3>Results go to your agent</h3><p>The connector does not save financial responses. Your AI client and its model provider receive the results; their privacy and retention settings apply.</p></div>
+        <div><h3>Disconnect when you want</h3><p>Run <code>lunchmoney_disconnect</code> and retry if deletion fails. Revoke the original token in Lunch Money separately. Uninstalling a plugin does neither.</p></div>
       </div>
       <a href="/privacy">Read the privacy notice</a>
     </section>
