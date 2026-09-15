@@ -2,7 +2,7 @@
 
 ## Production promotion (2026-09-15 UTC)
 
-Production provisioning is in progress. Do not infer release readiness from a
+Production is deployed. Do not infer release readiness from a
 successful bundle or unauthenticated smoke check. Linear N-617 tracks the
 remaining live lifecycle, rollback, capacity, and external-user gates.
 
@@ -16,6 +16,7 @@ remaining live lifecycle, rollback, capacity, and external-user gates.
 | Telemetry | `lunchmoney_mcp_production` |
 | Nango environment | `prod` |
 | OAuth audience | `https://mcp.lunchmoney.sh/mcp` |
+| OAuth issuer | `https://auth.n3wth.com/` |
 
 Production D1 was created with read replication disabled. Migration
 `0001_identity.sql` was applied through the Cloudflare connector and read back
@@ -27,8 +28,27 @@ Auth0 production API `6aa8bf18085cb3823c3b0038` uses RS256. Native public client
 authorization code and refresh grants, and no client-credentials grant.
 Registered callbacks are `http://127.0.0.1:1455/callback`,
 `http://127.0.0.1:8414/callback`, and `http://localhost:8414/callback`.
-Configuration was saved and read back; live production OAuth still needs a
-separate check after the endpoint is deployed.
+Configuration was saved and read back. Codex CLI 0.154.0 completed live
+authorization-code + PKCE login through `auth.n3wth.com` after deployment.
+
+The custom domain `auth.n3wth.com` is verified and the default domain in the
+same Auth0 tenant. Its discovery issuer and signing keys were checked against
+the tenant domain. Production trusts the custom-domain issuer only; staging
+retains its existing tenant-domain issuer. Tokens from before the production
+issuer switch require login again, and identities are keyed by issuer+subject.
+No production Lunch Money connections existed at the time of this switch.
+
+Nango production environment ID is `fed477bf-7ac3-4be3-9cad-fc827e8cb026`.
+Integration `lunch-money` uses `private-api-bearer`; auth creation and deletion
+webhooks are enabled at `https://mcp.lunchmoney.sh/webhooks/nango`. The prod key
+was tested against `/connections` (200, initially empty) and both secret names
+were read back from Wrangler as `secret_text`. Credential requests now have a
+10-second deadline including consumed bodies, without automatic lifecycle retries.
+
+Vercel production routing deployment is `dpl_EdSDH6QUnRmcxiKGaBvYGNcoiHx7`
+(`https://lunchmoney-4wnbansde-n3wth.vercel.app`), READY. Domain verification
+passed. Production and staging public smoke checks passed after routing.
+The custom-domain Worker version is `9bf4f694-29dd-43a4-9da3-6c7a5da6c784`.
 
 From `packages/server`, use an explicit config for every production command:
 
@@ -72,8 +92,13 @@ changes. Do not delete the production database to roll back code.
 
 If no previous healthy production version exists, remove the production host
 rewrite and redeploy routing to disable public access while diagnosing. Never
-point production traffic at the staging database or Worker. A rollback drill
-has not yet been demonstrated; N-617 remains open until it is recorded.
+point production traffic at the staging database or Worker.
+
+Rollback drill on 2026-09-15: deployed equivalent custom-domain version
+`0279d713-23ec-46dd-940a-83ef3bfe19c6`, passed public smoke, then rolled back
+100% of traffic to `9bf4f694-29dd-43a4-9da3-6c7a5da6c784`. Production and
+staging smoke passed afterward. This proves the code deployment rollback
+mechanism; it does not test reversing a D1 schema change or a provider outage.
 
 ### Capacity limits
 

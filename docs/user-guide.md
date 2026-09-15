@@ -7,9 +7,9 @@ Lunch Money. It is read-only: it can view your data, never change it.
 
 1. Follow the [Codex](../packages/codex-plugin/README.md) or
    [Claude Code](../packages/claude-plugin/README.md) setup instructions.
-   Production promotion is in progress; staging is available at
-   `https://mcp-staging.lunchmoney.sh/mcp`. Use the matching OAuth configuration
-   for each environment.
+   Production is available at `https://mcp.lunchmoney.sh/mcp`, with login at
+   `auth.n3wth.com`. Staging remains at `https://mcp-staging.lunchmoney.sh/mcp`.
+   Each environment requires its own connection.
 2. Sign in when prompted (Auth0).
 3. Call `lunchmoney_connect`. Open the returned link in a browser — it is a
    Nango-hosted page. Create a personal access token in Lunch Money

@@ -21,7 +21,6 @@ mcp_oauth_callback_port = 1455
 
 [mcp_servers.lunchmoney]
 url = "https://mcp.lunchmoney.sh/mcp"
-oauth_resource = "https://mcp.lunchmoney.sh/mcp"
 
 [mcp_servers.lunchmoney.oauth]
 client_id = "xDAFMwYkwjC3GiWoKsrQvZaEqOg8sbxI"
@@ -33,9 +32,13 @@ The public client ID matches `oauth.clientId` in this package's `.mcp.json`.
 The callback URI must exactly match the registered Auth0 URI. Port 1455 must be
 available during login. This public OAuth client uses PKCE without a secret.
 
+Let Codex discover the OAuth resource from the server metadata. In Codex CLI
+0.154.0, also setting `oauth_resource` duplicates the authorization request's
+resource parameter and Auth0 rejects it with `resource parameter must be a string`.
+
 Run `codex mcp login lunchmoney --scopes lunchmoney:read,offline_access`.
 Codex runs the OAuth flow (PKCE S256) against
-`newth.us.auth0.com`, then `lunchmoney_connect` returns a
+`auth.n3wth.com`, then `lunchmoney_connect` returns a
 Nango link to enter your Lunch Money token in a trusted browser page.
 Never paste that token into chat or store it in plugin configuration.
 

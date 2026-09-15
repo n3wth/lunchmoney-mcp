@@ -13,9 +13,9 @@
   }],
   "vars": {
     "NANGO_ENVIRONMENT": "prod",
-    "LM_AUTH_ISSUER": "https://newth.us.auth0.com/",
+    "LM_AUTH_ISSUER": "https://auth.n3wth.com/",
     "LM_AUTH_RESOURCE": "https://mcp.lunchmoney.sh/mcp",
-    "LM_AUTH_JWKS_URI": "https://newth.us.auth0.com/.well-known/jwks.json",
+    "LM_AUTH_JWKS_URI": "https://auth.n3wth.com/.well-known/jwks.json",
     "LM_METADATA_URL": "https://mcp.lunchmoney.sh/.well-known/oauth-protected-resource",
     "LM_ENV": "production"
   }

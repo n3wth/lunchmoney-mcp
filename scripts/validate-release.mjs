@@ -56,6 +56,8 @@ assert.notEqual(production.name, staging.name)
 assert.equal(production.vars.LM_ENV, 'production')
 assert.equal(production.vars.NANGO_ENVIRONMENT, 'prod')
 assert.equal(production.vars.LM_AUTH_RESOURCE, endpoint)
+assert.equal(production.vars.LM_AUTH_ISSUER, 'https://auth.n3wth.com/')
+assert.equal(production.vars.LM_AUTH_JWKS_URI, 'https://auth.n3wth.com/.well-known/jwks.json')
 assert.equal(production.vars.LM_METADATA_URL, 'https://mcp.lunchmoney.sh/.well-known/oauth-protected-resource')
 for (const key of ['NANGO_SECRET_KEY', 'NANGO_WEBHOOK_SIGNING_KEY']) {
   assert.ok(!(key in production.vars), `${key} must be provisioned as a secret`)

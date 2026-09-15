@@ -17,7 +17,7 @@ marketplace entry or persistently install the plugin. For a permanent install,
 a Claude plugin marketplace must list this directory as its source.
 
 In Claude Code, run `/mcp`, select the Lunch Money plugin server, and complete
-browser authentication. The fixed callback port is 8414. The registered URI is
+browser authentication at `auth.n3wth.com`. The fixed callback port is 8414. The registered URI is
 `http://localhost:8414/callback`; older clients may use the registered
 `http://127.0.0.1:8414/callback` variant. Leave this port available during login.
 

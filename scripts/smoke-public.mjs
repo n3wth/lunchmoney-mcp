@@ -15,7 +15,9 @@ const metadataResponse = await request(metadataUrl)
 assert.equal(metadataResponse.status, 200, 'public metadata status')
 const metadata = await metadataResponse.json()
 assert.equal(metadata.resource, endpoint.href, 'metadata audience must match requested endpoint')
-assert.deepEqual(metadata.authorization_servers, ['https://newth.us.auth0.com/'])
+const issuer = process.argv[3] ?? (endpoint.hostname === 'mcp-staging.lunchmoney.sh'
+  ? 'https://newth.us.auth0.com/' : 'https://auth.n3wth.com/')
+assert.deepEqual(metadata.authorization_servers, [issuer])
 console.log('metadata: correct public audience and issuer')
 
 for (const authorization of [undefined, 'Bearer invalid-smoke-token']) {

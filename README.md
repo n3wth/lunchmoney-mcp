@@ -10,10 +10,11 @@ Money**. The official product is at <https://lunchmoney.app>.
 ## Release status
 
 Staging is live at `https://mcp-staging.lunchmoney.sh/mcp` with a verified
-Auth0 → Nango → Lunch Money read flow. Production promotion to
-`https://mcp.lunchmoney.sh/mcp` is in progress. External beta acceptance requires
+Auth0 → Nango → Lunch Money read flow. Production is deployed at
+`https://mcp.lunchmoney.sh/mcp`, using `auth.n3wth.com` for login. External beta acceptance requires
 two users other than the developer. See the [operator runbook](docs/runbook.md)
-for deployment evidence and outstanding gates.
+for deployment evidence and outstanding gates; production deployment does not
+mean those user acceptance gates are complete.
 
 Start with the [user guide](docs/user-guide.md),
 [Codex package](packages/codex-plugin/README.md), or
