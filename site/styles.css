@@ -30,9 +30,8 @@ nav a { font-size: 14px; color: var(--secondary); text-decoration: none; }
 .primary:hover { background: var(--ink); color: var(--bg); }
 .meta { color: var(--secondary); font-size: 13px; margin-top: 20px; }
 .preview { border: 1px solid var(--line-strong); border-radius: 12px; background: var(--surface); overflow: hidden; font-size: 14px; }
-.preview-heading { display: flex; align-items: center; gap: 10px; padding: 19px 24px; border-bottom: 1px solid var(--line); }
 .sample { margin-left: auto; color: var(--secondary); font-size: 12px; }
-.tabs { display: flex; gap: 8px; padding: 0 24px 16px; }
+.tabs { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; padding: 0 24px 16px; }
 .tab { font: inherit; color: var(--secondary); cursor: pointer; min-height: 44px; padding: 6px 12px; border: 1px solid transparent; border-radius: 999px; background: transparent; }
 .tab[aria-pressed='true'] { border-color: var(--line-strong); color: var(--ink); background: var(--raised); }
 .panel { padding: 24px; min-height: 394px; }
@@ -49,7 +48,6 @@ th,td { padding: 9px 0; text-align: left; border-bottom: 1px solid var(--line); 
 th { color: var(--secondary); font-weight: 400; }
 th:last-child,td:last-child { text-align: right; font-variant-numeric: tabular-nums; }
 tbody tr:last-child td { border: 0; }
-.preview-foot { border-top: 1px solid var(--line); padding: 14px 24px; margin: 0; color: var(--secondary); font-size: 12px; }
 .section { border-top: 1px solid var(--line); padding: 64px 0; scroll-margin-top: 24px; }
 .section-intro { margin-bottom: 28px; }
 .section-intro p { color: var(--secondary); max-width: 48ch; margin: 20px 0 0; }
