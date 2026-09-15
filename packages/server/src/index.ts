@@ -162,8 +162,8 @@ function createRequestPipeline(config: ServerConfig) {
       try {
         const discovered = await (config.credentials as CredentialProvider & ConnectionDiscovery).findConnectionId(user.userId)
         if (discovered !== undefined) {
-          connection = await config.store.replaceConnection(
-            user.userId, discovered, connection.environment)
+          await config.store.claimPendingConnection(user.userId, discovered)
+          connection = await config.store.getActiveConnection(user.userId)
         }
       } catch {
         emit('connection_discovery_failed', user.userId)

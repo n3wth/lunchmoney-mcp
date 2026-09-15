@@ -28,6 +28,7 @@ export interface IdentityStore {
   getOrCreateUser(issuer: string, subject: string): Promise<User>
   getUser(userId: string): Promise<User | undefined>
   getActiveConnection(userId: string): Promise<Connection | undefined>
+  claimPendingConnection(userId: string, connectionId: string): Promise<Connection | undefined>
   beginConnection(userId: string, connectionId: string, environment: Connection['environment']): Promise<Connection>
   activateConnection(userId: string, connectionId: string): Promise<Connection>
   markConnection(userId: string, connectionId: string, state: 'invalid' | 'revoked' | 'deletion_pending' | 'deleted'): Promise<Connection | undefined>
@@ -44,7 +45,7 @@ function now(): string {
 }
 
 function userKey(issuer: string, subject: string): string {
-  return `${issuer}${subject}`
+  return JSON.stringify([issuer, subject])
 }
 
 export class InMemoryIdentityStore implements IdentityStore {
@@ -77,6 +78,15 @@ export class InMemoryIdentityStore implements IdentityStore {
       if (c.userId === userId && (c.state === 'pending' || c.state === 'active')) return c
     }
     return undefined
+  }
+
+  async claimPendingConnection(userId: string, connectionId: string): Promise<Connection | undefined> {
+    const conn = this.activeConnectionFor(userId)
+    if (!conn || conn.state !== 'pending' || conn.connectionId !== `pending:${userId}` || this.connections.has(connectionId)) return undefined
+    this.connections.delete(conn.connectionId)
+    const claimed = { ...conn, connectionId, updatedAt: now() }
+    this.connections.set(connectionId, claimed)
+    return { ...claimed }
   }
 
   async beginConnection(userId: string, connectionId: string, environment: Connection['environment']): Promise<Connection> {
