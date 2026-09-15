@@ -24,7 +24,7 @@ export default function AIChat() {
     return () => animation.cancel()
   }, [active])
 
-  return <VStack gap={8} aria-label="Example conversation with fictional data">
+  return <VStack gap={6} aria-label="Example conversation with fictional data">
     <ChatMessage sender="user">
       <ChatMessageBubble><Text as="p">{demo.question}</Text></ChatMessageBubble>
     </ChatMessage>
@@ -34,16 +34,30 @@ export default function AIChat() {
           <VStack gap={4}>
       <Text as="p" weight="semibold">{demo.answer}</Text>
       <Text as="p" color="secondary">{demo.detail}</Text>
-      <Table data={demo.rows.map(([label, amount]) => ({label, amount}))} idKey="label" density="balanced" columns={[
+      {active === 0 ? <VStack gap={4} aria-label="Grocery spending by merchant">
+        {demo.rows.map(([label, amount], index) => {
+          const value = Number(amount.replace(/[$,]/g, ''))
+          const colors = ['var(--color-chart-blue)', 'var(--color-chart-teal)', 'var(--color-chart-purple)']
+          return <VStack key={label} gap={2}>
+            <HStack hAlign="between" gap={3}>
+              <Text>{label}</Text><Text hasTabularNumbers>{amount}</Text>
+            </HStack>
+            <svg width="100%" height="10" viewBox="0 0 500 10" preserveAspectRatio="none" aria-hidden="true">
+              <rect width="500" height="10" rx="5" fill="var(--color-background-muted)" />
+              <rect width={value / 512.4 * 500} height="10" rx="5" fill={colors[index]} />
+            </svg>
+          </VStack>
+        })}
+      </VStack> : <Table data={demo.rows.map(([label, amount]) => ({label, amount}))} idKey="label" density="balanced" columns={[
         {key: 'label', header: demo.heading, width: proportional(1)},
         {key: 'amount', header: 'Amount', width: pixel(120), align: 'end', renderCell: value => <Text hasTabularNumbers>{String(value.amount)}</Text>},
-      ]} />
+      ]} />}
           </VStack>
         </ChatMessageBubble>
       </ChatMessage>
     </VStack>
-    <HStack gap={3} wrap="wrap" as="nav" aria-label="Try another question">
-      {demos.map((item, index) => <Button key={item.name} label={item.prompt} variant={index === active ? 'primary' : 'secondary'} aria-pressed={index === active} onClick={() => setActive(index)} />)}
+    <HStack gap={2} hAlign="center" as="nav" aria-label="Try another question">
+      {demos.map((item, index) => <Button key={item.name} label={item.name} size="sm" variant={index === active ? 'primary' : 'secondary'} aria-pressed={index === active} onClick={() => setActive(index)} />)}
     </HStack>
   </VStack>
 }

@@ -73,12 +73,12 @@ export const neutralTheme = defineTheme({
   typography: {
     scale: {base: 16, ratio: 1.2},
     body: {
-      family: 'Geist Sans',
+      family: 'Suisse Intl',
       fallbacks:
         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
     },
     heading: {
-      family: 'Mona Sans',
+      family: 'Suisse Intl',
       fallbacks:
         '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif',
       weights: {3: 'semibold', 4: 'semibold'},
@@ -225,6 +225,9 @@ export const neutralTheme = defineTheme({
     '--radius-element': '9999px',
     '--radius-container': '0.75rem',
     '--radius-page': '1.75rem',
+    '--color-chart-blue': '#4276F6',
+    '--color-chart-teal': '#17B99A',
+    '--color-chart-purple': '#A365EB',
     '--radius-full': '9999px',
 
     // Flat n3wth surfaces; status outlines remain meaningful.
@@ -242,6 +245,7 @@ export const neutralTheme = defineTheme({
     button: {
       base: {borderRadius: 'var(--radius-full)', boxShadow: 'none', fontWeight: '500', minHeight: '2.75rem'},
       'size:lg': {minHeight: '3rem', paddingInline: 'var(--spacing-6)'},
+      'size:sm': {fontSize: 'var(--text-supporting-size)', '--text-label-size': 'var(--text-supporting-size)', minHeight: 'var(--spacing-8)', paddingBlock: 'var(--spacing-2)', paddingInline: 'var(--spacing-4)'},
       'variant:destructive': {
         backgroundColor: 'var(--color-error-muted)',
         color: 'var(--color-error)',
@@ -420,19 +424,22 @@ export const neutralTheme = defineTheme({
     },
 
     section: {
+      'variant:muted': {borderRadius: 'var(--radius-page)'},
+      'variant:section': {borderRadius: 'var(--radius-page)'},
       base: {
         padding: 'var(--spacing-3)',
       },
     },
 
     heading: {
-      base: {letterSpacing: '-0.03em', fontWeight: '600'},
-      'type:display-1': {fontSize: 'clamp(3.25rem, 8vw, 6rem)', lineHeight: '1.02', letterSpacing: '-0.04em'},
+      base: {letterSpacing: '-0.035em', fontWeight: '600'},
+      'type:display-1': {fontSize: 'clamp(3rem, 6vw, 5rem)', lineHeight: '1.06', letterSpacing: '-0.045em'},
       'type:display-2': {fontSize: 'clamp(2.125rem, 4vw, 3.5rem)', lineHeight: '1.08'},
       'type:display-3': {fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', lineHeight: '1.15'},
       'level:3': {fontSize: '1.25rem', lineHeight: '1.3'},
     },
     'top-nav': {base: {
+      '--text-label-size': 'var(--text-supporting-size)',
       paddingInline: 'var(--spacing-5)',
       paddingBlock: 'var(--spacing-2)',
       marginBlock: 'var(--spacing-3)',
@@ -440,8 +447,7 @@ export const neutralTheme = defineTheme({
       width: 'calc(100% - var(--spacing-6))',
       maxWidth: '70rem',
       borderRadius: 'var(--radius-full)',
-      backgroundColor: 'var(--color-background-muted)',
-      border: '1px solid var(--color-border)',
+      backgroundColor: 'var(--color-background-surface)',
     }},
   },
 
