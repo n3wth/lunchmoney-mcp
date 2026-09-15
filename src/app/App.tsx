@@ -12,7 +12,6 @@ import ShellTopNav from './shell-top-nav/page'
 import AIChat from './ai-chat/page'
 import SetupPrompt from './SetupPrompt'
 import HeroShader from './HeroShader'
-import AnalyticsSettings from './AnalyticsSettings'
 
 const repo = 'https://github.com/n3wth/lunchmoney-mcp'
 
@@ -20,6 +19,7 @@ export default function App() {
   return <Theme theme={neutralTheme} mode="light">
     <AppShell height="auto" variant="surface" topNav={<ShellTopNav />}>
       <VStack hAlign="center" paddingInline={3} gap={6}>
+        <VStack width="100%">
         <Theme theme={neutralTheme} mode="dark">
         <Section variant="muted" width="100%" padding={6} className="astryx-hero-surface">
         <HeroShader />
@@ -36,6 +36,7 @@ export default function App() {
         </VStack>
         </Section>
         </Theme>
+        </VStack>
         <Text type="supporting" color="secondary" justify="center">Independently developed.</Text>
 
         <VStack width="100%" maxWidth={1120} paddingInline={6}>
@@ -50,7 +51,7 @@ export default function App() {
               <VStack gap={4}>
                 <Text type="supporting">Step 1</Text><Heading level={3}>Add the connector</Heading>
                 <Text as="p" color="secondary" textWrap="balance">Follow the setup guide for your AI tool, then sign in when prompted.</Text>
-                <Link href={repo + '#client-specific-installation'}>Setup guide</Link>
+                <Link href={repo + '#client-specific-installation'}>Lunch Money MCP setup guide</Link>
               </VStack>
               <VStack gap={4}>
                 <Text type="supporting">Step 2</Text><Heading level={3}>Link Lunch Money</Heading>
@@ -118,7 +119,6 @@ export default function App() {
               <Link href="/privacy" type="supporting" color="secondary">Privacy</Link>
             </HStack>
           </HStack>
-          <AnalyticsSettings />
         </VStack>
       </VStack>
     </AppShell>

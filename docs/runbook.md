@@ -270,7 +270,7 @@ ORDER BY calls DESC
 ```
 
 Tool labels are allowlisted; arguments and user identities are never included.
-Website PostHog events use the `lunchmoney_` prefix and are opt-in; they do not measure MCP usage.
+Website PostHog events use the `lunchmoney_` prefix and are enabled by default, respecting browser privacy signals and the opt-out in Terms; they do not measure MCP usage.
 
 Analytics Engine stores `blob1` = allowlisted event type and `double1` = status
 (0 when absent). Use the Analytics Engine SQL API or dashboard to query:

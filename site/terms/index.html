@@ -54,6 +54,12 @@
       <p>The service depends on Lunch Money, Auth0, Nango, Cloudflare, Vercel, and your selected AI client and model provider. Your use of those services is subject to their applicable terms and policies. Requested financial results are returned to your client and may be processed by its model provider.</p>
       <p>The <a href="/privacy">privacy notice</a> explains how the connector handles credentials, account records, results, and operational logs.</p>
     </section>
+    <section id="analytics"><h2>Usage statistics</h2>
+      <p>Basic usage counts are enabled by default. PostHog US Cloud receives landing-page view, Connect-click and successful prompt-copy events to help improve this website. No financial data, chat content, credentials, session recordings, or persistent visitor identifiers are included. We do not use analytics cookies. Global Privacy Control and Do Not Track signals prevent collection. See the <a href="/privacy">privacy notice</a> for network processing and retention details.</p>
+      <p>You can disable these counts below. This preference is stored on this browser for 180 days and does not affect the service.</p>
+      <button id="analytics-opt-out" type="button">Disable usage counts</button>
+      <p id="analytics-status" role="status"></p>
+    </section>
     <section><h2>Stopping use</h2>
       <p>You may stop using the service at any time. Run <code>lunchmoney_disconnect</code> to block further reads and request deletion of the Nango connection; retry if deletion is pending. Revoke the token separately in Lunch Money. Uninstalling a plugin does not perform these steps. The privacy notice describes records retained after disconnecting.</p>
     </section>
@@ -71,5 +77,6 @@
     </div>
     <nav class="footer-links" aria-label="Footer"><a href="/privacy">Privacy</a><a href="/terms" aria-current="page">Terms</a><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Setup guide</a><a href="https://github.com/n3wth/lunchmoney-mcp">GitHub</a><a href="mailto:oliver@newth.ai">Contact</a></nav>
   </footer>
+  <script src="/analytics-preference.js" defer></script>
 </body>
 </html>
