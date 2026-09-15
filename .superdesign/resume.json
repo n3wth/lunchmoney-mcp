@@ -44,9 +44,9 @@
       ],
       "drafts": {
         "f3d08fe6-5ac5-46e6-a457-0b7e8147cb75": {
-          "title": "Current landing page",
-          "visualDirection": "Current neutral baseline",
-          "currentVersion": 1
+          "title": "Lunch Money for Agents - TypeUI Evolution",
+          "visualDirection": "User-selected TypeUI: Open Sans, monochrome surfaces, pill controls; source implementation is under active refinement",
+          "currentVersion": 3
         }
       }
     }

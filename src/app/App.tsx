@@ -6,56 +6,107 @@ import {Section} from '@astryxdesign/core/Section'
 import {Heading, Text} from '@astryxdesign/core/Text'
 import {Button} from '@astryxdesign/core/Button'
 import {Link} from '@astryxdesign/core/Link'
+import {Collapsible} from '@astryxdesign/core/Collapsible'
 import {neutralTheme} from '../../.cache/neutral'
 import ShellTopNav from './shell-top-nav/page'
 import AIChat from './ai-chat/page'
 
 const repo = 'https://github.com/n3wth/lunchmoney-mcp'
+
 export default function App() {
-  return <Theme theme={neutralTheme} mode="dark">
+  return <Theme theme={neutralTheme} mode="light">
     <AppShell height="auto" variant="surface" topNav={<ShellTopNav />}>
-    <VStack minHeight="100vh" hAlign="center">
-      <VStack width="100%" maxWidth={1160} paddingInline={5}>
-        <VStack gap={10} paddingBlock={10}>
-          <Grid columns={{minWidth: 300, max: 2, repeat: 'fit'}} gap={10} align="center">
-            <VStack gap={6} paddingBlock={10}>
-              <Heading level={1} type="display-2">Ask your money<br />a question.</Heading>
-              <Text size="lg">Connect <Link href="https://lunchmoney.app">Lunch Money</Link> to your AI agent. Get answers about your spending, upcoming bills, and account balances in plain language.</Text>
-              <HStack><Button label="Connect Lunch Money" href="#connect" variant="primary" size="lg" /></HStack>
-              <Text color="secondary">Unofficial, open source, and read-only. By <Link href="https://n3wth.com">n3wth</Link>.</Text>
+      <VStack hAlign="center">
+        <VStack as="section" id="intro" width="100%" hAlign="center" paddingInline={6} paddingBlock={10}>
+          <VStack maxWidth={960} width="100%" gap={6} hAlign="center" paddingBlock={6}>
+            <Heading level={1} type="display-1" justify="center" textWrap="balance">Lunch Money.<br />Beyond the numbers.</Heading>
+            <VStack maxWidth={560}>
+              <Text as="p" size="xl" color="secondary" justify="center" textWrap="balance">Ask your AI about your spending.<br />Get an answer you can work with.</Text>
             </VStack>
+            <HStack gap={4} wrap="wrap" hAlign="center" vAlign="center">
+              <Button label="Connect Lunch Money" href="#connect" variant="primary" size="lg" />
+            </HStack>
+            <Text type="supporting" justify="center">Independently built for Lunch Money. Your AI can look, but can’t make changes.</Text>
+          </VStack>
+          <VStack as="section" id="conversation" width="100%" maxWidth={760} paddingBlockStart={10}>
             <AIChat />
-          </Grid>
-          <Section variant="transparent" padding={0} dividers={['top']}>
-            <VStack gap={6} paddingBlock={10} as="section" id="connect">
-              <Heading level={2}>Get started</Heading>
-              <Grid columns={{minWidth: 240, repeat: 'fit'}} gap={6}>
-                <VStack gap={3}><Heading level={3}>1. Add to your AI tool</Heading><Text>Follow the <Link href={repo + '#client-specific-installation'}>installation instructions</Link>, then sign in at auth.n3wth.com when prompted.</Text></VStack>
-                <VStack gap={3}><Heading level={3}>2. Link Lunch Money</Heading><Text>Ask your agent to connect Lunch Money. Open its browser link and enter your API token there, never in chat.</Text></VStack>
-                <VStack gap={3}><Heading level={3}>3. Ask a question</Heading><Text>Start with “List my accounts.” Your agent reads the requested records from Lunch Money to answer.</Text></VStack>
-              </Grid>
-              <VStack gap={3}><Heading level={3}>Manual MCP setup</Heading><Text>Use this remote server URL, then complete the sign-in prompt.</Text><Text>https://mcp.lunchmoney.sh/mcp</Text><Link href={repo + '/blob/main/docs/user-guide.md'}>Full setup guide</Link></VStack>
-            </VStack>
-          </Section>
-          <Section variant="transparent" padding={0} dividers={['top']}>
-            <VStack gap={6} paddingBlock={10} as="section" id="privacy">
-              <Heading level={2}>Get answers, keep control</Heading>
-              <Grid columns={{minWidth: 240, repeat: 'fit'}} gap={6}>
-                <VStack gap={3}><Heading level={3}>Your finances stay unchanged</Heading><Text>The connector can read your records, but cannot edit transactions, change budgets, or move money.</Text></VStack>
-                <VStack gap={3}><Heading level={3}>Results go to your agent</Heading><Text>The connector does not save financial responses. Your AI client and its model provider receive the results; their privacy and retention settings apply.</Text></VStack>
-                <VStack gap={3}><Heading level={3}>Disconnect when you want</Heading><Text>Run lunchmoney_disconnect and retry if deletion fails. Revoke the original token in Lunch Money separately. Uninstalling a plugin does neither.</Text></VStack>
-              </Grid>
-            </VStack>
-          </Section>
-          <VStack gap={4}><Heading level={2}>How sign-in and token storage work</Heading>
-            <Text><Link href="https://auth0.com">Auth0</Link> handles sign-in at <Link href="https://auth.n3wth.com">auth.n3wth.com</Link>, separately from your Lunch Money login. <Link href="https://nango.dev">Nango</Link> stores your API token.</Text>
-            <Text><Link href="https://cloudflare.com">Cloudflare</Link> runs the connector and keeps identity and connection records. <Link href="https://vercel.com">Vercel</Link> hosts this website.</Text>
-            <Text>The connector enforces financial reads only, even if your token has broader permissions.</Text>
           </VStack>
         </VStack>
-        <HStack as="footer" gap={5} wrap="wrap" paddingBlock={8}><Link href="/">lunchmoney.sh</Link><Text>By <Link href="https://n3wth.com">n3wth</Link></Text><Link href="/terms">Terms</Link><Link href="/privacy">Privacy</Link></HStack>
+
+        <VStack width="100%" maxWidth={1120} paddingInline={6}>
+          <VStack as="section" id="connect" gap={10} paddingBlock={10}>
+            <VStack hAlign="center" paddingBlockStart={10}>
+              <VStack gap={5} maxWidth={650}>
+                <Heading level={2} type="display-2" justify="center" textWrap="balance">Less digging.<br />More understanding.</Heading>
+                <Text as="p" size="lg" color="secondary" justify="center" textWrap="balance">Connect the Lunch Money app to your AI tool through Model Context Protocol. Then ask what you want to know.</Text>
+              </VStack>
+            </VStack>
+            <Grid columns={{minWidth: 240, max: 3, repeat: 'fit'}} gap={10}>
+              <VStack gap={4}>
+                <Text type="supporting">Step 1</Text><Heading level={3}>Add the connector</Heading>
+                <Text as="p" color="secondary">Follow the <Link href={repo + '#client-specific-installation'}>instructions for your AI tool</Link>, then sign in when prompted.</Text>
+                <Text as="p" type="supporting"><Link href="https://auth0.com" type="inherit" color="inherit">Auth0</Link> handles sign-in at <Link href="https://auth.n3wth.com" type="inherit" color="inherit">auth.n3wth.com</Link>, separately from your Lunch Money login.</Text>
+              </VStack>
+              <VStack gap={4}>
+                <Text type="supporting">Step 2</Text><Heading level={3}>Link Lunch Money</Heading>
+                <Text as="p" color="secondary">Ask your agent to connect Lunch Money. Enter your API token in the browser link it gives you, never in chat.</Text>
+                <Text as="p" type="supporting">Your API token is stored by <Link href="https://nango.dev" type="inherit" color="inherit">Nango</Link>.</Text>
+              </VStack>
+              <VStack gap={4}>
+                <Text type="supporting">Step 3</Text><Heading level={3}>Start a conversation</Heading>
+                <Text as="p" color="secondary">Try “List my accounts.” Your agent reads the requested records from Lunch Money to answer.</Text>
+              </VStack>
+            </Grid>
+            <Section variant="transparent" padding={0} dividers={['top', 'bottom']}>
+              <VStack paddingBlock={5}>
+                <Collapsible defaultIsOpen={false} trigger="Connecting manually?">
+                  <VStack gap={4} paddingBlock={5}>
+                    <Text as="p" color="secondary">Add this remote MCP server URL, then complete the sign-in prompt.</Text>
+                    <Text type="code" wordBreak="break-all">https://mcp.lunchmoney.sh/mcp</Text>
+                    <Link href={repo + '/blob/main/docs/user-guide.md'}>Read the setup guide</Link>
+                  </VStack>
+                </Collapsible>
+              </VStack>
+            </Section>
+          </VStack>
+
+          <VStack as="section" id="privacy" gap={10} paddingBlock={10}>
+              <VStack gap={5} hAlign="center">
+                <Heading level={2} type="display-2" justify="center" textWrap="balance">A little more clarity.<br />The same control.</Heading>
+                <Text as="p" size="lg" color="secondary" justify="center">Built to read your finances, never change them.</Text>
+              </VStack>
+              <Grid columns={{minWidth: 240, max: 3, repeat: 'fit'}} gap={10}>
+                <VStack gap={3}>
+                  <Heading level={3}>Nothing gets changed</Heading>
+                  <Text as="p" color="secondary">Your AI can look up your spending, budgets, and balances. It can’t edit anything in Lunch Money or move your money.</Text>
+                </VStack>
+                <VStack gap={3}>
+                  <Heading level={3}>Your AI sees what it needs</Heading>
+                  <Text as="p" color="secondary">The details needed to answer your question go to your AI app. This connection doesn’t save those details. Your AI app’s privacy settings still apply.</Text>
+                </VStack>
+                <VStack gap={3}>
+                  <Heading level={3}>You can stop access</Heading>
+                  <Text as="p" color="secondary">Revoke the API token in your Lunch Money settings to stop access. Ask your AI to disconnect Lunch Money to remove the saved connection, too.</Text>
+                </VStack>
+              </Grid>
+          </VStack>
+
+          <Section variant="transparent" padding={0} dividers={['top']}>
+            <VStack gap={6} hAlign="center" paddingBlock={10}>
+              <Heading level={2} type="display-2" justify="center">Where did your money go?</Heading>
+              <Button label="Connect Lunch Money" href="#connect" variant="primary" size="lg" />
+            </VStack>
+          </Section>
+          <HStack as="footer" gap={6} wrap="wrap" hAlign="between" paddingBlock={8}>
+            <Text type="supporting">Lunch Money for Agents, by <Link href="https://n3wth.com" type="inherit" color="inherit">n3wth</Link>.</Text>
+            <HStack gap={5}>
+              <Link href={repo} type="supporting" color="secondary">GitHub</Link>
+              <Link href="/terms" type="supporting" color="secondary">Terms</Link>
+              <Link href="/privacy" type="supporting" color="secondary">Privacy</Link>
+            </HStack>
+          </HStack>
+        </VStack>
       </VStack>
-    </VStack>
     </AppShell>
   </Theme>
 }
