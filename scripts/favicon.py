@@ -19,7 +19,7 @@ y = 32 + (y0 + y1) * scale / 2
 (root / 'site/favicon.svg').write_text(
     '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
     '<title>Lunch Money for Agents</title>'
-    '<rect width="64" height="64" rx="14" fill="#141d1b"/>'
-    f'<path fill="#b9e3d3" transform="translate({x} {y}) scale({scale} {-scale})" '
+    '<rect width="64" height="64" rx="14" fill="#176B57"/>'
+    f'<path fill="#ffffff" transform="translate({x} {y}) scale({scale} {-scale})" '
     f'd="{path.getCommands()}"/></svg>\n'
 )
