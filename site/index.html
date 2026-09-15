@@ -41,7 +41,7 @@
       </div>
     </section>
     <section class="section" id="connect">
-      <div class="section-intro"><h2>A connection you control.</h2><p>The hosted connector is available in beta. Set it up directly in your MCP client.</p></div>
+      <div class="section-intro"><h2>A connection you control.</h2></div>
       <div class="clients"><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md"><h3>MCP-compatible tools</h3><p>Connection guide</p></a><a href="https://github.com/n3wth/lunchmoney-mcp#client-setup"><h3>Client plugins</h3><p>Installation instructions</p></a><a href="https://github.com/n3wth/lunchmoney-mcp"><h3>Open source</h3><p>Explore the code</p></a></div>
       <p class="endpoint"><span>Remote MCP endpoint</span><code>https://mcp.lunchmoney.sh/mcp</code></p>
       <ol class="steps">
@@ -52,7 +52,7 @@
       <p class="meta">Direct setup is available. Marketplace listings are not yet published.</p>
     </section>
     <section class="section privacy" id="privacy">
-      <div class="section-intro"><h2>Your data. Clear boundaries.</h2><p>Understand who handles your login, token, and financial results.</p></div>
+      <div class="section-intro"><h2>Your data. Clear boundaries.</h2></div>
       <div class="privacy-grid">
         <div><h3>Reads enforced by the service</h3><p>Cloudflare runs the connector. It retrieves your token from Nango temporarily and uses it for allowed reads from Lunch Money's API. The service cannot edit your finances, but the underlying token may have broader permissions.</p></div>
         <div><h3>A separate website and connection</h3><p>Vercel hosts this website and routes MCP requests to Cloudflare. There is no token field on this page. Auth0 identifies your connector account; Nango stores the credential used to access Lunch Money.</p></div>
