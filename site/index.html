@@ -21,49 +21,47 @@
   <a class="skip-link" href="#main">Skip to content</a>
   <header class="site-nav">
     <a class="wordmark" href="#main"><img src="favicon.svg" width="28" height="28" alt="">lunchmoney.sh</a>
-    <nav aria-label="Main"><a href="#connect">Connect</a><a href="/privacy">Privacy</a><a href="https://github.com/n3wth/lunchmoney-mcp">Source</a></nav>
+    <nav aria-label="Main"><a href="#connect">How to set up</a><a href="/privacy">Privacy</a><a href="https://github.com/n3wth/lunchmoney-mcp">GitHub</a></nav>
   </header>
   <main id="main" class="wrap">
     <section class="hero">
       <div class="hero-copy">
-        <p class="byline">Unofficial, open-source <a href="https://lunchmoney.app">Lunch Money</a> MCP integration by <a href="https://n3wth.com">n3wth</a></p>
         <h1>Lunch Money<br>for Agents.</h1>
-        <p class="lede">Ask your AI agent about your spending, budgets, and accounts. Read-only access to your own Lunch Money data.</p>
-        <div class="actions"><a class="button primary" href="#connect">Connect Lunch Money</a><a class="button" href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Read the guide</a></div>
+        <p class="lede">Make sense of your <a href="https://lunchmoney.app">Lunch Money</a> data in the conversation you're already having.</p>
+        <div class="actions"><a class="button primary" href="#connect">See setup steps</a><a class="text-link" href="https://github.com/n3wth/lunchmoney-mcp">Explore the code</a></div>
+        <p class="meta">Unofficial. Open source. Read-only.</p>
       </div>
       <div class="preview" aria-label="Fictional conversation example">
-        <div class="preview-heading"><img src="favicon.svg" width="24" height="24" alt=""><span>Lunch Money</span><span class="sample">Sample data</span></div>
-        <div class="tabs" role="group" aria-label="Example questions"><button class="tab" aria-pressed="true" aria-controls="spending">Spending</button><button class="tab" aria-pressed="false" aria-controls="recurring">Recurring</button></div>
-        <div class="panel" id="spending"><p class="question">What did I spend on groceries?</p><p>You spent <strong>$512.40</strong> across 9 transactions in September.</p><table><caption class="sr-only">Fictional grocery spending</caption><thead><tr><th>Merchant</th><th>Amount</th></tr></thead><tbody><tr><td>Corner Market</td><td>$188.20</td></tr><tr><td>Green Grocer</td><td>$141.75</td></tr><tr><td>Harbor Foods</td><td>$182.45</td></tr></tbody></table></div>
-        <div class="panel" id="recurring" hidden><p class="question">What charges are coming up?</p><p>Three recurring items renew next week.</p><table><caption class="sr-only">Fictional recurring charges</caption><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody><tr><td>Streaming plan</td><td>$15.99</td></tr><tr><td>Cloud storage</td><td>$9.99</td></tr><tr><td>Gym membership</td><td>$42.00</td></tr></tbody></table></div>
-        <p class="preview-foot">Illustrative answers. No account is connected to this preview.</p>
+        <div class="preview-heading"><span>Example conversation</span><span class="sample">Sample data</span></div>
+        <div class="panel" id="spending"><p class="question">Where did my grocery budget go this month?</p><p class="tool-step"><img src="favicon.svg" width="18" height="18" alt="">Reading Lunch Money transactions</p><div class="answer"><p>You spent <strong>$512.40</strong> on groceries. Here's the breakdown:</p><table><caption class="sr-only">Fictional grocery spending</caption><thead><tr><th>Merchant</th><th>Amount</th></tr></thead><tbody><tr><td>Corner Market</td><td>$188.20</td></tr><tr><td>Green Grocer</td><td>$141.75</td></tr><tr><td>Harbor Foods</td><td>$182.45</td></tr></tbody></table><p class="takeaway">That's <strong>$12.40 over</strong> your $500 budget.</p></div></div>
+        <div class="panel" id="recurring" hidden><p class="question">What should I set aside for next week's bills?</p><p class="tool-step"><img src="favicon.svg" width="18" height="18" alt="">Reading Lunch Money recurring expenses</p><div class="answer"><p>These three expenses add up to <strong>$67.98</strong>:</p><table><caption class="sr-only">Fictional recurring charges</caption><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody><tr><td>Streaming plan</td><td>$15.99</td></tr><tr><td>Cloud storage</td><td>$9.99</td></tr><tr><td>Gym membership</td><td>$42.00</td></tr></tbody></table><p class="takeaway">Set aside <strong>$67.98</strong> for these upcoming bills.</p></div></div>
+        <div class="tabs" role="group" aria-label="Try an example"><button class="tab" aria-pressed="true" aria-controls="spending">Spending</button><button class="tab" aria-pressed="false" aria-controls="recurring">Upcoming bills</button></div>
+        <p class="preview-foot">Illustrative conversation. No account connected.</p>
       </div>
     </section>
     <section class="section" id="connect">
-      <div class="section-intro"><h2>Connect your account.</h2></div>
-      <div class="setup-links"><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Setup guide</a><a href="https://github.com/n3wth/lunchmoney-mcp#client-setup">Client plugins</a></div>
-      <p class="endpoint"><span>Remote MCP endpoint</span><code>https://mcp.lunchmoney.sh/mcp</code></p>
+      <div class="section-intro"><h2>Bring your finances<br>into your next conversation.</h2><p>You'll need a Lunch Money account, an API token, and an AI tool that supports MCP connections.</p></div>
       <ol class="steps">
-        <li><h3>Sign in</h3><p>Auth0 signs you in at <strong>auth.n3wth.com</strong>. This connector account is separate from your Lunch Money login.</p></li>
-        <li><h3>Link your Lunch Money account</h3><p>Run <code>lunchmoney_connect</code> and open the returned browser link. Nango handles token entry and storage. Enter your Lunch Money token there, never in chat.</p></li>
+        <li><h3>Add to your AI tool</h3><p>Follow the <a href="https://github.com/n3wth/lunchmoney-mcp#client-specific-installation">installation instructions</a>, then sign in at <strong>auth.n3wth.com</strong> when prompted.</p></li>
+        <li><h3>Link Lunch Money</h3><p>Ask your agent to connect Lunch Money. Open its browser link and enter your API token there, never in chat.</p></li>
         <li><h3>Ask a question</h3><p>Start with “List my accounts.” Your agent reads the requested records from Lunch Money to answer.</p></li>
       </ol>
-      <p class="meta">Beta · Direct setup available</p>
+      <details class="manual-setup"><summary>Adding an MCP server manually?</summary><p>Use this remote server URL, then complete the sign-in prompt.</p><code>https://mcp.lunchmoney.sh/mcp</code><p><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Full setup guide</a></p></details>
     </section>
     <section class="section privacy" id="privacy">
-      <div class="section-intro"><h2>Privacy and access.</h2></div>
+      <div class="section-intro"><h2>Get answers.<br>Keep control.</h2></div>
       <div class="privacy-grid">
-        <div><h3>Read-only financial access</h3><p>Cloudflare runs the connector; Vercel hosts this site. The connector uses your Nango-stored token for financial reads only, even if the token has broader permissions.</p></div>
+        <div><h3>Your finances stay unchanged</h3><p>The connector can read your records, but cannot edit transactions, change budgets, or move money.</p></div>
         <div><h3>Results go to your agent</h3><p>The connector does not save financial responses. Your AI client and its model provider receive the results; their privacy and retention settings apply.</p></div>
         <div><h3>Disconnect when you want</h3><p>Run <code>lunchmoney_disconnect</code> and retry if deletion fails. Revoke the original token in Lunch Money separately. Uninstalling a plugin does neither.</p></div>
       </div>
-      <a href="/privacy">Read the privacy notice</a>
+      <details class="provider-details"><summary>How sign-in and token storage work</summary><p>Auth0 handles sign-in at auth.n3wth.com, separately from your Lunch Money login. Nango stores your API token. Cloudflare runs the connector and keeps identity and connection records; Vercel hosts this website. Financial reads are enforced by the connector, even if your token has broader permissions.</p></details>
     </section>
   </main>
   <footer class="wrap site-footer">
     <div class="footer-identity">
       <a class="wordmark" href="/"><img src="/favicon.svg" width="28" height="28" alt="">lunchmoney.sh</a>
-      <p>An independent project by <a href="https://n3wth.com">n3wth</a>. Not affiliated with, endorsed by, or sponsored by <a href="https://lunchmoney.app">Lunch Money</a>.</p>
+      <p>By <a href="https://n3wth.com">n3wth</a>. Independent of <a href="https://lunchmoney.app">Lunch Money</a>.</p>
     </div>
     <nav class="footer-links" aria-label="Footer"><a href="/privacy">Privacy</a><a href="/terms">Terms</a><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Setup guide</a><a href="https://github.com/n3wth/lunchmoney-mcp">GitHub</a><a href="mailto:oliver@newth.ai">Contact</a></nav>
   </footer>
