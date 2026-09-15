@@ -11,7 +11,12 @@
       var isActive = tab === active;
       tab.setAttribute('aria-pressed', String(isActive));
       if (panel) panel.hidden = !isActive;
+      if (panel) panel.classList.remove('is-playing');
     });
+    var panel = document.getElementById(active.getAttribute('aria-controls'));
+    if (panel && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      requestAnimationFrame(function () { panel.classList.add('is-playing'); });
+    }
   }
 
   tabs.forEach(function (tab) {
