@@ -1,4 +1,4 @@
-# Lunch Money for Cursor (unofficial)
+# Lunch Money for Agents — Cursor setup
 
 Read transactions, accounts, categories, tags, recurring items, and budget
 summaries from your own Lunch Money account. Financial data is read-only.

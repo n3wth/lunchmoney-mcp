@@ -1,7 +1,7 @@
 {
   "name": "lunchmoney",
   "version": "0.1.1",
-  "description": "Read-only Lunch Money MCP connector (unofficial)",
+  "description": "Lunch Money for Agents: an unofficial, open-source MCP integration by n3wth with read-only financial access",
   "author": { "name": "Oliver Newth", "email": "oliver@newth.ai" },
   "homepage": "https://lunchmoney.sh",
   "repository": "https://github.com/n3wth/lunchmoney-mcp",

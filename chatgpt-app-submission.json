@@ -2,9 +2,9 @@
   "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
   "schema_version": 1,
   "app_info": {
-    "display_name": "Lunch Money MCP",
+    "display_name": "Lunch Money for Agents",
     "subtitle": "Read your Lunch Money data",
-    "description": "An unofficial connector for using your own Lunch Money account in AI agents. Sign in, link your account through a private browser flow, and ask about accounts, transactions, recurring items, categories, tags, and budgets. Financial requests are read-only; connection tools can replace or delete your connector connection. Requested financial results are shared with your AI client and may be processed by its model provider. Not affiliated with or endorsed by Lunch Money.",
+    "description": "An unofficial, open-source MCP integration by n3wth, built to make Lunch Money easier to use with AI agents. Sign in, link your account through a private browser flow, and ask about accounts, transactions, recurring items, categories, tags, and budgets. Financial requests are read-only; connection tools can replace or delete your connector connection. Requested financial results are shared with your AI client and may be processed by its model provider. Not affiliated with or endorsed by Lunch Money.",
     "category": "FINANCE"
   },
   "tools": {

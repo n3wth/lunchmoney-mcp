@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Privacy — Lunch Money MCP</title>
-  <meta name="description" content="How the unofficial Lunch Money MCP connector handles account information, credentials, and financial results.">
+  <title>Privacy — Lunch Money for Agents</title>
+  <meta name="description" content="How the unofficial Lunch Money for Agents connector handles account information, credentials, and financial results.">
   <link rel="canonical" href="https://lunchmoney.sh/privacy">
   <meta name="color-scheme" content="dark">
   <link rel="icon" href="/favicon.svg" type="image/svg+xml">
@@ -21,7 +21,7 @@
   <main id="main" class="wrap privacy-document">
     <h1>Privacy</h1>
     <p class="meta">Last updated September 15, 2026</p>
-    <p>Lunch Money MCP is operated by Oliver Newth as an independent project. It is not affiliated with, endorsed by, or sponsored by Lunch Money. This notice covers lunchmoney.sh and its hosted MCP connector.</p>
+    <p>Lunch Money for Agents is operated by Oliver Newth as an independent project. It is not affiliated with, endorsed by, or sponsored by Lunch Money. This notice covers lunchmoney.sh and its hosted MCP connector.</p>
 
     <section><h2>Information processed</h2>
       <p>When you sign in through Auth0 at auth.n3wth.com, the connector uses your verified account identifier to associate your connection with your account. It stores an internal user ID, the authentication issuer and subject, connection identifiers, connection status, environment, and timestamps in Cloudflare D1.</p>
@@ -32,7 +32,7 @@
     </section>
     <section><h2>Who receives information</h2>
       <p>Auth0 handles authentication. Nango handles credential storage and connection setup. Cloudflare runs the connector and stores identity and connection records. Vercel hosts the website and routes requests to the connector. Lunch Money processes requests made to its API.</p>
-      <p>Requested financial results are returned to the MCP client you choose, such as Codex or Claude, and may be sent to that client's model provider. Your client's privacy settings and provider policies govern their handling and retention of those results. This connector does not control or delete your chat history.</p>
+      <p>Requested financial results are returned to the MCP client you choose, and may be sent to that client's model provider. Your client's privacy settings and provider policies govern their handling and retention of those results. This connector does not control or delete your chat history.</p>
     </section>
     <section><h2>Website and operational logs</h2>
       <p>The website's example conversations use fictional data and run locally. The site includes no third-party analytics or advertising trackers. Authentication providers may use cookies on their login pages.</p>

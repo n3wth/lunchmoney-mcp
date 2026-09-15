@@ -1,12 +1,12 @@
-# Lunch Money MCP for Codex
+# Lunch Money for Agents for Codex
 
-![Lunch Money MCP](assets/icon.png)
+![Lunch Money for Agents](assets/icon.png)
 
 Unofficial plugin for read-only Lunch Money data.
 
 The package uses `.codex-plugin/plugin.json` with a companion `.mcp.json`.
 Its package ID matches the directory (`codex-plugin`); its display name is
-Lunch Money MCP. Plugin OAuth fields use camelCase;
+Lunch Money for Agents. Plugin OAuth fields use camelCase;
 manual TOML uses snake_case, as shown below.
 
 ## Manual config

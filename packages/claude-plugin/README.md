@@ -1,6 +1,6 @@
-# Lunch Money MCP for Claude Code
+# Lunch Money for Agents for Claude Code
 
-![Lunch Money MCP](assets/icon.png)
+![Lunch Money for Agents](assets/icon.png)
 
 Unofficial plugin for read-only Lunch Money data at
 `https://mcp.lunchmoney.sh/mcp`. It bundles a remote HTTP MCP connection with
