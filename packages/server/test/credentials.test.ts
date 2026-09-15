@@ -84,6 +84,20 @@ test('getToken sanitizes network errors that may embed request details', async (
   assert.ok(!err.message.includes(SECRET))
 })
 
+test('fetch impl is invoked without a receiver (workerd illegal-invocation guard)', async () => {
+  // workerd's `fetch` throws "Illegal invocation" when called on a non-global
+  // `this` (e.g. as `this.fetchImpl(...)`). A plain function sees `this ===
+  // undefined` under strict mode, so a throwing-on-receiver mock reproduces it.
+  let receiver: unknown = 'unset'
+  const impl = function (this: unknown) {
+    receiver = this
+    return Promise.resolve(new Response(JSON.stringify(connectionBody), { status: 200 }))
+  } as typeof globalThis.fetch
+  const nango = new NangoProvider({ secretKey: SECRET, fetch: impl })
+  assert.equal(await nango.getToken(CONNECTION_ID), API_TOKEN)
+  assert.equal(receiver, undefined)
+})
+
 test('createSession restricts to lunch-money and tags the end user', async () => {
   const { nango, seen } = provider(() => new Response(JSON.stringify({
     data: { token: 'sess-tok', connect_link: 'https://connect.nango.dev/s/x', expires_at: '2026-09-14T12:00:00Z' }

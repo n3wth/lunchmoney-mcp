@@ -1,5 +1,7 @@
 import { createServer as createHttpServer, type Server, type IncomingMessage, type ServerResponse } from 'node:http'
 import { StreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/streamableHttp.js'
+import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js'
+import type { McpServer } from '@modelcontextprotocol/sdk/server/mcp.js'
 import {
   createAccessTokenVerifier,
   protectedResourceMetadata,
@@ -9,7 +11,7 @@ import {
   type Principal
 } from '@lunchmoney-mcp/auth-contract'
 import type { createReadOnlyAdapter } from '@lunchmoney-mcp/adapter'
-import type { IdentityStore } from './identity.js'
+import type { Connection, IdentityStore, User } from './identity.js'
 import { validateAndActivateConnection, type CredentialProvider, type ConnectSessionProvider, type ConnectionDiscovery } from './credentials.js'
 import { createReadOnlyServer } from './tools.js'
 
@@ -27,10 +29,26 @@ export interface ServerConfig {
   maxBodyBytes?: number
 }
 
+interface EarlyResponse {
+  status: number
+  body: unknown
+  headers?: Record<string, string>
+}
+
+type GateResult = { error: EarlyResponse } | { principal: Principal }
+type ContextResult = { error: EarlyResponse } | { user: User; connection: Connection | undefined }
+
 function send(res: ServerResponse, status: number, body: unknown, headers: Record<string, string> = {}): void {
   const payload = JSON.stringify(body)
   res.writeHead(status, { 'content-type': 'application/json', ...headers })
   res.end(payload)
+}
+
+function json(status: number, body: unknown, headers: Record<string, string> = {}): Response {
+  return new Response(JSON.stringify(body), {
+    status,
+    headers: { 'content-type': 'application/json', ...headers }
+  })
 }
 
 function readBody(req: IncomingMessage, maxBytes: number): Promise<unknown> {
@@ -57,7 +75,32 @@ function readBody(req: IncomingMessage, maxBytes: number): Promise<unknown> {
   })
 }
 
-export function createMcpHttpServer(config: ServerConfig): Server {
+async function readRequestBody(request: Request, maxBytes: number): Promise<unknown> {
+  const stream = request.body
+  if (stream === null) throw new Error('invalid JSON')
+  const reader = stream.getReader()
+  const chunks: Uint8Array[] = []
+  let total = 0
+  for (;;) {
+    const { done, value } = await reader.read()
+    if (done) break
+    total += value.byteLength
+    if (total > maxBytes) {
+      await reader.cancel().catch(() => undefined)
+      throw new Error('body too large')
+    }
+    chunks.push(value)
+  }
+  const bytes = new Uint8Array(total)
+  let offset = 0
+  for (const chunk of chunks) {
+    bytes.set(chunk, offset)
+    offset += chunk.byteLength
+  }
+  return JSON.parse(new TextDecoder().decode(bytes)) as unknown
+}
+
+function createRequestPipeline(config: ServerConfig) {
   const verify = config.verifyToken ?? createAccessTokenVerifier(config.auth)
   const metadata = protectedResourceMetadata(config.auth)
   const maxBodyBytes = config.maxBodyBytes ?? 256 * 1024
@@ -86,52 +129,27 @@ export function createMcpHttpServer(config: ServerConfig): Server {
     return false
   }
 
-  return createHttpServer(async (req, res) => {
-    const url = new URL(req.url ?? '/', 'http://localhost')
-
-    if (req.method === 'GET' && url.pathname === '/.well-known/oauth-protected-resource') {
-      send(res, 200, metadata)
-      return
-    }
-
-    if (url.pathname !== '/mcp') {
-      send(res, 404, { error: 'not_found' })
-      return
-    }
-
-    if (req.method !== 'POST') {
-      send(res, 405, { error: 'method_not_allowed' })
-      return
-    }
-
-    let principal: Principal
+  async function authorize(authorization: string | null): Promise<GateResult> {
     try {
-      principal = await verify(req.headers.authorization ?? null)
+      return { principal: await verify(authorization) }
     } catch (error) {
-      if (error instanceof AuthorizationError) {
-        const challenge = bearerChallenge(config.auth, config.metadataUrl, error.code)
-        send(res, error.status, { error: error.code }, { 'www-authenticate': challenge })
-        return
+      const status = error instanceof AuthorizationError ? error.status : 401
+      const code = error instanceof AuthorizationError ? error.code : 'invalid_token'
+      return {
+        error: {
+          status,
+          body: { error: code },
+          headers: { 'www-authenticate': bearerChallenge(config.auth, config.metadataUrl, code) }
+        }
       }
-      send(res, 401, { error: 'invalid_token' }, {
-        'www-authenticate': bearerChallenge(config.auth, config.metadataUrl, 'invalid_token')
-      })
-      return
     }
+  }
 
-    let body: unknown
-    try {
-      body = await readBody(req, maxBodyBytes)
-    } catch {
-      send(res, 400, { error: 'invalid_request' })
-      return
-    }
-
+  async function resolveContext(principal: Principal): Promise<ContextResult> {
     const user = await config.store.getOrCreateUser(principal.issuer, principal.subject)
     if (rateLimited(user.userId)) {
       emit('rate_limited', user.userId, 429)
-      send(res, 429, { error: 'rate_limited' }, { 'retry-after': '60' })
-      return
+      return { error: { status: 429, body: { error: 'rate_limited' }, headers: { 'retry-after': '60' } } }
     }
     emit('request', user.userId)
     let connection = await config.store.getActiveConnection(user.userId)
@@ -169,12 +187,14 @@ export function createMcpHttpServer(config: ServerConfig): Server {
       }
       connection = await config.store.getActiveConnection(user.userId)
     }
+    return { user, connection }
+  }
 
-    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
+  async function buildServer(user: User, connection: Connection | undefined): Promise<McpServer> {
     const store = config.store
     const environment = config.environment ?? 'development'
     const sessions = config.connectSessions
-    const server = createReadOnlyServer({
+    return createReadOnlyServer({
       adapter: config.adapter,
       connectionState: connection?.state ?? 'unconnected',
       userId: user.userId,
@@ -204,6 +224,109 @@ export function createMcpHttpServer(config: ServerConfig): Server {
         }
       }
     })
+  }
+
+  return { metadata, maxBodyBytes, authorize, resolveContext, buildServer }
+}
+
+function closeOnFinish(response: Response, transport: WebStandardStreamableHTTPServerTransport): Response {
+  const body = response.body
+  if (body === null) {
+    void transport.close().catch(() => undefined)
+    return response
+  }
+  const { readable, writable } = new TransformStream<Uint8Array, Uint8Array>()
+  void body.pipeTo(writable)
+    .catch(() => undefined)
+    .then(() => transport.close())
+    .catch(() => undefined)
+  return new Response(readable, response)
+}
+
+/**
+ * Web Standard (Request/Response) handler for the same MCP surface. Runs on
+ * Cloudflare Workers and any fetch-based runtime; outbound subrequests execute
+ * in the caller's request context.
+ */
+export function createMcpFetchHandler(
+  config: ServerConfig
+): (request: Request) => Promise<Response> {
+  const pipeline = createRequestPipeline(config)
+  return async (request) => {
+    try {
+      const url = new URL(request.url)
+      if (request.method === 'GET' && url.pathname === '/.well-known/oauth-protected-resource') {
+        return json(200, pipeline.metadata)
+      }
+      if (url.pathname !== '/mcp') return json(404, { error: 'not_found' })
+      if (request.method !== 'POST') return json(405, { error: 'method_not_allowed' })
+
+      const gate = await pipeline.authorize(request.headers.get('authorization'))
+      if ('error' in gate) return json(gate.error.status, gate.error.body, gate.error.headers)
+
+      let body: unknown
+      try {
+        body = await readRequestBody(request, pipeline.maxBodyBytes)
+      } catch {
+        return json(400, { error: 'invalid_request' })
+      }
+
+      const resolved = await pipeline.resolveContext(gate.principal)
+      if ('error' in resolved) return json(resolved.error.status, resolved.error.body, resolved.error.headers)
+
+      const transport = new WebStandardStreamableHTTPServerTransport({ sessionIdGenerator: undefined })
+      const server = await pipeline.buildServer(resolved.user, resolved.connection)
+      await server.connect(transport)
+      const response = await transport.handleRequest(request, { parsedBody: body })
+      return closeOnFinish(response, transport)
+    } catch {
+      return json(500, { error: 'internal_error' })
+    }
+  }
+}
+
+export function createMcpHttpServer(config: ServerConfig): Server {
+  const pipeline = createRequestPipeline(config)
+  return createHttpServer(async (req, res) => {
+    const url = new URL(req.url ?? '/', 'http://localhost')
+
+    if (req.method === 'GET' && url.pathname === '/.well-known/oauth-protected-resource') {
+      send(res, 200, pipeline.metadata)
+      return
+    }
+
+    if (url.pathname !== '/mcp') {
+      send(res, 404, { error: 'not_found' })
+      return
+    }
+
+    if (req.method !== 'POST') {
+      send(res, 405, { error: 'method_not_allowed' })
+      return
+    }
+
+    const gate = await pipeline.authorize(req.headers.authorization ?? null)
+    if ('error' in gate) {
+      send(res, gate.error.status, gate.error.body, gate.error.headers)
+      return
+    }
+
+    let body: unknown
+    try {
+      body = await readBody(req, pipeline.maxBodyBytes)
+    } catch {
+      send(res, 400, { error: 'invalid_request' })
+      return
+    }
+
+    const resolved = await pipeline.resolveContext(gate.principal)
+    if ('error' in resolved) {
+      send(res, resolved.error.status, resolved.error.body, resolved.error.headers)
+      return
+    }
+
+    const transport = new StreamableHTTPServerTransport({ sessionIdGenerator: undefined })
+    const server = await pipeline.buildServer(resolved.user, resolved.connection)
     res.on('close', () => {
       transport.close().catch(() => undefined)
     })

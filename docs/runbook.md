@@ -1,6 +1,34 @@
 # Operator runbook (staging)
 
-Status: draft. The service is not deployed yet.
+Status: deployed to Cloudflare Workers staging at
+`https://lunchmoney-mcp-staging.newth.workers.dev` (worker
+`lunchmoney-mcp-staging`). The custom hostname
+`mcp-staging.lunchmoney.sh` is not yet mapped; the workers.dev URL is the
+live endpoint. Deploy with `npx wrangler deploy` from `packages/server`;
+`NANGO_SECRET_KEY` is a Wrangler secret (persists across deploys).
+
+## Worker architecture
+
+- `src/worker.ts` is a native `export default { fetch(request, env) }`
+  entrypoint; `src/index.ts` exposes `createMcpFetchHandler` built on the
+  MCP SDK `WebStandardStreamableHTTPServerTransport`. The Node path
+  (`npm start`) still uses `StreamableHTTPServerTransport` via
+  `createMcpHttpServer`; both share one auth/rate-limit/reconciliation
+  pipeline.
+- Do NOT reintroduce `cloudflare:node` `httpServerHandler`: outbound
+  `fetch()` through that bridge fails with Cloudflare error 1042.
+- workerd quirks found and fixed:
+  - `RequestInit.redirect: 'error'` is unsupported (constructor throws);
+    the adapter uses `redirect: 'manual'` and rejects any 3xx as
+    INVALID_RESPONSE, preserving the no-follow/no-token-leak intent.
+  - `fetch` must be invoked with the global receiver: calling a stored
+    `this.fetchImpl(...)` throws `TypeError: Illegal invocation`.
+    `NangoProvider` wraps the impl so the receiver never reaches it.
+    Node's fetch ignores `this`, so unit tests cannot catch this — a
+    this-sensitive mock test guards the regression.
+- The worker logs sanitized upstream failures only (`nango.<method>
+  failed` message strings, `upstream fetch: <status> <url>`); no headers,
+  bodies, or credentials are ever logged.
 
 ## Configuration
 
@@ -79,8 +107,13 @@ loopback callback ports; Auth0 does not allow port wildcards).
 
 ## Restart behavior
 
-Identity/connection state is in-memory: a restart disconnects every user.
-A durable store is a staging blocker.
+Identity/connection state is in-memory AND per-isolate on Workers: each
+isolate holds its own store, so the same user can appear `unconnected` on
+one request and `active` on the next. Any deploy or isolate eviction
+disconnects every user on that isolate. Self-heals: the next request
+re-runs pending reconciliation or the user re-runs `lunchmoney_connect`
+(free, idempotent). A durable store (D1/KV/Durable Objects) is a staging
+blocker.
 
 ## Revocation
 

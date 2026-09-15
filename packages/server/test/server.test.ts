@@ -5,7 +5,7 @@ import type { Server } from 'node:http'
 import { generateKeyPair, createLocalJWKSet, SignJWT, exportJWK } from 'jose'
 import { createAccessTokenVerifier } from '@lunchmoney-mcp/auth-contract'
 import { createReadOnlyAdapter } from '@lunchmoney-mcp/adapter'
-import { createMcpHttpServer } from '../src/index.js'
+import { createMcpFetchHandler, createMcpHttpServer } from '../src/index.js'
 import { InMemoryIdentityStore } from '../src/identity.js'
 import type { CredentialProvider } from '../src/credentials.js'
 
@@ -365,6 +365,60 @@ test('per-user rate limiting returns 429 with retry-after', async () => {
   } finally {
     server.close()
   }
+})
+
+test('fetch handler serves the same surface (Workers entrypoint path)', async () => {
+  const { publicKey, privateKey } = await generateKeyPair('RS256')
+  const jwks = { keys: [{ ...(await exportJWK(publicKey)), kid: 'k1', alg: 'RS256' }] }
+  const resolver = createLocalJWKSet(jwks as Parameters<typeof createLocalJWKSet>[0])
+  const verify = createAccessTokenVerifier({ issuer: ISSUER, resource: RESOURCE, jwksUri: JWKS_URI }, resolver)
+  const sign = (sub: string) => new SignJWT({ iss: ISSUER, aud: RESOURCE, sub, scope: 'lunchmoney:read' })
+    .setProtectedHeader({ alg: 'RS256', kid: 'k1' }).setIssuedAt().setExpirationTime('5m').sign(privateKey)
+
+  const upstream = upstreamFetch()
+  const handler = createMcpFetchHandler({
+    auth: { issuer: ISSUER, resource: RESOURCE, jwksUri: JWKS_URI },
+    metadataUrl: METADATA_URL,
+    store: new InMemoryIdentityStore(),
+    credentials: { getToken: async () => TOKEN },
+    adapter: createReadOnlyAdapter({ fetch: upstream.impl }),
+    verifyToken: verify
+  })
+  const req = (body: unknown, token?: string) => new Request('https://worker.test/mcp', {
+    method: 'POST',
+    headers: {
+      'content-type': 'application/json',
+      accept: 'application/json, text/event-stream',
+      ...(token ? { authorization: `Bearer ${token}` } : {})
+    },
+    body: JSON.stringify(body)
+  })
+  const parse = async (res: Response) => {
+    const text = await res.text()
+    return text.includes('data:') ? JSON.parse(text.split('data:')[1].trim()) : JSON.parse(text)
+  }
+
+  const meta = await handler(new Request('https://worker.test/.well-known/oauth-protected-resource'))
+  assert.equal(meta.status, 200)
+  assert.equal((await meta.json() as { resource: string }).resource, RESOURCE)
+
+  const noAuth = await handler(req({ jsonrpc: '2.0', id: 1, method: 'tools/list', params: {} }))
+  assert.equal(noAuth.status, 401)
+  assert.ok((noAuth.headers.get('www-authenticate') ?? '').includes('error="invalid_token"'))
+
+  const token = await sign('auth0|fetch-user')
+  const list = await handler(req({ jsonrpc: '2.0', id: 2, method: 'tools/list', params: {} }, token))
+  assert.equal(list.status, 200)
+  const listData = await parse(list)
+  assert.ok(listData.result.tools.some((t: { name: string }) => t.name === 'lunchmoney_connect'))
+
+  const call = await handler(req({
+    jsonrpc: '2.0', id: 3, method: 'tools/call',
+    params: { name: 'lunchmoney_get_overview', arguments: {} }
+  }, token))
+  const callData = await parse(call)
+  assert.equal(callData.result.isError, true)
+  assert.match(callData.result.content[0].text, /No active Lunch Money connection/)
 })
 
 test('connection lifecycle: pending not usable, replace revokes old, mark states', async () => {

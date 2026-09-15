@@ -431,7 +431,7 @@ export function createReadOnlyAdapter(options: AdapterOptions = {}) {
       if (url.origin !== BASE_ORIGIN || !ALLOWED_PATHS.has(url.pathname) || url.username !== '' || url.hash !== '') {
         throw invalidResponse()
       }
-      const guardedRequest = new Request(request, { signal: controller.signal, redirect: 'error' })
+      const guardedRequest = new Request(request, { signal: controller.signal, redirect: 'manual' })
       const attemptFetch = baseFetch(guardedRequest)
       const response = await Promise.race([
         attemptFetch,
@@ -441,6 +441,9 @@ export function createReadOnlyAdapter(options: AdapterOptions = {}) {
           else controller.signal.addEventListener('abort', onAbort, { once: true })
         })
       ])
+      // Redirects are never followed (workerd has no redirect:'error'); a 3xx
+      // from a fixed-origin API is an invalid response.
+      if (response.status >= 300 && response.status < 400) throw invalidResponse()
       const body = await readBoundedBody(response, controller.signal, () => {
         throw abortError()
       })

@@ -84,7 +84,7 @@ function routeFetch(map: Record<string, unknown>) {
   })
 }
 
-test('happy path: four routes, GET only, correct origin and redirect=error', async () => {
+test('happy path: four routes, GET only, correct origin and redirect=manual', async () => {
   const { fetchImpl, requests } = routeFetch({
     '/v2/me': userBody,
     '/v2/manual_accounts': manualAccountsBody,
@@ -117,7 +117,7 @@ test('happy path: four routes, GET only, correct origin and redirect=error', asy
 
   for (const req of requests) {
     assert.equal(req.method, 'GET')
-    assert.equal(req.redirect, 'error')
+    assert.equal(req.redirect, 'manual')
     assert.ok(req.url.startsWith('https://api.lunchmoney.dev/v2/'))
     assert.equal(new URL(req.url).origin, 'https://api.lunchmoney.dev')
     assert.equal(req.authorization, `Bearer ${TOKEN_A}`)
@@ -274,6 +274,14 @@ test('429 honors Retry-After seconds and date; exhaustion returns RATE_LIMITED',
     assert.equal(err.code, 'RATE_LIMITED')
     assert.equal(typeof err.retryAfterSeconds, 'number')
   }
+})
+
+test('redirect responses rejected as invalid (redirects never followed)', async () => {
+  const { fetchImpl, requests } = mockFetch(() => json({}, 302, { location: 'https://evil.example.com/' }))
+  const adapter = createReadOnlyAdapter({ fetch: fetchImpl })
+  await expectCode(adapter.getMe({ token: TOKEN_A }), 'INVALID_RESPONSE')
+  assert.equal(requests.length, 1)
+  assert.equal(requests[0].redirect, 'manual')
 })
 
 test('malformed JSON and oversize bodies rejected', async () => {

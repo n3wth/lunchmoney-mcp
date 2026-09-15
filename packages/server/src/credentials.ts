@@ -49,7 +49,11 @@ export class NangoProvider implements CredentialProvider, ConnectSessionProvider
     this.secretKey = options.secretKey
     this.baseUrl = options.baseUrl ?? DEFAULT_NANGO_URL
     this.lunchmoneyUrl = options.lunchmoneyUrl ?? DEFAULT_LUNCHMONEY_URL
-    this.fetchImpl = options.fetch ?? globalThis.fetch
+    // Wrap rather than storing the impl directly: `this.fetchImpl(...)` invokes
+    // it with the provider as `this`, and workerd's `fetch` throws
+    // "Illegal invocation" on a non-global receiver (Node's fetch ignores it).
+    const provided = options.fetch
+    this.fetchImpl = (input, init) => (provided ?? globalThis.fetch)(input, init)
   }
 
   async getToken(connectionId: string): Promise<string | undefined> {
