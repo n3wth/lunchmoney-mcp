@@ -1,5 +1,7 @@
 # Lunch Money MCP for Codex
 
+![Lunch Money MCP](assets/icon.png)
+
 Unofficial plugin for read-only Lunch Money data.
 
 The package uses `.codex-plugin/plugin.json` with a companion `.mcp.json`.

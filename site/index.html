@@ -3,309 +3,56 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>lunchmoney.sh — an unofficial Lunch Money connector for AI tools</title>
-  <meta name="description" content="An independent, unofficial Lunch Money MCP connector in development. Explore fictional examples and the planned security and privacy controls.">
+  <title>Lunch Money MCP — lunchmoney.sh</title>
+  <meta name="description" content="Connect Lunch Money to Codex, Claude, and MCP clients. Ask about spending, accounts, and budgets with read-only access.">
   <link rel="canonical" href="https://lunchmoney.sh/">
-  <meta name="color-scheme" content="light">
+  <meta name="color-scheme" content="dark">
+  <meta property="og:title" content="Lunch Money MCP">
+  <meta property="og:description" content="Your budget, in conversation. An unofficial, read-only Lunch Money connector.">
+  <meta property="og:image" content="https://lunchmoney.sh/icon.png">
+  <meta property="og:url" content="https://lunchmoney.sh/">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="icon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
   <link rel="stylesheet" href="styles.css">
   <script src="main.js" defer></script>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip to content</a>
-
   <header class="site-nav">
-    <div class="wrap nav-inner">
-      <a class="wordmark" href="#top" aria-label="lunchmoney.sh home">
-        <svg class="mark" viewBox="0 0 32 32" width="26" height="26" aria-hidden="true">
-          <rect width="32" height="32" rx="7" fill="#2e596b"/>
-          <text x="16" y="21.5" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="15" fill="#f7f9fb">lm</text>
-        </svg>
-        <span>lunchmoney.sh</span>
-      </a>
-      <nav aria-label="Site">
-        <ul class="nav-links">
-          <li><a href="#example">Example</a></li>
-          <li><a href="#how-it-works">How it works</a></li>
-          <li><a href="#security">Security</a></li>
-          <li><a href="#faq">FAQ</a></li>
-        </ul>
-      </nav>
-      <span class="nav-flag">Unofficial project</span>
-    </div>
+    <a class="wordmark" href="#main"><img src="favicon.svg" width="28" height="28" alt="">lunchmoney.sh</a>
+    <nav aria-label="Main"><a href="#connect">Connect</a><a href="/privacy">Privacy</a><a href="https://github.com/n3wth/lunchmoney-mcp">Source</a></nav>
   </header>
-
-  <main id="main">
-    <!-- Hero -->
-    <section class="hero" id="top">
-      <div class="wrap hero-grid">
-        <div class="hero-copy">
-          <p class="eyebrow">Independent project, in development</p>
-          <h1>Lunch Money, in plain language.</h1>
-          <p class="lede">
-            lunchmoney.sh is an independent, unofficial project building a
-            Model Context Protocol (MCP) connector for
-            <a href="https://lunchmoney.app" rel="noopener">Lunch&nbsp;Money</a>.
-            The idea: ask AI tools like Codex and other MCP clients questions
-            about your budget — spending, recurring items, categories — and get
-            answers in plain English.
-          </p>
-          <p class="status-line" role="status">
-            <span class="status-dot" aria-hidden="true"></span>
-            Status: pre-release. The connector is not available yet, and this
-            page does not accept tokens or signups. Not affiliated with or
-            endorsed by Lunch Money.
-          </p>
-          <div class="hero-actions">
-            <a class="btn btn-primary" href="#how-it-works">See how it works</a>
-            <a class="btn btn-quiet" href="https://lunchmoney.app" rel="noopener">The official Lunch Money site</a>
-          </div>
-        </div>
-
-        <div class="preview" id="example">
-          <div class="preview-frame" aria-label="Fictional conversation preview">
-            <div class="preview-head">
-              <span class="preview-title">Fictional preview</span>
-              <span class="preview-note">sample data, rendered locally</span>
-            </div>
-            <div class="preview-tabs" role="group" aria-label="Example views">
-              <button type="button" class="tab" id="tab-spending" aria-pressed="true" aria-controls="panel-spending">Spending</button>
-              <button type="button" class="tab" id="tab-recurring" aria-pressed="false" aria-controls="panel-recurring">Recurring</button>
-              <button type="button" class="tab" id="tab-budget" aria-pressed="false" aria-controls="panel-budget">Budget</button>
-            </div>
-            <div class="preview-body">
-              <div class="panel" id="panel-spending" role="region" aria-labelledby="tab-spending">
-                <p class="msg msg-user">How much did I spend on groceries this month?</p>
-                <div class="msg msg-assistant">
-                  <p>You spent <strong>$512.40</strong> on groceries across 9 transactions in September.</p>
-                  <table class="ledger">
-                    <caption class="visually-hidden">Example grocery spending by merchant</caption>
-                    <thead>
-                      <tr><th scope="col">Merchant</th><th scope="col" class="num">Amount</th></tr>
-                    </thead>
-                    <tbody>
-                      <tr><td>Corner Market</td><td class="num">$188.20</td></tr>
-                      <tr><td>Green Grocer</td><td class="num">$141.75</td></tr>
-                      <tr><td>Harbor Foods</td><td class="num">$182.45</td></tr>
-                    </tbody>
-                  </table>
-                  <p class="msg-meta">Fictional answer based on the sample data shown here.</p>
-                </div>
-              </div>
-              <div class="panel" id="panel-recurring" role="region" aria-labelledby="tab-recurring">
-                <p class="msg msg-user">What recurring charges are coming up?</p>
-                <div class="msg msg-assistant">
-                  <p>Three items renew in the next week:</p>
-                  <table class="ledger">
-                    <caption class="visually-hidden">Example upcoming recurring charges</caption>
-                    <thead>
-                      <tr><th scope="col">Item</th><th scope="col" class="num">Amount</th><th scope="col">Renews</th></tr>
-                    </thead>
-                    <tbody>
-                      <tr><td>Streaming plan</td><td class="num">$15.99</td><td>Oct 1</td></tr>
-                      <tr><td>Cloud storage</td><td class="num">$9.99</td><td>Oct 3</td></tr>
-                      <tr><td>Gym membership</td><td class="num">$42.00</td><td>Oct 6</td></tr>
-                    </tbody>
-                  </table>
-                  <p class="msg-meta">Fictional answer based on the sample data shown here.</p>
-                </div>
-              </div>
-              <div class="panel" id="panel-budget" role="region" aria-labelledby="tab-budget">
-                <p class="msg msg-user">Am I on track with my budget this month?</p>
-                <div class="msg msg-assistant">
-                  <p>Two of three categories are under budget so far.</p>
-                  <table class="ledger">
-                    <caption class="visually-hidden">Example budget progress by category</caption>
-                    <thead>
-                      <tr><th scope="col">Category</th><th scope="col" class="num">Spent</th><th scope="col" class="num">Budget</th></tr>
-                    </thead>
-                    <tbody>
-                      <tr><td>Groceries</td><td class="num">$512</td><td class="num">$600</td></tr>
-                      <tr><td>Dining out</td><td class="num over">$268</td><td class="num">$250</td></tr>
-                      <tr><td>Transport</td><td class="num">$96</td><td class="num">$150</td></tr>
-                    </tbody>
-                  </table>
-                  <p class="msg-meta">Fictional answer based on the sample data shown here.</p>
-                </div>
-              </div>
-            </div>
-            <p class="preview-foot">Example only — nothing is connected to a real account.</p>
-          </div>
-        </div>
+  <main id="main" class="wrap">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="byline">Unofficial <a href="https://lunchmoney.app">Lunch Money</a> connector by <a href="https://n3wth.com">n3wth</a></p>
+        <h1>Your budget,<br>in conversation.</h1>
+        <p class="lede">Ask about your spending, accounts, and recurring charges. Connect Lunch Money to the AI tools you already use.</p>
+        <div class="actions"><a class="button primary" href="#connect">Connect Lunch Money</a><a class="button" href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Read the guide</a></div>
+        <p class="meta">Read-only access. Your own Lunch Money account.</p>
+      </div>
+      <div class="preview" aria-label="Fictional conversation example">
+        <div class="preview-heading"><img src="favicon.svg" width="24" height="24" alt=""><span>Lunch Money</span><span class="sample">Sample data</span></div>
+        <div class="tabs" role="group" aria-label="Example questions"><button class="tab" aria-pressed="true" aria-controls="spending">Spending</button><button class="tab" aria-pressed="false" aria-controls="recurring">Recurring</button></div>
+        <div class="panel" id="spending"><p class="question">What did I spend on groceries?</p><p>You spent <strong>$512.40</strong> across 9 transactions in September.</p><table><caption class="sr-only">Fictional grocery spending</caption><thead><tr><th>Merchant</th><th>Amount</th></tr></thead><tbody><tr><td>Corner Market</td><td>$188.20</td></tr><tr><td>Green Grocer</td><td>$141.75</td></tr><tr><td>Harbor Foods</td><td>$182.45</td></tr></tbody></table></div>
+        <div class="panel" id="recurring" hidden><p class="question">What charges are coming up?</p><p>Three recurring items renew next week.</p><table><caption class="sr-only">Fictional recurring charges</caption><thead><tr><th>Item</th><th>Amount</th></tr></thead><tbody><tr><td>Streaming plan</td><td>$15.99</td></tr><tr><td>Cloud storage</td><td>$9.99</td></tr><tr><td>Gym membership</td><td>$42.00</td></tr></tbody></table></div>
+        <p class="preview-foot">Illustrative answers. No account is connected to this preview.</p>
       </div>
     </section>
-
-    <!-- How it works -->
-    <section class="section" id="how-it-works">
-      <div class="wrap">
-        <h2>How the connection is intended to work</h2>
-        <p class="section-lede">
-          The connector is not built yet. This is the planned flow, in plain
-          terms — each step is a goal, not a shipped feature.
-        </p>
-        <ol class="steps">
-          <li>
-            <h3>You bring your own Lunch Money token <span class="tag">planned</span></h3>
-            <p>
-              You would create a personal access token inside your own Lunch
-              Money account and enter it in a separate browser connection flow
-              managed by Nango. The planned connector would use the existing
-              sign-in service at auth.n3wth.com. Never paste a token into an AI chat.
-            </p>
-          </li>
-          <li>
-            <h3>Your AI client connects over MCP <span class="tag">planned</span></h3>
-            <p>
-              You would point an MCP-compatible client — for example Codex or
-              another tool that speaks the Model Context Protocol — at the
-              connector's endpoint:
-            </p>
-            <p><code class="endpoint">https://mcp.lunchmoney.sh</code></p>
-            <p class="muted">Planned address only. It is not live, and there is nothing to connect to yet.</p>
-          </li>
-          <li>
-            <h3>Questions become read-only API calls <span class="tag">planned</span></h3>
-            <p>
-              When you ask something — "what did I spend on dining out last
-              month?" — the connector would fetch the relevant transactions,
-              categories, or budgets from Lunch Money's official API.
-            </p>
-          </li>
-          <li>
-            <h3>Your AI client writes the answer</h3>
-            <p>
-              The financial results would be returned to your AI client and sent
-              to the model provider behind it to produce the answer. That means
-              your data leaves the connector and is processed by whichever AI
-              provider you use — see <a href="#security">Security &amp; privacy</a>.
-            </p>
-          </li>
-        </ol>
-      </div>
+    <section class="section" id="connect">
+      <div class="section-intro"><h2>A connection you control.</h2><p>The hosted connector is available in beta. Set it up directly in your MCP client.</p></div>
+      <div class="clients"><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/packages/codex-plugin/README.md"><h3>Codex</h3><p>Plugin setup instructions</p></a><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/packages/claude-plugin/README.md"><h3>Claude Code</h3><p>Plugin setup instructions</p></a><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md"><h3>Other MCP clients</h3><p>Connection guide</p></a></div>
+      <p class="endpoint"><span>Remote MCP endpoint</span><code>https://mcp.lunchmoney.sh/mcp</code></p>
+      <ol class="steps"><li><h3>Sign in</h3><p>Add the connector in your client and sign in through auth.n3wth.com.</p></li><li><h3>Link Lunch Money</h3><p>Run <code>lunchmoney_connect</code>. Open its browser link and enter your Lunch Money token in Nango. Never paste it into chat.</p></li><li><h3>Ask a question</h3><p>Your client can read transactions, categories, accounts, recurring items, and budget summaries.</p></li></ol>
+      <p class="meta">Direct setup is available. Marketplace listings are not yet published.</p>
     </section>
-
-    <!-- Security & privacy -->
-    <section class="section section-alt" id="security">
-      <div class="wrap">
-        <h2>Security &amp; privacy</h2>
-        <p class="section-lede">
-          Here is what this website does today and what we plan to verify
-          before opening the connector to users.
-        </p>
-        <div class="split">
-          <div class="card">
-            <h3>This site, today</h3>
-            <ul class="checklist">
-              <li>A static page with no backend of its own</li>
-              <li>No signup, no token entry, no forms</li>
-              <li>No analytics or third-party tracking added to the page</li>
-              <li>The chat preview runs locally in your browser with fictional data</li>
-            </ul>
-            <p class="card-note">
-              Vercel hosts this site and may retain standard request logs,
-              including IP addresses. No financial account is connected here.
-            </p>
-          </div>
-          <div class="card">
-            <h3>The connector, planned</h3>
-            <ul class="checklist">
-              <li>Sign-in through the existing auth.n3wth.com identity service</li>
-              <li>Browser token entry and encrypted credential storage through Nango</li>
-              <li>Ownership checks in the MCP server on every account request</li>
-              <li>An initial read-only tool allowlist enforced by the server</li>
-            </ul>
-            <p class="card-note">
-              These are design goals, not shipped controls. Authentication,
-              credential storage, tenant isolation, and read-only enforcement
-              are not implemented or verified yet.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <!-- FAQ -->
-    <section class="section" id="faq">
-      <div class="wrap">
-        <h2>Questions</h2>
-        <div class="faq-list">
-          <details>
-            <summary>Is this an official Lunch Money product?</summary>
-            <p>
-              No. lunchmoney.sh is an independent, unofficial project. It is not
-              affiliated with, endorsed by, or sponsored by Lunch Money. The
-              official product is at
-              <a href="https://lunchmoney.app" rel="noopener">lunchmoney.app</a>.
-            </p>
-          </details>
-          <details>
-            <summary>Can I connect my account today?</summary>
-            <p>
-              No. The connector is in pre-release and is not available. This
-              page has no token field, no install button, and nothing to sign
-              up for.
-            </p>
-          </details>
-          <details>
-            <summary>What is MCP?</summary>
-            <p>
-              The <a href="https://modelcontextprotocol.io" rel="noopener">Model Context Protocol</a>
-              is an open standard that lets AI tools call external services in a
-              consistent way. An MCP connector for Lunch Money would let a
-              compatible AI client ask your budget questions on your behalf.
-            </p>
-          </details>
-          <details>
-            <summary>Where would my financial data go?</summary>
-            <p>
-              Under the planned design, the connector would fetch your data from
-              Lunch Money's official API and return it to your AI client, which
-              sends it to its model provider to generate an answer. Your
-              financial data would therefore be processed by the AI provider you
-              choose — review that provider's data policies before using any
-              tool like this.
-            </p>
-          </details>
-          <details>
-            <summary>Would it be able to change my budget or move money?</summary>
-            <p>
-              The first beta is planned for reads only. Your Lunch Money token
-              may carry broader permissions, so the MCP server must enforce
-              its own limits. Writes may be added later with separate scopes
-              and approval controls. Moving money is outside this project's scope.
-            </p>
-          </details>
-          <details>
-            <summary>How would I disconnect or revoke access?</summary>
-            <p>
-              The planned disconnect flow would block further requests and
-              delete the credential stored for this connector. That does not
-              revoke the original token: invalidate it in Lunch Money itself
-              to prevent it being used anywhere else.
-            </p>
-          </details>
-          <details>
-            <summary>What will it cost?</summary>
-            <p>
-              Undecided. The project is pre-release and pricing hasn't been
-              determined.
-            </p>
-          </details>
-        </div>
-      </div>
+    <section class="section privacy" id="privacy">
+      <div class="section-intro"><h2>Your data. Clear boundaries.</h2><p>Know what the connector can read and where that information goes.</p></div>
+      <div class="privacy-grid"><div><h3>Read-only by design</h3><p>The service allows financial reads only. It cannot change your transactions or budgets. Your Lunch Money token may have broader permissions in Lunch Money.</p></div><div><h3>Credentials stay out of chat</h3><p>Nango stores your token. The connector retrieves it temporarily to make allowed requests to Lunch Money.</p></div><div><h3>Your client receives the results</h3><p>Financial results go to your AI client and may be sent to its model provider. That provider’s data settings apply.</p></div><div><h3>Disconnect when you want</h3><p>Run <code>lunchmoney_disconnect</code> to block further reads and delete the connection. Revoke the token itself in Lunch Money.</p></div></div>
+      <a href="/privacy">Read the privacy notice</a>
     </section>
   </main>
-
-  <footer class="site-footer">
-    <div class="wrap footer-inner">
-      <p>
-        lunchmoney.sh is an independent, unofficial project. It is not
-        affiliated with, endorsed by, or sponsored by Lunch Money.
-        The official product is
-        <a href="https://lunchmoney.app" rel="noopener">lunchmoney.app</a>.
-      </p>
-      <p class="muted">In development. The connector is not available yet.</p>
-    </div>
-  </footer>
+  <footer class="wrap"><a class="footer-brand" href="https://n3wth.com">n3wth</a><p>An independent, unofficial project. Not affiliated with, endorsed by, or sponsored by <a href="https://lunchmoney.app">Lunch Money</a>.</p><a href="/privacy">Privacy</a><a href="https://github.com/n3wth/lunchmoney-mcp">GitHub</a></footer>
 </body>
 </html>

@@ -29,6 +29,9 @@ Lunch Money. It is read-only: it can view your data, never change it.
 
 ## Privacy
 
+Read the [privacy notice](https://lunchmoney.sh/privacy) for storage,
+service providers, retention, and contact information.
+
 - Your Lunch Money token is stored in Nango, not by us.
 - The server retrieves that token transiently to make allowlisted Lunch Money
   API requests. Read-only enforcement is in this service; the underlying token

@@ -1,5 +1,7 @@
 # Lunch Money MCP for Claude Code
 
+![Lunch Money MCP](assets/icon.png)
+
 Unofficial plugin for read-only Lunch Money data at
 `https://mcp.lunchmoney.sh/mcp`. It bundles a remote HTTP MCP connection with
 a registered public OAuth client; no API token or client secret is packaged.
