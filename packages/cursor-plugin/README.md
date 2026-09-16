@@ -8,10 +8,13 @@ This independent project is not affiliated with or endorsed by Lunch Money.
 
 ## Quick install
 
-Open the [website setup picker](https://lunchmoney.sh/#connect), choose
-**Cursor**, and click **Add to Cursor**. Review and confirm the connection in
-Cursor, then enable it and sign in. This installs the MCP connection directly;
-it does not depend on a Cursor Marketplace listing.
+[Add to Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=lunchmoney&config=eyJ1cmwiOiJodHRwczovL21jcC5sdW5jaG1vbmV5LnNoL21jcCIsImF1dGgiOnsiQ0xJRU5UX0lEIjoieERBRk13WWt3akMzR2lXb0tzclF2WmFFcU9nOHNieEkiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJsdW5jaG1vbmV5OnJlYWQiXX19)
+
+The plugin is also on the [Cursor directory listing](https://cursor.directory/plugins/lunch-money).
+Review and confirm the connection in Cursor, then enable it and sign in. You
+can also open the [website setup picker](https://lunchmoney.sh/#connect),
+choose **Cursor**, and click **Add to Cursor**. This installs the MCP
+connection directly; it does not depend on a Cursor Marketplace listing.
 
 ## Manual fallback
 
@@ -41,10 +44,11 @@ follow `next_offset` before claiming a complete total and never sum currencies.
 
 This directory uses Cursor's `.cursor-plugin/plugin.json` format and root
 `mcp.json` discovery. The repository marketplace points to this package.
-Submit the public repository at
-[Cursor Marketplace](https://cursor.com/marketplace/publish). Submission and
-review do not establish publication or Grok Bot compatibility. Grok Bot
-availability depends on Cursor's team marketplace and authentication support.
+A public [Cursor directory listing](https://cursor.directory/plugins/lunch-money)
+is available. Official [Cursor Marketplace](https://cursor.com/marketplace/publish)
+submission and review do not establish publication or Grok Bot compatibility.
+Grok Bot availability depends on Cursor's team marketplace and authentication
+support.
 
 References: [plugin format](https://cursor.com/docs/reference/plugins) and
 [static OAuth](https://cursor.com/docs/mcp#static-oauth-for-remote-servers).
