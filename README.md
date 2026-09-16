@@ -4,7 +4,7 @@
 
 **Ask your AI agent about your Lunch Money data.**
 
-[Website](https://lunchmoney.sh) · [Setup guide](docs/user-guide.md) · [Privacy](https://lunchmoney.sh/privacy) · [Report an issue](https://github.com/n3wth/lunchmoney-mcp/issues)
+[Website](https://lunchmoney.sh) · [Setup guide](docs/connect.md) · [Privacy](https://lunchmoney.sh/privacy) · [Report an issue](https://github.com/n3wth/lunchmoney-mcp/issues)
 
 I built this to make [Lunch Money](https://lunchmoney.app) easier to use with
 AI agents. It connects your account to tools that support
@@ -82,7 +82,7 @@ Full instructions and manual alternatives:
 | Codex | [Plugin and manual setup](packages/codex-plugin/README.md) |
 | Claude Code | [Plugin setup](packages/claude-plugin/README.md) |
 | Cursor | [Plugin and MCP configuration](packages/cursor-plugin/README.md) |
-| Other MCP clients | [Connection guide](docs/user-guide.md) |
+| Other MCP clients | [Connection guide](docs/connect.md) |
 
 The hosted service is in beta. Direct setup is available; a directory submission
 does not mean a plugin is approved or listed. See the
@@ -126,7 +126,7 @@ produce a useful total. Ask for separate totals unless you explicitly want a
 conversion.
 
 AI-generated answers can be wrong. Check the source records in Lunch Money
-when an answer matters. The [user guide](docs/user-guide.md) lists the tools
+when an answer matters. The [user guide](docs/connect.md) lists the tools
 and explains connection troubleshooting.
 
 ## Work on the project

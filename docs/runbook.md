@@ -1,4 +1,7 @@
-# Operator runbook
+---
+title: Operator runbook
+description: Operational runbook for the production and staging Lunch Money MCP deployments, including promotion, rollback, configuration, and observability.
+---
 
 ## Production promotion (2026-09-15 UTC)
 
@@ -35,9 +38,12 @@ ID in `packages/cursor-plugin/mcp.json` and the README):
 - `http://localhost:8787/callback`
 - `https://www.cursor.com/agents/mcp/oauth/callback`
 
+<Note>
 Auth0 registration of those Cursor URIs is done outside this repository by
 ops (Billy). A documentation change here is not proof they are live on the
 tenant.
+</Note>
+
 Configuration was saved and read back. Codex CLI 0.154.0 completed live
 authorization-code + PKCE login through `auth.n3wth.com` after deployment.
 
@@ -70,9 +76,12 @@ npx wrangler deploy --config wrangler.production.jsonc
 
 Before deployment, install the **prod** Nango key and distinct webhook signing
 key as Worker secrets `NANGO_SECRET_KEY` and `NANGO_WEBHOOK_SIGNING_KEY`.
+
+<Warning>
 Never use the staging `.env` for this. Production secret material may be held
 temporarily in gitignored `.env.production` with permissions 0600. Secrets must
 not appear in Wrangler vars, plugin packages, command arguments, or logs.
+</Warning>
 
 Vercel project `lunchmoney-mcp` must own `mcp.lunchmoney.sh` and route it to
 `https://lunchmoney-mcp-production.newth.workers.dev`. The host-conditioned
@@ -296,9 +305,13 @@ WHERE timestamp > NOW() - INTERVAL '1' DAY
 GROUP BY blob1, double1
 ```
 
+<Warning>
 Do not enable logging of full requests or raw provider exceptions while debugging.
 Check Nango's dev webhook delivery logs for delivery status; never copy headers
-or payloads into issues. The Cloudflare connector's SQL wrapper currently reports
+or payloads into issues.
+</Warning>
+
+The Cloudflare connector's SQL wrapper currently reports
 an error on the Analytics Engine API's nonstandard HTTP 200 response; use a
 direct authorized SQL client or dashboard for read-back.
 Direct SQL read-back verified persisted request, upstream-response, and

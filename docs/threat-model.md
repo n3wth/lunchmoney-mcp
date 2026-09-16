@@ -1,4 +1,7 @@
-# Threat model
+---
+title: Threat model
+description: Threat model for the hosted read-only Lunch Money MCP server, covering assets, trust boundaries, mitigations, and known gaps.
+---
 
 Status: draft for beta review. Scope: the hosted read-only Lunch Money MCP
 server, the Auth0 authorization boundary, and the Nango credential store.

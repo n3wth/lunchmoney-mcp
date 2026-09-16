@@ -1,4 +1,7 @@
-# Lunch Money MCP model routing
+---
+title: Lunch Money MCP model routing
+description: Approved model routing, allowance ledger, and execution contract for the Lunch Money MCP project.
+---
 
 Approved 2026-09-14. Coordinate through Linear and Git; no custom orchestration platform.
 

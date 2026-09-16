@@ -1,4 +1,7 @@
-# Lunch Money MCP: Devin handoff
+---
+title: Lunch Money MCP - Devin handoff
+description: Handoff of verified completed work, next implementation gates, and canonical context for the Lunch Money MCP project.
+---
 
 Source: Oliver's Codex conversation and verified tool results, 2026-09-14.
 Project: https://linear.app/newth/project/lunch-money-mcp-5e3cbc5d645d

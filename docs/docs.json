@@ -2,13 +2,26 @@
   "name": "Lunch Money for Agents",
   "theme": "mint",
   "colors": {
-    "primary": "#16A34A"
+    "primary": "#0064E0",
+    "light": "#2694FE",
+    "dark": "#0064E0"
+  },
+  "logo": {
+    "light": "/icon.png",
+    "dark": "/icon.png"
+  },
+  "favicon": "/favicon.svg",
+  "navbar": {
+    "links": [
+      { "label": "Website", "href": "https://lunchmoney.sh" },
+      { "type": "github", "href": "https://github.com/n3wth/lunchmoney-mcp" }
+    ]
   },
   "navigation": {
     "groups": [
       {
-        "group": "Guide",
-        "pages": ["index", "user-guide"]
+        "group": "Get started",
+        "pages": ["index", "connect", "tools", "privacy"]
       },
       {
         "group": "Operations",
