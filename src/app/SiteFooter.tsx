@@ -12,6 +12,7 @@ export default function SiteFooter() { return (
               <Text type="supporting" justify="end">Unofficial integration by <Link href="https://n3wth.com" type="inherit" color="inherit">n3wth</Link>. Not affiliated with or endorsed by Lunch Money.</Text>
             <HStack gap={4} vAlign="center">
               <Link href={repo} type="supporting" color="secondary">GitHub</Link>
+              <Link href="/guides/recurring-bills" type="supporting" color="secondary">Guides</Link>
               <Link href="/terms" type="supporting" color="secondary">Terms</Link>
               <Link href="/security" type="supporting" color="secondary">Security</Link>
               <Link href="/privacy" type="supporting" color="secondary">Privacy</Link>

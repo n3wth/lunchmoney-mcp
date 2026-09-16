@@ -63,9 +63,26 @@ function build() {
   if (!template.includes('<!-- APP_MARKUP -->')) throw new Error('Missing APP_MARKUP in document template');
   const html = template.replace('<!-- APP_MARKUP -->', () => '<div id="app">' + markup + '</div>');
   fs.writeFileSync(path.join(OUT, 'index.html'), html);
-  for (const [slug, title] of Object.entries({terms: 'Terms of service', security: 'Security and data', privacy: 'Privacy'})) {
+  const routes = {
+    terms: {
+      title: 'Terms of service',
+      description: 'Terms for the unofficial Lunch Money plugin, including acceptable use, availability, and service limitations.'
+    },
+    security: {
+      title: 'Financial data privacy and security',
+      description: 'Where your Lunch Money token is stored, what your AI client receives, what read-only access means, and how to disconnect or revoke access.'
+    },
+    privacy: {
+      title: 'Privacy',
+      description: 'Privacy details for the unofficial Lunch Money plugin, including data handling, providers, analytics, and your controls.'
+    },
+    'guides/recurring-bills': {
+      title: 'Recurring Expenses and Subscription Audit Guide',
+      description: 'Find recurring expenses, review upcoming bills, and audit subscriptions with the unofficial read-only Lunch Money connector.'
+    }
+  };
+  for (const [slug, {title, description}] of Object.entries(routes)) {
     const url = 'https://lunchmoney.sh/' + slug;
-    const description = title + ' for the unofficial Lunch Money plugin: data handling, providers, and your controls.';
     const page = template
       .replace(/<title>.*?<\/title>/, '<title>' + title + ' — Lunch Money for Agents</title>')
       .replace(/(<meta (?:name|property)="(?:description|og:description|twitter:description)" content=")[^"]*/g, '$1' + description)

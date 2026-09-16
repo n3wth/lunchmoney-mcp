@@ -12,9 +12,11 @@ import SetupPrompt from './SetupPrompt'
 
 import SiteFooter from './SiteFooter'
 import LegalPage from './LegalPage'
+import RecurringBillsGuide from './RecurringBillsGuide'
 
 export default function App({path = "/"}: {path?: string}) {
   if (["/terms", "/privacy", "/security"].includes(path)) return <LegalPage path={path} />
+  if (path === "/guides/recurring-bills") return <RecurringBillsGuide />
   return <Theme theme={neutralTheme} mode="light">
     <AppShell height="auto" variant="surface" topNav={<ShellTopNav />}>
       <VStack hAlign="center" paddingInline={3} gap={6}>
@@ -46,6 +48,7 @@ export default function App({path = "/"}: {path?: string}) {
               </VStack>
             </VStack>
             <SetupPrompt />
+            <Text as="p" color="secondary" justify="center">Before connecting, review <Link hasUnderline href="/security">financial data privacy and security</Link>: where your token is stored, what your AI receives, and how to stop access.</Text>
             <Grid columns={{minWidth: 240, max: 2, repeat: 'fit'}} gap={10}>
               <VStack gap={4}>
                 <Text type="supporting">Step 1</Text><Heading level={3}>Sign in</Heading>
