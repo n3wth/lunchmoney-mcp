@@ -68,6 +68,33 @@ npx wrangler deploy --dry-run --config wrangler.production.jsonc
 npx wrangler deploy --config wrangler.production.jsonc
 ```
 
+### GitHub Actions auto-deploy
+
+`.github/workflows/deploy-production.yml` deploys Worker
+`lunchmoney-mcp-production` on push to `main` when Worker-relevant paths
+change, or on manual **Run workflow**. It calls the existing release-check
+workflow, then deploys from `packages/server` with
+`wrangler deploy --config wrangler.production.jsonc`.
+
+Watched paths: `packages/server/**`, `packages/lunchmoney-adapter/**`,
+`packages/auth-contract/**`, and `.github/workflows/deploy-production.yml`.
+
+This workflow does **not** apply D1 migrations. Apply schema changes
+manually before merging code that depends on them, using the production
+config command above. Worker secrets `NANGO_SECRET_KEY` and
+`NANGO_WEBHOOK_SIGNING_KEY` stay in Wrangler and are not GitHub secrets.
+
+Repository secrets (Settings → Secrets and variables → Actions). Do not
+commit these values or put them in workflow files:
+
+| Secret | Purpose |
+| --- | --- |
+| `CLOUDFLARE_API_TOKEN` | Account API token with **Edit Cloudflare Workers**. Scope it to account `ac23513945eb49f73a89faf1be12384e` only. |
+| `CLOUDFLARE_ACCOUNT_ID` | Cloudflare account ID `ac23513945eb49f73a89faf1be12384e` |
+
+Until both secrets exist, the deploy job fails closed. After adding them,
+run **Actions → Deploy production Worker → Run workflow** on `main`.
+
 Before deployment, install the **prod** Nango key and distinct webhook signing
 key as Worker secrets `NANGO_SECRET_KEY` and `NANGO_WEBHOOK_SIGNING_KEY`.
 Never use the staging `.env` for this. Production secret material may be held
