@@ -1,5 +1,5 @@
 import {useState} from 'react'
-import {VStack} from '@astryxdesign/core/Stack'
+import {HStack, VStack} from '@astryxdesign/core/Stack'
 import {Text} from '@astryxdesign/core/Text'
 import {Button} from '@astryxdesign/core/Button'
 import {Selector, SelectorOption} from '@astryxdesign/core/Selector'
@@ -7,7 +7,7 @@ import {Token} from '@astryxdesign/core/Token'
 import {CodeBlock} from '@astryxdesign/core/CodeBlock'
 import {Link} from '@astryxdesign/core/Link'
 import {Collapsible} from '@astryxdesign/core/Collapsible'
-import {clients, cursorInstallUrl} from './client-installation.mjs'
+import {clients, cursorDirectoryUrl, cursorInstallUrl} from './client-installation.mjs'
 
 const icons: Record<string, string> = {chatgpt: 'chatgpt.svg', 'claude-chat': 'claude.png', grok: 'grok.svg', codex: 'codex.svg', claude: 'claude.png', cursor: 'cursor.svg', cowork: 'claude.png'}
 const option = (client: typeof clients[number]) => ({value: client.value, label: client.label, icon: icons[client.value] ? <img src={'/client-icons/' + icons[client.value]} width="20" height="20" alt="" /> : undefined})
@@ -24,7 +24,10 @@ export default function SetupPrompt() {
     <VStack key={selected} gap={4} aria-live="polite">
       <Text as="p">{client.description}</Text>
       {client.code && <CodeBlock code={client.code} width="100%" isWrapped title={selected === 'claude' ? 'Run in Claude Code' : 'Connection details'} />}
-      {selected === 'cursor' && <Button label="Add to Cursor" href={cursorInstallUrl} variant="primary" width="fit-content" />}
+      {selected === 'cursor' && <HStack gap={4} wrap="wrap" vAlign="center">
+        <Button label="Add to Cursor" href={cursorInstallUrl} variant="primary" width="fit-content" />
+        <Link type="supporting" color="secondary" href={cursorDirectoryUrl} isExternalLink>Cursor directory listing</Link>
+      </HStack>}
       {selected !== 'codex' && <Text as="p" type="supporting">{client.next}</Text>}
       <VStack gap={2}>
       {client.command && <Collapsible trigger={<Text type="supporting">Advanced setup</Text>} defaultIsOpen={false}>
