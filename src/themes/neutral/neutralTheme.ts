@@ -455,7 +455,7 @@ export const neutralTheme = defineTheme({
 
     heading: {
       base: {letterSpacing: '-0.035em', fontWeight: '600'},
-      'type:display-1': {fontSize: 'clamp(2.5rem, 6vw, 4.5rem)', lineHeight: '1.06', letterSpacing: '-0.045em'},
+      'type:display-1': {fontSize: 'clamp(1.25rem, 7vw, 4.5rem)', lineHeight: '1.06', letterSpacing: '-0.045em'},
       'type:display-2': {fontSize: 'clamp(2.125rem, 4vw, 3.5rem)', lineHeight: '1.08'},
       'type:display-3': {fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', lineHeight: '1.15'},
       'level:3': {fontSize: '1.25rem', lineHeight: '1.3'},
