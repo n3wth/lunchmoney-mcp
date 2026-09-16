@@ -7,8 +7,8 @@
     "dark": "#0064E0"
   },
   "logo": {
-    "light": "/icon.png",
-    "dark": "/icon.png"
+    "light": "/logo-light.svg",
+    "dark": "/logo-dark.svg"
   },
   "favicon": "/favicon.svg",
   "navbar": {
@@ -31,10 +31,6 @@
           "plugin-submissions",
           "model-routing"
         ]
-      },
-      {
-        "group": "Project records",
-        "pages": ["lunch-money-plan", "discovery-review", "devin-handoff"]
       }
     ]
   }
