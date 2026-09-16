@@ -1,7 +1,7 @@
 {
   "name": "codex-plugin",
   "version": "0.3.1",
-  "description": "Lunch Money for Agents: an unofficial, open-source MCP integration by n3wth with read-only financial access",
+  "description": "Unofficial Lunch Money plugin for exploring your spending, budgets, and balances. Read-only access.",
   "author": { "name": "Oliver Newth" },
   "homepage": "https://lunchmoney.sh",
   "repository": "https://github.com/n3wth/lunchmoney-mcp",
@@ -9,14 +9,17 @@
   "keywords": ["lunchmoney", "finance", "mcp"],
   "mcpServers": "./.mcp.json",
   "interface": {
-    "displayName": "Lunch Money for Agents",
-    "shortDescription": "Read-only access to your Lunch Money data",
-    "longDescription": "Connect Lunch Money through Nango and query financial data with read-only MCP tools.",
+    "displayName": "Lunch Money",
+    "shortDescription": "Unofficial plugin for read-only access to Lunch Money",
+    "longDescription": "Ask about your spending, budgets, recurring expenses, and account balances in conversation. This unofficial plugin can read your Lunch Money data but cannot change financial records or move money. Independently developed by Oliver Newth; not affiliated with or endorsed by Lunch Money. Sign in, then enter your API token on the secure connection page, never in chat.",
+    "websiteURL": "https://lunchmoney.sh",
+    "privacyPolicyURL": "https://lunchmoney.sh/privacy",
+    "termsOfServiceURL": "https://lunchmoney.sh/terms",
     "developerName": "Oliver Newth",
     "category": "Productivity",
     "capabilities": ["Read"],
     "composerIcon": "./assets/icon.png",
     "logo": "./assets/icon.png",
-    "defaultPrompt": ["Check my Lunch Money connection status"]
+    "defaultPrompt": ["Connect my Lunch Money account", "How does my spending compare with my budget?", "What recurring expenses do I have?"]
   }
 }

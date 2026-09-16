@@ -1,7 +1,7 @@
 {
   "name": "lunchmoney",
   "version": "0.1.1",
-  "description": "Lunch Money for Agents: an unofficial, open-source MCP integration by n3wth with read-only financial access",
+  "description": "Unofficial Lunch Money plugin for exploring your spending, budgets, and balances. Read-only access; not affiliated with or endorsed by Lunch Money.",
   "author": { "name": "Oliver Newth" },
   "homepage": "https://lunchmoney.sh",
   "repository": "https://github.com/n3wth/lunchmoney-mcp",

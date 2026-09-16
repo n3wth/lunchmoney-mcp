@@ -6,7 +6,26 @@ Unofficial plugin for read-only Lunch Money data at
 `https://mcp.lunchmoney.sh/mcp`. It bundles a remote HTTP MCP connection with
 a registered public OAuth client; no API token or client secret is packaged.
 
-## Load the package
+## Install
+
+Run these in Claude Code, one at a time:
+
+```text
+/plugin marketplace add n3wth/lunchmoney-mcp
+/plugin install lunchmoney@lunchmoney-mcp
+```
+
+Start a new session. This repository is a custom marketplace; installing it
+does not require approval in the curated directory.
+
+### Claude Cowork
+
+Open **Customize → Plugins → Browse plugins → Add marketplace**, enter
+`n3wth/lunchmoney-mcp`, then install **lunchmoney**. Cowork's marketplace flow
+is documented, but this plugin's Cowork authentication still needs live
+verification. Claude Chat does not use this plugin installation flow.
+
+## Local development
 
 From the repository root:
 
@@ -15,8 +34,8 @@ claude --plugin-dir ./packages/claude-plugin
 ```
 
 This loads the package for that Claude Code session. It does not publish a
-marketplace entry or persistently install the plugin. For a permanent install,
-a Claude plugin marketplace must list this directory as its source.
+marketplace entry or persistently install the plugin. Use the commands above
+for a permanent install.
 
 In Claude Code, run `/mcp`, select the Lunch Money plugin server, and complete
 browser authentication at `auth.n3wth.com`. The fixed callback port is 8414. The registered URI is

@@ -37,7 +37,8 @@ that supports remote servers with OAuth sign-in.
 3. **Ask your agent to connect Lunch Money.** It should run
    `lunchmoney_connect` and give you a browser link.
 4. **Open the link and enter your token in Nango's connection page.** Create
-   the token in Lunch Money under **Settings → Developers**. Never paste it
+   the token on [Lunch Money’s Developers page](https://my.lunchmoney.app/developers)
+   by clicking **Request New Access Token** (label and usage are optional). Never paste it
    into chat or your MCP configuration.
 5. **Try a small request**, such as “List my Lunch Money accounts.”
 
@@ -49,7 +50,30 @@ https://mcp.lunchmoney.sh/mcp
 
 ### Client-specific installation
 
-These links cover the configuration each client needs:
+Choose your app on the [website](https://lunchmoney.sh/#connect), or install
+directly:
+
+**Claude Code** — run inside Claude Code:
+
+```text
+/plugin marketplace add n3wth/lunchmoney-mcp
+/plugin install lunchmoney@lunchmoney-mcp
+```
+
+**Codex** — run in a terminal:
+
+```sh
+codex plugin marketplace add n3wth/lunchmoney-mcp
+codex plugin add codex-plugin@lunchmoney-mcp
+```
+
+For the Codex app, use **Plugins → Create menu → Add marketplace** with
+`n3wth/lunchmoney-mcp`, then install **Lunch Money**.
+For Cursor, select **Cursor → Add to Cursor** on the website.
+Start a new session after installing, sign in, then ask “Connect Lunch Money”.
+
+Custom marketplaces are separate from curated directory approvals.
+Full instructions and manual alternatives:
 
 | Client | Instructions |
 | --- | --- |

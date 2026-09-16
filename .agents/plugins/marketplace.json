@@ -1,0 +1,10 @@
+{
+  "name": "lunchmoney-mcp",
+  "interface": {"displayName": "Lunch Money for Agents"},
+  "plugins": [{
+    "name": "codex-plugin",
+    "source": {"source": "local", "path": "./packages/codex-plugin"},
+    "policy": {"installation": "AVAILABLE", "authentication": "ON_INSTALL"},
+    "category": "Productivity"
+  }]
+}

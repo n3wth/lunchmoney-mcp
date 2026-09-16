@@ -1,4 +1,7 @@
-packages/
+packages/*
+!packages/cursor-plugin/
+packages/cursor-plugin/*
+!packages/cursor-plugin/mcp.json
 docs/
 .env*
 **/.env*

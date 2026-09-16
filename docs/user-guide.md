@@ -5,16 +5,41 @@ Lunch Money. It is read-only: it can view your data, never change it.
 
 ## Connect
 
-1. Follow the [Codex](../packages/codex-plugin/README.md) or
-   [Claude Code](../packages/claude-plugin/README.md) setup instructions.
+1. Choose your app in the [website setup picker](https://lunchmoney.sh/#connect),
+   or follow [Codex](../packages/codex-plugin/README.md),
+   [Claude Code / Cowork](../packages/claude-plugin/README.md), or
+   [Cursor](../packages/cursor-plugin/README.md) setup instructions.
    Production is available at `https://mcp.lunchmoney.sh/mcp`, with login at
    `auth.n3wth.com`. Staging remains at `https://mcp-staging.lunchmoney.sh/mcp`.
    Each environment requires its own connection.
 2. Sign in when prompted (Auth0).
 3. Call `lunchmoney_connect`. Open the returned link in a browser — it is a
-   Nango-hosted page. Create a personal access token in Lunch Money
-   (Settings -> Developers) and paste it there.
+   Nango-hosted page. Keep it open. In another tab, open
+   [Lunch Money’s Developers page](https://my.lunchmoney.app/developers) and
+   click **Request New Access Token**. The label and usage fields are optional.
+   Copy the token and paste it into the Nango connection page. After it confirms
+   success, return to your AI and ask “List my Lunch Money accounts.”
 4. Never paste the token into chat or any tool argument.
+
+## Other apps and availability
+
+Other clients need remote HTTP MCP, OAuth with PKCE, and support for a
+pre-registered public OAuth client. The endpoint alone is not a universal
+installer: each callback URL must be registered with this service before
+authentication can succeed. Never supply a Lunch Money token as an MCP header.
+
+ChatGPT directory review is pending. Cowork authentication and Grok Bot
+compatibility have not been verified. See [submission status](plugin-submissions.md).
+
+## Installation references
+
+- [Claude marketplace installation](https://code.claude.com/docs/en/discover-plugins)
+- [Claude marketplace format](https://code.claude.com/docs/en/plugin-marketplaces)
+- [Cowork plugins](https://claude.com/docs/cowork/guide/plugins)
+- [Codex plugin format](https://developers.openai.com/codex/plugins/build)
+- [Cursor install links](https://cursor.com/docs/mcp/install-links)
+- [Cursor OAuth configuration](https://cursor.com/docs/mcp)
+- [Compound Engineering installation example](https://github.com/EveryInc/compound-engineering-plugin)
 
 ## Tools
 

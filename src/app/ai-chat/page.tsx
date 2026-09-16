@@ -19,13 +19,13 @@ export default function AIChat() {
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const button = document.getElementById('demo-tab-' + active)
+    const button = document.getElementById('demo-tab-' + active)?.querySelector('[data-progress-fill]')
     if (!button) return
     const start = () => {
       timerAnimation.current?.cancel()
       timerAnimation.current = null
       if (reduced.matches) return
-      const animation = button.animate([{backgroundSize: '0% 100%'}, {backgroundSize: '100% 100%'}], {duration: 7000, easing: 'linear', fill: 'forwards'})
+      const animation = button.animate([{clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0% 0 0)'}], {duration: 7000, easing: 'linear', fill: 'forwards'})
       timerAnimation.current = animation
       animation.onfinish = () => setActive(value => (value + 1) % demos.length)
       if (isPaused.current || document.hidden) animation.pause()
@@ -77,7 +77,7 @@ export default function AIChat() {
 
   return <VStack gap={6} aria-label="Example conversation with fictional data" onMouseEnter={() => setPaused(true)} onMouseLeave={() => setPaused(false)} onFocusCapture={() => setPaused(true)} onBlurCapture={event => {if (!event.currentTarget.contains(event.relatedTarget)) setPaused(false)}}>
     <VStack className="astryx-demo-stage">
-    {demos.map((demo, demoIndex) => <VStack key={demo.name} gap={6} className={demoIndex === active ? 'astryx-demo-slide' : 'astryx-demo-slide astryx-demo-hidden'} aria-hidden={demoIndex !== active}>
+    {demos.map((demo, demoIndex) => <VStack key={demo.name} gap={4} className={demoIndex === active ? 'astryx-demo-slide' : 'astryx-demo-slide astryx-demo-hidden'} aria-hidden={demoIndex !== active}>
     <ChatMessage sender="user">
       <ChatMessageBubble><Text as="p">{demo.question}</Text></ChatMessageBubble>
     </ChatMessage>
@@ -97,7 +97,7 @@ export default function AIChat() {
               <Text>{label}</Text><Text hasTabularNumbers>{amount}</Text>
             </HStack>
             <svg width="100%" height="10" viewBox="0 0 500 10" preserveAspectRatio="none" aria-hidden="true">
-              <rect width="500" height="10" rx="5" fill="var(--color-background-muted)" />
+              <rect width="500" height="10" rx="5" fill="var(--color-chart-track)" />
               <rect data-bar width={value / total * 500} height="10" rx="5" fill={colors[index]} />
             </svg>
           </VStack>
@@ -110,7 +110,10 @@ export default function AIChat() {
     </VStack>)}
     </VStack>
     <HStack gap={2} hAlign="center" as="nav" aria-label="Try another question">
-      {demos.map((item, index) => <Button key={item.name} id={'demo-tab-' + index} className={index === active ? 'astryx-demo-timer' : undefined} label={item.name} size="sm" variant={index === active ? 'primary' : 'secondary'} aria-pressed={index === active} onClick={() => setActive(index)} />)}
+      {demos.map((item, index) => <Button key={item.name} id={'demo-tab-' + index} className={index === active ? 'astryx-demo-timer' : undefined} label={item.name} size="sm" variant={index === active ? 'primary' : 'secondary'} aria-pressed={index === active} onClick={() => setActive(index)}>
+        {item.name}
+        {index === active && <Text aria-hidden="true" type="inherit" className="astryx-demo-progress-fill" data-progress-fill>{item.name}</Text>}
+      </Button>)}
     </HStack>
   </VStack>
 }
