@@ -1,4 +1,7 @@
-# Plugin directory submissions
+---
+title: Plugin directory submissions
+description: Listing materials and submission status for the Lunch Money MCP plugin across OpenAI, Claude, Cursor, and the official MCP registry.
+---
 
 ## Listing materials
 
@@ -35,7 +38,9 @@ https://github.com/lunch-money/awesome-lunchmoney/pull/29.
 
 The review also requires public privacy and terms URLs, domain verification,
 accurate tool annotations, test access, supported countries, and policy
-attestations. Do not mark live tests complete or invent review credentials.
+attestations.
+
+<Warning>Do not mark live tests complete or invent review credentials.</Warning>
 
 ### Review cases
 
@@ -93,9 +98,9 @@ redirect URIs:
 - Desktop: `http://localhost:8787/callback`
 - Web and Agents: `https://www.cursor.com/agents/mcp/oauth/callback`
 
-Auth0 registration of these URIs is done outside this repository by ops
+<Note>Auth0 registration of these URIs is done outside this repository by ops
 (Billy). Do not treat a docs or package change as proof they are live on the
-tenant.
+tenant.</Note>
 
 ## Cursor directory
 

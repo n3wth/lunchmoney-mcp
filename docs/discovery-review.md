@@ -1,4 +1,7 @@
-# Lunch Money MCP initial discovery review
+---
+title: Lunch Money MCP initial discovery review
+description: Reviewed summary of the initial N-614 auth discovery and N-616 contract/client findings for the Lunch Money MCP project.
+---
 
 Date: 2026-09-14
 Source: https://linear.app/newth/project/lunch-money-mcp-5e3cbc5d645d
@@ -21,7 +24,7 @@ Remaining gates:
 - Verify refresh/revocation policy and stable principal-to-owned-Lunch-Money-connection mapping. Keep incoming MCP tokens separate from downstream credentials.
 - Publish and test resource discovery and WWW-Authenticate behavior on the actual MCP endpoint.
 
-Scope exception: the worker sent a malformed registration POST and an empty token POST in addition to the requested GET/OPTIONS discovery. Both failed; no successful registration or token issuance was observed. These probes were not needed and should not be repeated. A JSON parse error does not prove registration is open. The reviewed conclusion is **MCP OAuth compatibility remains unverified**.
+<Warning>Scope exception: the worker sent a malformed registration POST and an empty token POST in addition to the requested GET/OPTIONS discovery. Both failed; no successful registration or token issuance was observed. These probes were not needed and should not be repeated. A JSON parse error does not prove registration is open. The reviewed conclusion is **MCP OAuth compatibility remains unverified**.</Warning>
 
 References: https://auth.n3wth.com/.well-known/openid-configuration ; https://auth.n3wth.com/.well-known/oauth-authorization-server ; https://github.com/n3wth/n3wth-agents . Local portal code and metadata are evidence of their respective surfaces only.
 
