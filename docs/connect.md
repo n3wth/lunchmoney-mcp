@@ -1,6 +1,6 @@
 ---
 title: Connect your account
-description: Add the MCP server to your client, sign in, and link Lunch Money through a browser flow
+description: Add the server, sign in, link Lunch Money
 ---
 
 This is an unofficial connector for Lunch Money. It is not affiliated with
@@ -14,11 +14,8 @@ Lunch Money. It is read-only: it can view your data, never change it.
     [Claude Code / Cowork](https://github.com/n3wth/lunchmoney-mcp/blob/main/packages/claude-plugin/README.md), or
     [Cursor](https://github.com/n3wth/lunchmoney-mcp/blob/main/packages/cursor-plugin/README.md).
 
-    Cursor also has a one-click installer. Paste this deeplink into your
-    browser's address bar:
-
-    `cursor://anysphere.cursor-deeplink/mcp/install?name=lunchmoney&config=eyJ1cmwiOiJodHRwczovL21jcC5sdW5jaG1vbmV5LnNoL21jcCIsImF1dGgiOnsiQ0xJRU5UX0lEIjoieERBRk13WWt3akMzR2lXb0tzclF2WmFFcU9nOHNieEkiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJsdW5jaG1vbmV5OnJlYWQiXX19`
-
+    Cursor also has a one-click installer:
+    <a href="cursor://anysphere.cursor-deeplink/mcp/install?name=lunchmoney&config=eyJ1cmwiOiJodHRwczovL21jcC5sdW5jaG1vbmV5LnNoL21jcCIsImF1dGgiOnsiQ0xJRU5UX0lEIjoieERBRk13WWt3akMzR2lXb0tzclF2WmFFcU9nOHNieEkiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJsdW5jaG1vbmV5OnJlYWQiXX19">Add to Cursor</a>.
     The public [Cursor directory listing](https://cursor.directory/plugins/lunch-money)
     is separate from that deeplink.
 
@@ -61,15 +58,3 @@ or invalid, call `lunchmoney_connect` and complete the browser flow. Call
 `lunchmoney_disconnect` to disconnect. If deletion is pending, retry disconnect
 until it succeeds. Uninstalling a client plugin does not disconnect the service
 or revoke the Lunch Money token.
-
-## Installation references
-
-- [Claude marketplace installation](https://code.claude.com/docs/en/discover-plugins)
-- [Claude marketplace format](https://code.claude.com/docs/en/plugin-marketplaces)
-- [Cowork plugins](https://claude.com/docs/cowork/guide/plugins)
-- [Codex plugin format](https://developers.openai.com/codex/plugins/build)
-- Add to Cursor deeplink: `cursor://anysphere.cursor-deeplink/mcp/install?name=lunchmoney&config=eyJ1cmwiOiJodHRwczovL21jcC5sdW5jaG1vbmV5LnNoL21jcCIsImF1dGgiOnsiQ0xJRU5UX0lEIjoieERBRk13WWt3akMzR2lXb0tzclF2WmFFcU9nOHNieEkiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJsdW5jaG1vbmV5OnJlYWQiXX19`
-- [Cursor directory listing](https://cursor.directory/plugins/lunch-money)
-- [Cursor install links](https://cursor.com/docs/mcp/install-links)
-- [Cursor OAuth configuration](https://cursor.com/docs/mcp)
-- [Compound Engineering installation example](https://github.com/EveryInc/compound-engineering-plugin)
