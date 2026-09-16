@@ -1,7 +1,8 @@
-packages/*
-!packages/cursor-plugin/
-packages/cursor-plugin/*
-!packages/cursor-plugin/mcp.json
+packages/auth-contract/
+packages/claude-plugin/
+packages/codex-plugin/
+packages/lunchmoney-adapter/
+packages/server/
 docs/
 .env*
 **/.env*
