@@ -8,22 +8,21 @@
     @font-face { font-family: Geist; src: url('../site/fonts/SuisseIntl-Book.otf'); font-weight: 400; }
     @font-face { font-family: Mona; src: url('../site/fonts/SuisseIntl-Semibold.otf'); font-weight: 600; }
     * { box-sizing: border-box; }
-    body { margin: 0; width: 1200px; height: 630px; background: #141d1b; color: #fafaf6; font-family: Geist, sans-serif; }
-    main { width: 100%; height: 100%; padding: 64px 72px 48px; display: flex; flex-direction: column; }
-    header { display: flex; align-items: center; gap: 20px; color: #b9e3d3; font-size: 24px; }
-    header img { width: 64px; height: 64px; }
-    h1 { margin: 49px 0 22px; font: 600 88px/1.02 Mona, sans-serif; letter-spacing: -4px; }
-    p { margin: 0; font-size: 30px; color: #b9e3d3; }
-    footer { margin-top: auto; border-top: 1px solid #27292e; padding-top: 25px; display: flex; justify-content: space-between; font-size: 22px; }
-    footer span:last-child { color: #9aa0a8; }
+    body { margin: 0; width: 1200px; height: 630px; background: #004c43; color: #faf9f6; font-family: Geist, sans-serif; }
+    main { width: 100%; height: 100%; padding: 56px 64px; display: flex; flex-direction: column; }
+    header { display: flex; align-items: center; gap: 12px; font: 600 25px Mona, sans-serif; }
+    header img { width: 42px; height: 42px; }
+    header em { font-style: normal; }
+    section { flex: 1; display: flex; align-items: center; justify-content: center; text-align: center; }
+    h1 { margin: 0; font: 600 104px/1.05 Mona, sans-serif; letter-spacing: -4px; }
   </style>
 </head>
 <body>
   <main>
-    <header><span>Read-only MCP integration</span></header>
-    <h1>Lunch Money<br>for Agents</h1>
-    <p>Ask more of your money.</p>
-    <footer><span>lunchmoney.sh</span><span>Unofficial · by n3wth</span></footer>
+    <header><img src="../site/icon.png" alt=""><span>Lunch Money <em>for Agents</em></span></header>
+    <section>
+      <h1>Your Lunch Money.<br>Just ask.</h1>
+    </section>
   </main>
 </body>
 </html>

@@ -23,7 +23,7 @@ export default function App({path = "/"}: {path?: string}) {
         <Section variant="transparent" width="100%" padding={6} className="astryx-hero-surface">
         <VStack as="section" id="intro" className="astryx-hero-content" width="100%" hAlign="center" gap={10} paddingBlockStart={6}>
           <VStack width="100%" maxWidth={840} gap={5} hAlign="center">
-              <Heading level={1} type="display-1" textWrap="balance" justify="center">Your Lunch Money. Just ask.</Heading>
+              <Heading level={1} type="display-1" justify="center">Your Lunch Money.<br />Just ask.</Heading>
               <Text as="p" justify="center" textWrap="balance">Ask your AI about spending, budgets, and upcoming bills using your own <Link href="https://lunchmoney.app/?refer=94dziuj5" rel="sponsored" type="inherit" color="inherit" hasUnderline>Lunch Money</Link> data.</Text>
           </VStack>
           <VStack as="section" id="conversation" width="100%" maxWidth={840}>

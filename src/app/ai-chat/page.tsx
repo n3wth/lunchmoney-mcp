@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from 'react'
+import {useEffect, useLayoutEffect, useRef, useState} from 'react'
 import {VStack, HStack} from '@astryxdesign/core/Stack'
 import {Text} from '@astryxdesign/core/Text'
 import {ChatMessage, ChatMessageBubble} from '@astryxdesign/core/Chat'
@@ -14,6 +14,7 @@ export default function AIChat() {
   const [active, setActive] = useState(0)
   const [paused, setPaused] = useState(false)
   const timerAnimation = useRef<Animation | null>(null)
+  const previousActive = useRef(active)
   const isPaused = useRef(paused)
   isPaused.current = paused
 
@@ -49,26 +50,33 @@ export default function AIChat() {
     else timerAnimation.current?.play()
   }, [paused])
 
-  useEffect(() => {
+  useLayoutEffect(() => {
+    const previous = previousActive.current
+    previousActive.current = active
     if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return
     const answer = document.getElementById('example-answer-' + active)
     if (!answer) return
     const duration = parseFloat(getComputedStyle(answer).getPropertyValue('--duration-medium')) || 300
+    const outgoing = document.getElementById('example-answer-' + previous)?.parentElement
+    const exitAnimation = previous !== active ? outgoing?.animate([{opacity: 1}, {opacity: 0}], {
+      duration, easing: 'ease-in-out',
+    }) : undefined
     const question = answer.parentElement?.querySelector('article')
     const entrance = [{opacity: 0, transform: 'translateY(8px)'}, {opacity: 1, transform: 'translateY(0)'}]
-    const shellAnimation = answer.animate(entrance, {duration, delay: 180, fill: 'backwards', easing: 'ease-out'})
+    const shellAnimation = answer.animate(entrance, {duration, fill: 'backwards', easing: 'ease-out'})
     const questionAnimation = question?.animate(entrance, {duration, fill: 'backwards', easing: 'ease-out'})
     const animations = [...answer.querySelectorAll('[data-reveal]')].map((element, index) =>
       element.animate([{opacity: 0, transform: 'translateY(6px)'}, {opacity: 1, transform: 'translateY(0)'}], {
-        duration, delay: 300 + index * 110, fill: 'backwards', easing: 'ease-out',
+        duration, delay: duration * 0.5 + index * 60, fill: 'backwards', easing: 'ease-out',
       }))
     answer.querySelectorAll('[data-bar]').forEach((element, index) => {
       const width = element.getAttribute('width') || '0'
       animations.push(element.animate([{width: '0px'}, {width: width + 'px'}], {
-        duration: duration * 2, delay: 520 + index * 110, fill: 'backwards', easing: 'cubic-bezier(.2,.7,.2,1)',
+        duration: duration * 2, delay: duration + index * 60, fill: 'backwards', easing: 'cubic-bezier(.2,.7,.2,1)',
       }))
     })
     return () => {
+      exitAnimation?.cancel()
       questionAnimation?.cancel()
       shellAnimation.cancel()
       animations.forEach(animation => animation.cancel())

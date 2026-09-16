@@ -1,6 +1,6 @@
 # Lunch Money for Agents
 
-<img src="site/icon.png" alt="Lunch Money for Agents icon" width="64" height="64">
+[![Lunch Money for Agents — Your Lunch Money. Just ask. An unofficial, read-only integration.](site/social-card.png)](https://lunchmoney.sh)
 
 **Ask your AI agent about your Lunch Money data.**
 
