@@ -12,9 +12,11 @@ import SetupPrompt from './SetupPrompt'
 
 import SiteFooter from './SiteFooter'
 import LegalPage from './LegalPage'
+import RecurringBillsGuide from './RecurringBillsGuide'
 
 export default function App({path = "/"}: {path?: string}) {
   if (["/terms", "/privacy", "/security"].includes(path)) return <LegalPage path={path} />
+  if (path === "/guides/recurring-bills") return <RecurringBillsGuide />
   return <Theme theme={neutralTheme} mode="light">
     <AppShell height="auto" variant="surface" topNav={<ShellTopNav />}>
       <VStack hAlign="center" paddingInline={3} gap={6}>
