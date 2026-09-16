@@ -1,7 +1,11 @@
 import cursorConfig from '../../packages/cursor-plugin/mcp.json' with {type: 'json'}
 
+// Shared Cursor one-click install link (name=lunchmoney, not generic name=server).
+// Derived from packages/cursor-plugin/mcp.json so the site button and docs stay aligned.
 export const cursorInstallUrl = 'cursor://anysphere.cursor-deeplink/mcp/install?name=lunchmoney&config=' +
   encodeURIComponent(btoa(JSON.stringify(cursorConfig.mcpServers.lunchmoney)))
+
+export const cursorInstallMarkdown = `[Add to Cursor](${cursorInstallUrl})`
 
 export const clients = [
   {

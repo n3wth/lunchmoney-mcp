@@ -8,10 +8,12 @@ This independent project is not affiliated with or endorsed by Lunch Money.
 
 ## Quick install
 
-Open the [website setup picker](https://lunchmoney.sh/#connect), choose
-**Cursor**, and click **Add to Cursor**. Review and confirm the connection in
-Cursor, then enable it and sign in. This installs the MCP connection directly;
-it does not depend on a Cursor Marketplace listing.
+[Add to Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=lunchmoney&config=eyJ1cmwiOiJodHRwczovL21jcC5sdW5jaG1vbmV5LnNoL21jcCIsImF1dGgiOnsiQ0xJRU5UX0lEIjoieERBRk13WWt3akMzR2lXb0tzclF2WmFFcU9nOHNieEkiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJsdW5jaG1vbmV5OnJlYWQiXX19)
+
+Review and confirm the connection in Cursor, then enable it and sign in. You
+can also open the [website setup picker](https://lunchmoney.sh/#connect),
+choose **Cursor**, and click **Add to Cursor**. This installs the MCP
+connection directly; it does not depend on a Cursor Marketplace listing.
 
 ## Manual fallback
 

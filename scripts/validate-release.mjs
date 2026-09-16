@@ -78,12 +78,24 @@ for (const path of [cursorManifest.mcpServers, cursorManifest.logo]) {
 const cursorConfig = await readJson('packages/cursor-plugin/mcp.json')
 assert.deepEqual(Object.keys(cursorConfig.mcpServers), ['lunchmoney'])
 const cursorServer = cursorConfig.mcpServers.lunchmoney
-const {cursorInstallUrl} = await import('../src/app/client-installation.mjs')
+const {cursorInstallUrl, cursorInstallMarkdown} = await import('../src/app/client-installation.mjs')
 const installUrl = new URL(cursorInstallUrl)
 assert.equal(installUrl.protocol, 'cursor:')
 assert.equal(installUrl.searchParams.get('name'), 'lunchmoney')
+assert.equal(
+  cursorInstallMarkdown,
+  `[Add to Cursor](${cursorInstallUrl})`,
+  'Cursor markdown install link must wrap the shared deeplink'
+)
 assert.deepEqual(JSON.parse(Buffer.from(installUrl.searchParams.get('config'), 'base64').toString()), cursorServer,
   'Cursor install link must carry the packaged server configuration, including OAuth')
+for (const doc of ['README.md', 'packages/cursor-plugin/README.md', 'docs/user-guide.md']) {
+  const text = await readFile(resolve(root, doc), 'utf8')
+  assert.ok(
+    text.includes(cursorInstallMarkdown),
+    `${doc} must include the shared Add to Cursor markdown link so docs do not drift from the site`
+  )
+}
 assert.equal(cursorServer.url, endpoint)
 assert.deepEqual(Object.keys(cursorServer).sort(), ['auth', 'url'])
 assert.deepEqual(Object.keys(cursorServer.auth).sort(), ['CLIENT_ID', 'scopes'])
