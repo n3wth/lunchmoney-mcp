@@ -6,7 +6,14 @@ This independent project is not affiliated with or endorsed by Lunch Money.
 
 [Website](https://lunchmoney.sh) · [Privacy](https://lunchmoney.sh/privacy)
 
-## Direct MCP setup
+## Quick install
+
+Open the [website setup picker](https://lunchmoney.sh/#connect), choose
+**Cursor**, and click **Add to Cursor**. Review and confirm the connection in
+Cursor, then enable it and sign in. This installs the MCP connection directly;
+it does not depend on a Cursor Marketplace listing.
+
+## Manual fallback
 
 Merge the `lunchmoney` entry from [mcp.json](mcp.json) into your project's
 `.cursor/mcp.json` or your personal `~/.cursor/mcp.json`. Preserve existing

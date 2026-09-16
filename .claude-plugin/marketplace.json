@@ -1,0 +1,6 @@
+{
+  "name": "lunchmoney-mcp",
+  "owner": {"name": "Oliver Newth", "email": "oliver@newth.ai"},
+  "metadata": {"description": "Unofficial Lunch Money plugin for read-only financial conversations."},
+  "plugins": [{"name": "lunchmoney", "source": "./packages/claude-plugin", "description": "Unofficial plugin for read-only Lunch Money access."}]
+}

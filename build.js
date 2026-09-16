@@ -7,6 +7,7 @@ const fs = require('fs');
 const path = require('path');
 
 const SRC = path.join(__dirname, 'site');
+const TEMPLATE = path.join(__dirname, 'src/app/document.html');
 const OUT = path.join(__dirname, 'dist');
 const PORT = Number(process.env.PORT) || 4173;
 
@@ -39,8 +40,8 @@ function copyDir(src, dest) {
 }
 
 function build() {
-  if (!fs.existsSync(path.join(SRC, 'index.html'))) {
-    console.error('error: site/index.html not found');
+  if (!fs.existsSync(TEMPLATE)) {
+    console.error('error: src/app/document.html not found');
     process.exit(1);
   }
   fs.rmSync(OUT, { recursive: true, force: true });
@@ -58,11 +59,9 @@ function build() {
   esbuild.buildSync({ ...common, entryPoints: ['src/app/render.tsx'], outfile: renderer, platform: 'node', format: 'cjs' });
   delete require.cache[require.resolve(renderer)];
   const markup = require(renderer).render();
-  const html = fs.readFileSync(path.join(SRC, 'index.html'), 'utf8')
-    .replace(/<body>[\s\S]*<\/body>/, () => '<body><div id="app">' + markup + '</div></body>')
-    .replace('<link rel="stylesheet" href="styles.css">', '<link rel="stylesheet" href="app.css">')
-    .replace('<link rel="stylesheet" href="conversation-preview.css">', '')
-    .replace('<script src="conversation-preview.js" defer></script>', '<script type="module" src="app.js"></script>');
+  const template = fs.readFileSync(TEMPLATE, 'utf8');
+  if (!template.includes('<!-- APP_MARKUP -->')) throw new Error('Missing APP_MARKUP in document template');
+  const html = template.replace('<!-- APP_MARKUP -->', () => '<div id="app">' + markup + '</div>');
   fs.writeFileSync(path.join(OUT, 'index.html'), html);
   fs.writeFileSync(path.join(OUT, 'app.css'), [
     '@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;',

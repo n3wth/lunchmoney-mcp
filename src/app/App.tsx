@@ -4,14 +4,11 @@ import {VStack, HStack} from '@astryxdesign/core/Stack'
 import {Grid} from '@astryxdesign/core/Grid'
 import {Section} from '@astryxdesign/core/Section'
 import {Heading, Text} from '@astryxdesign/core/Text'
-import {Button} from '@astryxdesign/core/Button'
 import {Link} from '@astryxdesign/core/Link'
-import {Collapsible} from '@astryxdesign/core/Collapsible'
 import {neutralTheme} from '../../.cache/neutral'
 import ShellTopNav from './shell-top-nav/page'
 import AIChat from './ai-chat/page'
 import SetupPrompt from './SetupPrompt'
-import HeroShader from './HeroShader'
 
 const repo = 'https://github.com/n3wth/lunchmoney-mcp'
 
@@ -19,17 +16,16 @@ export default function App() {
   return <Theme theme={neutralTheme} mode="light">
     <AppShell height="auto" variant="surface" topNav={<ShellTopNav />}>
       <VStack hAlign="center" paddingInline={3} gap={6}>
-        <VStack width="100%" maxWidth={1120} paddingInline={6}>
+        <VStack width="100%" maxWidth={1120} className="astryx-page-frame">
         <Theme theme={neutralTheme} mode="dark">
-        <Section variant="muted" width="100%" padding={6} className="astryx-hero-surface">
-        <HeroShader />
-        <VStack as="section" id="intro" className="astryx-hero-content" width="100%" hAlign="center" gap={10} paddingBlockStart={10}>
-          <VStack width="100%" maxWidth={840} gap={6} hAlign="center">
-              <Heading level={1} type="display-1" textWrap="balance" justify="center">Ask more of your money.</Heading>
-              <Button label="Connect Lunch Money" href="#connect" variant="primary" size="lg" />
+        <Section variant="transparent" width="100%" padding={6} className="astryx-hero-surface">
+        <VStack as="section" id="intro" className="astryx-hero-content" width="100%" hAlign="center" gap={10} paddingBlockStart={6}>
+          <VStack width="100%" maxWidth={840} gap={5} hAlign="center">
+              <Heading level={1} type="display-1" textWrap="balance" justify="center">Your Lunch Money. Just ask.</Heading>
+              <Text as="p" justify="center" textWrap="balance">Ask your AI about spending, budgets, and upcoming bills using your own <Link href="https://lunchmoney.app/?refer=94dziuj5" rel="sponsored" type="inherit" color="inherit" hasUnderline>Lunch Money</Link> data.</Text>
           </VStack>
           <VStack as="section" id="conversation" width="100%" maxWidth={840}>
-            <VStack padding={6}>
+            <VStack paddingBlock={4}>
             <AIChat />
             </VStack>
           </VStack>
@@ -37,10 +33,11 @@ export default function App() {
         </Section>
         </Theme>
         </VStack>
-        <Text type="supporting" color="secondary" justify="center">Independently developed.</Text>
+        <Text type="supporting" color="secondary" justify="center">Unofficial, read-only plugin. Not affiliated with or endorsed by Lunch Money.</Text>
 
-        <VStack width="100%" maxWidth={1120} paddingInline={6}>
-          <VStack as="section" id="connect" gap={10} paddingBlock={10}>
+        <VStack width="100%" maxWidth={1120} className="astryx-page-frame">
+          <VStack hAlign="center" width="100%">
+          <VStack as="section" id="connect" width="100%" maxWidth={650} gap={10} paddingBlock={10}>
             <VStack hAlign="center" paddingBlockStart={10}>
               <VStack gap={5} maxWidth={650}>
                 <Heading level={2} type="display-2" justify="center" textWrap="balance">Get connected.</Heading>
@@ -49,9 +46,8 @@ export default function App() {
             <SetupPrompt />
             <Grid columns={{minWidth: 240, max: 2, repeat: 'fit'}} gap={10}>
               <VStack gap={4}>
-                <Text type="supporting">Step 1</Text><Heading level={3}>Add the connector</Heading>
-                <Text as="p" color="secondary" textWrap="balance">Follow the setup guide for your AI tool, then sign in when prompted.</Text>
-                <Link href={repo + '#client-specific-installation'}>Lunch Money MCP setup guide</Link>
+                <Text type="supporting">Step 1</Text><Heading level={3}>Sign in</Heading>
+                <Text as="p" color="secondary" textWrap="balance">After installing, sign in when asked. The sign-in at auth.n3wth.com is for this plugin, separate from your Lunch Money login.</Text>
               </VStack>
               <VStack gap={4}>
                 <Text type="supporting">Step 2</Text><Heading level={3}>Link Lunch Money</Heading>
@@ -59,24 +55,15 @@ export default function App() {
               </VStack>
               <VStack gap={4}>
                 <Text type="supporting">Step 3</Text><Heading level={3}>Add your API token</Heading>
-                <Text as="p" color="secondary" textWrap="balance">Enter your Lunch Money API token on the connection page, never in chat.</Text>
+                <Text as="p" color="secondary"><Link href="https://my.lunchmoney.app/developers" target="_blank" rel="noopener noreferrer" type="inherit">Request a new access token</Link> in Lunch Money, then paste it into the connection page. Never paste it in chat.</Text>
               </VStack>
               <VStack gap={4}>
                 <Text type="supporting">Step 4</Text><Heading level={3}>Start a conversation</Heading>
-                <Text as="p" color="secondary" textWrap="balance">Try “List my accounts.” Your agent reads the requested records from Lunch Money to answer.</Text>
+                <Text as="p" color="secondary" textWrap="balance">Once connected, try asking something like “How much did I spend this month?”</Text>
               </VStack>
             </Grid>
-            <Section variant="transparent" padding={0} dividers={['top', 'bottom']}>
-              <VStack paddingBlock={5}>
-                <Collapsible defaultIsOpen={false} trigger="Connect manually">
-                  <VStack gap={4} paddingBlock={5}>
-                    <Text as="p" color="secondary">Add this remote MCP server URL, then complete the sign-in prompt.</Text>
-                    <Text type="code" wordBreak="break-all">https://mcp.lunchmoney.sh/mcp</Text>
-                    <Link href={repo + '/blob/main/docs/user-guide.md'}>Read the setup guide</Link>
-                  </VStack>
-                </Collapsible>
-              </VStack>
-            </Section>
+          </VStack>
+
           </VStack>
 
           <Section variant="transparent" padding={0}>
@@ -105,20 +92,21 @@ export default function App() {
           </VStack>
           </Section>
 
-          <Section variant="transparent" padding={0}>
-            <VStack gap={6} hAlign="center" className="astryx-final-cta">
-              <Heading level={2} type="display-2" justify="center">See what’s possible.</Heading>
-              <Button label="Connect Lunch Money" href="#connect" variant="primary" size="lg" />
-            </VStack>
-          </Section>
-          <HStack as="footer" gap={6} wrap="wrap" hAlign="between" paddingBlock={8}>
-            <Text type="supporting">A creation from <Link href="https://n3wth.com" type="inherit" color="inherit">n3wth</Link></Text>
-            <HStack gap={5}>
+          <VStack as="footer" width="100%" gap={4} paddingBlock={8}>
+            <HStack width="100%" gap={4} wrap="wrap" hAlign="between" vAlign="start">
+              <Link href="https://lunchmoney.app/?refer=94dziuj5" rel="sponsored" label="Powered by Lunch Money (referral link)">
+                <img src="/powered-by-lunch-money.png" width="209" height="60" alt="Powered by Lunch Money" loading="lazy" />
+              </Link>
+            <VStack gap={3} hAlign="end">
+              <Text type="supporting" justify="end">Unofficial integration by <Link href="https://n3wth.com" type="inherit" color="inherit">n3wth</Link>. Not affiliated with or endorsed by Lunch Money.</Text>
+            <HStack gap={4} vAlign="center">
               <Link href={repo} type="supporting" color="secondary">GitHub</Link>
               <Link href="/terms" type="supporting" color="secondary">Terms</Link>
               <Link href="/privacy" type="supporting" color="secondary">Privacy</Link>
             </HStack>
-          </HStack>
+            </VStack>
+            </HStack>
+          </VStack>
         </VStack>
       </VStack>
     </AppShell>

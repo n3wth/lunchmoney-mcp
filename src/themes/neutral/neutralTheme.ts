@@ -97,14 +97,29 @@ export const neutralTheme = defineTheme({
 
   syntax: neutralSyntax,
 
+  adaptations: {
+    rules: [{
+      when: {width: {below: 'sm'}},
+      value: {components: {
+        'page-frame': {base: {paddingInline: 'var(--spacing-2)'}},
+        'brand-suffix': {base: {display: 'none'}},
+        'hero-content': {base: {gap: 'var(--spacing-6)', paddingBlockStart: 'var(--spacing-3)'}},
+        'privacy-surface': {base: {padding: 'var(--spacing-5)'}},
+        'top-nav': {base: {paddingInline: 'var(--spacing-2)'}},
+        'chat-message-bubble': {'sender:assistant': {padding: 'var(--spacing-4)'}},
+      }},
+    }],
+  },
+
   tokens: {
-    '--color-background-surface': ['#FAFAF6', '#141D1B'],
-    '--color-background-body': ['#FAFAF6', '#141D1B'],
+    '--color-background-surface': ['#FAF9F4', '#141D1B'],
+    '--color-background-body': ['#FAF9F4', '#141D1B'],
+    '--color-hero-background': ['#124C43', '#124C43'],
     '--color-background-card': ['#F0F2ED', '#141D1B'],
     '--color-background-popover': ['#FAFAF6', '#141D1B'],
     '--color-background-muted': ['#F0F2ED', '#141D1B'],
 
-    '--color-accent': ['#176B57', '#B9E3D3'],
+    '--color-accent': ['#124C43', '#FAF9F4'],
     '--color-accent-muted': [neutral.light[95], neutral.dark[15]],
     '--color-neutral': [
       withAlpha(neutral.light[0], '0F'),
@@ -132,7 +147,7 @@ export const neutralTheme = defineTheme({
     '--color-text-accent': [neutral.light[10], neutral.dark[95]],
     '--color-on-dark': neutral.light[100],
     '--color-on-light': neutral.light[5],
-    '--color-on-accent': ['#FAFAF6', '#18221E'],
+    '--color-on-accent': ['#FAF9F4', '#124C43'],
     '--color-on-success': [neutral.light[100], neutral.dark[5]],
     '--color-on-error': [neutral.light[100], neutral.dark[5]],
     '--color-on-warning': neutral.light[5],
@@ -225,9 +240,10 @@ export const neutralTheme = defineTheme({
     '--radius-element': '9999px',
     '--radius-container': '0.75rem',
     '--radius-page': '1.75rem',
-    '--color-chart-deep': '#176B57',
-    '--color-chart-teal': '#3C987B',
-    '--color-chart-soft': '#7ABAA3',
+    '--color-chart-deep': ['#176B57', '#F4CF65'],
+    '--color-chart-teal': ['#3C987B', '#A9DDD0'],
+    '--color-chart-soft': ['#7ABAA3', '#FAF9F4'],
+    '--color-chart-track': ['#DFE6DF', '#39786E'],
     '--radius-full': '9999px',
 
     // Flat n3wth surfaces; status outlines remain meaningful.
@@ -438,7 +454,9 @@ export const neutralTheme = defineTheme({
       'type:display-3': {fontSize: 'clamp(1.75rem, 3vw, 2.5rem)', lineHeight: '1.15'},
       'level:3': {fontSize: '1.25rem', lineHeight: '1.3'},
     },
-    'hero-surface': {base: {position: 'relative', isolation: 'isolate', overflow: 'hidden'}},
+    'page-frame': {base: {paddingInline: 'var(--spacing-6)'}},
+    'brand-suffix': {base: {display: 'inline'}},
+    'hero-surface': {base: {position: 'relative', isolation: 'isolate', overflow: 'hidden', borderRadius: 'var(--radius-page)', backgroundColor: 'var(--color-hero-background)'}},
     'hero-shader': {base: {position: 'absolute', inset: '0', width: '100%', height: '100%', pointerEvents: 'none', zIndex: '0', borderRadius: 'var(--radius-page)'}},
     'hero-content': {base: {position: 'relative', zIndex: '1'}},
     'demo-stage': {base: {display: 'grid'}},
@@ -448,7 +466,7 @@ export const neutralTheme = defineTheme({
       backgroundSize: '0% 100%',
     }},
     'chat-message-bubble': {'sender:assistant': {
-      padding: 'var(--spacing-6)',
+      padding: 'var(--spacing-5)',
       borderRadius: 'var(--spacing-5)',
     }},
     'demo-slide': {base: {gridArea: '1 / 1', alignSelf: 'start', minWidth: '0'}},
@@ -461,10 +479,17 @@ export const neutralTheme = defineTheme({
     }},
     'final-cta': {base: {paddingBlock: 'calc(var(--spacing-10) * 3)'}},
     'privacy-surface': {base: {
-      backgroundColor: 'color-mix(in srgb, var(--color-chart-teal) 16%, var(--color-background-surface))',
+      backgroundColor: 'var(--color-background-card)',
       borderRadius: 'var(--spacing-4)',
     }},
-    'code-block': {base: {borderRadius: 'var(--radius-lg)'}},
+    'code-block': {base: {
+      borderRadius: 'var(--radius-container)',
+      borderColor: 'var(--color-border)',
+      '--color-syntax-background': 'var(--color-background-card)',
+      '--color-syntax-variable': 'var(--color-text-primary)',
+      '--color-syntax-comment': 'var(--color-text-secondary)',
+    }},
+    'code-block-title': {base: {fontFamily: 'var(--font-family-body)', color: 'var(--color-text-secondary)'}},
     'app-shell-header': {base: {backgroundColor: 'transparent', position: 'static'}},
     'top-nav': {base: {
       '--text-label-size': 'var(--text-supporting-size)',

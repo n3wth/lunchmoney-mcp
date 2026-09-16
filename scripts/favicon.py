@@ -1,25 +1,38 @@
-"""Generate the favicon from the site's Suisse Semibold dollar glyph."""
-from pathlib import Path
-from fontTools.ttLib import TTFont
-from fontTools.pens.svgPathPen import SVGPathPen
-from fontTools.pens.boundsPen import BoundsPen
+"""Export the official emblem. Requires ImageMagick; see assets/branding."""
 
-root = Path(__file__).resolve().parents[1]
-font = TTFont(root / 'site/fonts/SuisseIntl-Semibold.otf')
-glyphs = font.getGlyphSet()
-glyph = glyphs[font.getBestCmap()[ord('$')]]
-path = SVGPathPen(glyphs)
-glyph.draw(path)
-bounds = BoundsPen(glyphs)
-glyph.draw(bounds)
-x0, y0, x1, y1 = bounds.bounds
-scale = 42 / (y1 - y0)
-x = 32 - (x0 + x1) * scale / 2
-y = 32 + (y0 + y1) * scale / 2
-(root / 'site/favicon.svg').write_text(
-    '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">'
-    '<title>Lunch Money for Agents</title>'
-    '<rect width="64" height="64" rx="14" fill="#176B57"/>'
-    f'<path fill="#ffffff" transform="translate({x} {y}) scale({scale} {-scale})" '
-    f'd="{path.getCommands()}"/></svg>\n'
-)
+import base64
+from pathlib import Path
+import shutil
+import subprocess
+
+
+def main() -> None:
+    root = Path(__file__).resolve().parents[1]
+    source = root / "assets/branding/lunch-money-emblem.png"
+    icon = root / "site/icon.png"
+    # Remove empty canvas only; preserve aspect ratio and add clear space.
+    subprocess.run([
+        "magick", str(source), "-trim", "+repage", "-resize", "448x448",
+        "-gravity", "center", "-background", "none", "-extent", "512x512",
+        str(icon),
+    ], check=True)
+    for size, name in [(32, "icon-32.png"), (180, "apple-touch-icon.png")]:
+        subprocess.run([
+            "magick", str(icon), "-resize", f"{size}x{size}",
+            *(["-background", "white", "-alpha", "remove", "-alpha", "off"]
+              if name == "apple-touch-icon.png" else []),
+            str(root / "site" / name),
+        ], check=True)
+    encoded = base64.b64encode(icon.read_bytes()).decode("ascii")
+    (root / "site/favicon.svg").write_text(
+        '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">'
+        '<title>Lunch Money</title>'
+        f'<image width="512" height="512" href="data:image/png;base64,{encoded}"/>'
+        '</svg>\n', encoding="utf-8",
+    )
+    for package in ["codex-plugin", "claude-plugin", "cursor-plugin"]:
+        shutil.copyfile(icon, root / "packages" / package / "assets/icon.png")
+
+
+if __name__ == "__main__":
+    main()

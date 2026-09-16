@@ -2,24 +2,28 @@ import {useState} from 'react'
 import {VStack} from '@astryxdesign/core/Stack'
 import {Text} from '@astryxdesign/core/Text'
 import {Button} from '@astryxdesign/core/Button'
-import {trackUsage} from './analytics'
-
-const prompt = 'Connect Lunch Money using https://mcp.lunchmoney.sh/mcp (remote MCP with OAuth). Set it up if you can, or guide me through this app’s setup. If unsupported, tell me. Then help me sign in and link Lunch Money. I’ll enter my API token on the connection page, not in chat.'
+import {Selector} from '@astryxdesign/core/Selector'
+import {CodeBlock} from '@astryxdesign/core/CodeBlock'
+import {Link} from '@astryxdesign/core/Link'
+import {clients, cursorInstallUrl} from './client-installation.mjs'
 
 export default function SetupPrompt() {
-  const [status, setStatus] = useState<'idle' | 'copied' | 'error'>('idle')
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(prompt)
-      setStatus('copied')
-      trackUsage('setup_prompt_copied')
-    } catch {
-      setStatus('error')
-    }
-  }
-  return <VStack gap={3} hAlign="center">
-    <Button label={status === 'copied' ? 'Copied' : 'Copy setup prompt'} variant="secondary" size="lg" onClick={copy} />
-    {status === 'error' && <Text type="supporting" aria-live="polite" justify="center">Copy unavailable. Select the prompt below.</Text>}
-    {status === 'error' && <Text as="p">{prompt}</Text>}
+  const [selected, setSelected] = useState('codex')
+  const client = clients.find(({value}) => value === selected)!
+  return <VStack gap={5} width="100%">
+    <Selector label="Choose your app" value={selected} onChange={setSelected}
+      options={clients.map(({value, label}) => ({value, label}))} width="100%" />
+    <VStack key={selected} gap={4} aria-live="polite">
+      <Text as="p">{client.description}</Text>
+      {client.code && <CodeBlock code={client.code} width="100%" isWrapped title={selected === 'claude' ? 'Run in Claude Code' : 'Connection details'} />}
+      {selected === 'cursor' && <Button label="Add to Cursor" href={cursorInstallUrl} variant="primary" />}
+      {selected === 'codex' && <VStack gap={2}>
+        <Button label="Install in Codex" href="codex://plugins/install/codex-plugin?marketplace=lunchmoney-mcp" variant="primary" />
+        <Text type="supporting">Add the marketplace above first, then open this link in the Codex desktop app.</Text>
+      </VStack>}
+      <Text as="p" type="supporting">{client.next}</Text>
+      {client.command && <CodeBlock code={client.command} width="100%" isWrapped title="Or install from your terminal" />}
+      <Link href={'https://github.com/n3wth/lunchmoney-mcp/blob/main/' + client.guide}>Full setup instructions</Link>
+    </VStack>
   </VStack>
 }

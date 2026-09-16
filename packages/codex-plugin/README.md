@@ -6,14 +6,29 @@ Unofficial plugin for read-only Lunch Money data.
 
 The package uses `.codex-plugin/plugin.json` with a companion `.mcp.json`.
 Its package ID matches the directory (`codex-plugin`); its display name is
-Lunch Money for Agents. Plugin OAuth fields use camelCase;
+Lunch Money. Plugin OAuth fields use camelCase;
 manual TOML uses snake_case, as shown below.
+
+## Install
+
+In the Codex app, open **Plugins → Create menu → Add marketplace**, enter
+`n3wth/lunchmoney-mcp`, and install **Lunch Money**. Leave sparse
+paths blank. Complete sign-in when prompted, then start a new task.
+
+Or run in a terminal:
+
+```sh
+codex plugin marketplace add n3wth/lunchmoney-mcp
+codex plugin add codex-plugin@lunchmoney-mcp
+```
+
+This uses this repository's custom marketplace, independently of curated
+marketplace review. Ask “Connect Lunch Money”, open the returned browser link,
+and enter your token there.
 
 ## Manual config
 
-This directory is plugin source, not a published marketplace listing. Install
-through a Codex marketplace that includes this directory, then open a new task
-to load the tools. Alternatively, configure the server manually below. Avoid
+Alternatively, configure the server manually below. Avoid
 using both methods at once, which creates duplicate tool connections.
 
 Equivalent `config.toml` entry:

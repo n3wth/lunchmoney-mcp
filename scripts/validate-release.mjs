@@ -7,6 +7,20 @@ const root = fileURLToPath(new URL('../', import.meta.url))
 const readJson = async (path) => JSON.parse(await readFile(resolve(root, path), 'utf8'))
 const endpoint = 'https://mcp.lunchmoney.sh/mcp'
 
+for (const [catalogPath, manifestPath, sourcePath] of [
+  ['.agents/plugins/marketplace.json', '.codex-plugin/plugin.json', './packages/codex-plugin'],
+  ['.claude-plugin/marketplace.json', '.claude-plugin/plugin.json', './packages/claude-plugin']
+]) {
+  const catalog = await readJson(catalogPath)
+  assert.equal(catalog.name, 'lunchmoney-mcp')
+  assert.equal(catalog.plugins.length, 1)
+  const entry = catalog.plugins[0]
+  assert.equal(typeof entry.source === 'string' ? entry.source : entry.source.path, sourcePath)
+  const manifest = await readJson(`${sourcePath}/${manifestPath}`)
+  assert.equal(entry.name, manifest.name, `${catalogPath}: install ID must match plugin`)
+}
+console.log('marketplaces: package paths and installation IDs passed')
+
 for (const [directory, manifestPath] of [
   ['codex-plugin', '.codex-plugin/plugin.json'],
   ['claude-plugin', '.claude-plugin/plugin.json']
@@ -64,6 +78,12 @@ for (const path of [cursorManifest.mcpServers, cursorManifest.logo]) {
 const cursorConfig = await readJson('packages/cursor-plugin/mcp.json')
 assert.deepEqual(Object.keys(cursorConfig.mcpServers), ['lunchmoney'])
 const cursorServer = cursorConfig.mcpServers.lunchmoney
+const {cursorInstallUrl} = await import('../src/app/client-installation.mjs')
+const installUrl = new URL(cursorInstallUrl)
+assert.equal(installUrl.protocol, 'cursor:')
+assert.equal(installUrl.searchParams.get('name'), 'lunchmoney')
+assert.deepEqual(JSON.parse(Buffer.from(installUrl.searchParams.get('config'), 'base64').toString()), cursorServer,
+  'Cursor install link must carry the packaged server configuration, including OAuth')
 assert.equal(cursorServer.url, endpoint)
 assert.deepEqual(Object.keys(cursorServer).sort(), ['auth', 'url'])
 assert.deepEqual(Object.keys(cursorServer.auth).sort(), ['CLIENT_ID', 'scopes'])
