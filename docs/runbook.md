@@ -28,6 +28,16 @@ Auth0 production API `6aa8bf18085cb3823c3b0038` uses RS256. Native public client
 authorization code and refresh grants, and no client-credentials grant.
 Registered callbacks are `http://127.0.0.1:1455/callback`,
 `http://127.0.0.1:8414/callback`, and `http://localhost:8414/callback`.
+Cursor additionally requires these callback URIs on the same production
+native public client `xDAFMwYkwjC3GiWoKsrQvZaEqOg8sbxI` (the public client
+ID in `packages/cursor-plugin/mcp.json` and the README):
+
+- `http://localhost:8787/callback`
+- `https://www.cursor.com/agents/mcp/oauth/callback`
+
+Auth0 registration of those Cursor URIs is done outside this repository by
+ops (Billy). A documentation change here is not proof they are live on the
+tenant.
 Configuration was saved and read back. Codex CLI 0.154.0 completed live
 authorization-code + PKCE login through `auth.n3wth.com` after deployment.
 
@@ -175,7 +185,11 @@ Auth0 staging objects (tenant `newth`):
   Authorization Responses are enabled.
 
 Codex must pin `mcp_oauth_callback_port` to 1455 or 8414 (registered
-loopback callback ports; Auth0 does not allow port wildcards).
+loopback callback ports; Auth0 does not allow port wildcards). Cursor uses
+`http://localhost:8787/callback` and
+`https://www.cursor.com/agents/mcp/oauth/callback` on the production native
+public client `xDAFMwYkwjC3GiWoKsrQvZaEqOg8sbxI`; those URIs are registered
+in Auth0 by ops (Billy), not from this repository.
 
 ## Nango (configured 2026-09-14)
 

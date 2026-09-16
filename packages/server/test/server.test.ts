@@ -149,11 +149,16 @@ test('initialize and tools/list succeed with valid token', async () => {
         'lunchmoney_budget_summary', 'lunchmoney_connection_status'].includes(t.name))
     assert.equal(dataTools.length, 8)
     for (const t of dataTools) {
-      assert.equal(t.annotations.readOnlyHint, false)
+      assert.equal(t.annotations.readOnlyHint, true)
+      assert.equal(t.annotations.destructiveHint, false)
     }
     const lifecycle = list.data.result.tools.filter((t: { name: string }) =>
       ['lunchmoney_connect', 'lunchmoney_disconnect'].includes(t.name))
     assert.equal(lifecycle.length, 2)
+    for (const t of lifecycle) {
+      assert.equal(t.annotations.readOnlyHint, false)
+      assert.equal(t.annotations.destructiveHint, true)
+    }
   } finally {
     server.close()
   }

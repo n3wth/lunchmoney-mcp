@@ -10,96 +10,96 @@
   "tools": {
     "lunchmoney_get_overview": {
       "annotations": {
-        "readOnlyHint": false,
+        "readOnlyHint": true,
         "openWorldHint": false,
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Retrieves the signed-in user's Lunch Money overview and primary currency. Shared request processing updates identity and connection lifecycle records.",
+        "read_only_justification": "Retrieves the signed-in user's Lunch Money overview and primary currency. Does not modify financial records or the connector connection.",
         "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
         "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
       }
     },
     "lunchmoney_list_accounts": {
       "annotations": {
-        "readOnlyHint": false,
+        "readOnlyHint": true,
         "openWorldHint": false,
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Retrieves the user's manual and synced account names, balances, and currencies. Shared request processing updates identity and connection lifecycle records.",
+        "read_only_justification": "Retrieves the user's manual and synced account names, balances, and currencies. Does not modify financial records or the connector connection.",
         "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
         "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
       }
     },
     "lunchmoney_list_transactions": {
       "annotations": {
-        "readOnlyHint": false,
+        "readOnlyHint": true,
         "openWorldHint": false,
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Retrieves one bounded page of the user's transactions with date and account filters. Shared request processing updates identity and connection lifecycle records.",
+        "read_only_justification": "Retrieves one bounded page of the user's transactions with date and account filters. Does not modify financial records or the connector connection.",
         "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
         "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
       }
     },
     "lunchmoney_list_categories": {
       "annotations": {
-        "readOnlyHint": false,
+        "readOnlyHint": true,
         "openWorldHint": false,
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Retrieves the user's budget categories and groups. Shared request processing updates identity and connection lifecycle records.",
+        "read_only_justification": "Retrieves the user's budget categories and groups. Does not modify financial records or the connector connection.",
         "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
         "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
       }
     },
     "lunchmoney_list_tags": {
       "annotations": {
-        "readOnlyHint": false,
+        "readOnlyHint": true,
         "openWorldHint": false,
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Retrieves the user's transaction tags. Shared request processing updates identity and connection lifecycle records.",
+        "read_only_justification": "Retrieves the user's transaction tags. Does not modify financial records or the connector connection.",
         "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
         "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
       }
     },
     "lunchmoney_list_recurring_items": {
       "annotations": {
-        "readOnlyHint": false,
+        "readOnlyHint": true,
         "openWorldHint": false,
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Retrieves the user's recurring items for the requested date range. Shared request processing updates identity and connection lifecycle records.",
+        "read_only_justification": "Retrieves the user's recurring items for the requested date range. Does not modify financial records or the connector connection.",
         "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
         "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
       }
     },
     "lunchmoney_budget_summary": {
       "annotations": {
-        "readOnlyHint": false,
+        "readOnlyHint": true,
         "openWorldHint": false,
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Retrieves category activity and budgets for the requested date range. Shared request processing updates identity and connection lifecycle records.",
+        "read_only_justification": "Retrieves category activity and budgets for the requested date range. Does not modify financial records or the connector connection.",
         "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
         "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
       }
     },
     "lunchmoney_connection_status": {
       "annotations": {
-        "readOnlyHint": false,
+        "readOnlyHint": true,
         "openWorldHint": false,
         "destructiveHint": false
       },
       "justifications": {
-        "read_only_justification": "Returns the signed-in user's current connection state. Shared request processing updates identity and connection lifecycle records.",
+        "read_only_justification": "Returns the signed-in user's current connection state. Does not create, replace, or delete a connector connection.",
         "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
         "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
       }

@@ -14,11 +14,16 @@ export class D1IdentityStore implements IdentityStore {
   constructor(private readonly db: IdentityDatabase) {}
 
   async getOrCreateUser(issuer: string, subject: string): Promise<User> {
-    const user = await this.db.prepare(`INSERT INTO users VALUES (?, ?, ?, ?)
-      ON CONFLICT(issuer, subject) DO UPDATE SET issuer = excluded.issuer RETURNING *`)
+    // Insert only on first sighting. A conflict UPDATE would rewrite the row on
+    // every authenticated request, including read-only tool calls.
+    const inserted = await this.db.prepare(`INSERT INTO users VALUES (?, ?, ?, ?)
+      ON CONFLICT(issuer, subject) DO NOTHING RETURNING *`)
       .bind(`usr_${crypto.randomUUID()}`, issuer, subject, new Date().toISOString()).first<User>()
-    if (!user) throw new Error('identity unavailable')
-    return user
+    if (inserted) return inserted
+    const existing = await this.db.prepare('SELECT * FROM users WHERE issuer = ? AND subject = ?')
+      .bind(issuer, subject).first<User>()
+    if (!existing) throw new Error('identity unavailable')
+    return existing
   }
 
   async getUser(userId: string): Promise<User | undefined> {

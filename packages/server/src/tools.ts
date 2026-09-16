@@ -49,9 +49,9 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
     icons: [{ src: 'https://lunchmoney.sh/icon.png', mimeType: 'image/png', sizes: ['512x512'] }]
   })
   const ctx = { token: context.token }
-  // Financial requests are GET-only; shared request processing updates identity
-  // and connection lifecycle records, so the complete operation changes state.
-  const readonly = { readOnlyHint: false, destructiveHint: false, idempotentHint: true, openWorldHint: false }
+  // Financial requests are GET-only. Identity is inserted once on first login;
+  // later reads do not rewrite identity rows. Telemetry is allowlisted labels.
+  const readonly = { readOnlyHint: true, destructiveHint: false, idempotentHint: true, openWorldHint: false }
   const requireConnection = () => context.token === ''
     ? fail(`No active Lunch Money connection (state: ${context.connectionState ?? 'unconnected'}). Connect your account first.`)
     : undefined

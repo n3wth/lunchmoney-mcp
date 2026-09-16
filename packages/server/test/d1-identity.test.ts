@@ -16,6 +16,7 @@ test('D1 persists identity across stores, serializes claims, isolates tenants an
     const user = users[0]
     assert.equal(new Set(users.map(u => u.userId)).size, 1)
     assert.deepEqual(await b.getUser(user.userId), user)
+    assert.deepEqual(await b.getOrCreateUser('issuer', 'subject'), user)
     assert.notEqual((await b.getOrCreateUser('issue', 'rsubject')).userId, user.userId)
     const other = await a.getOrCreateUser('issuer', 'other')
     await a.beginConnection(user.userId, `pending:${user.userId}`, 'development')
