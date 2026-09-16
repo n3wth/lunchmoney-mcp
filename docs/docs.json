@@ -1,0 +1,28 @@
+{
+  "name": "Lunch Money for Agents",
+  "theme": "mint",
+  "colors": {
+    "primary": "#16A34A"
+  },
+  "navigation": {
+    "groups": [
+      {
+        "group": "Guide",
+        "pages": ["index", "user-guide"]
+      },
+      {
+        "group": "Operations",
+        "pages": [
+          "runbook",
+          "threat-model",
+          "plugin-submissions",
+          "model-routing"
+        ]
+      },
+      {
+        "group": "Project records",
+        "pages": ["lunch-money-plan", "discovery-review", "devin-handoff"]
+      }
+    ]
+  }
+}
