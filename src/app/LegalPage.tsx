@@ -24,7 +24,7 @@ export default function LegalPage({path}: {path: string}) {
       {path === "/terms" && <>
 
     <Heading level={1} type="display-2">Terms of service</Heading>
-    <Text as="p" type="supporting">Last updated September 15, 2026</Text>
+    <Text as="p" type="supporting">Last updated September 16, 2026</Text>
     <Text as="p" color="secondary">These terms cover lunchmoney.sh and the hosted Lunch Money for Agents connector, operated by Oliver Newth. By using the service, you agree to these terms. This is an independent, unofficial project, not affiliated with, endorsed by, or sponsored by Lunch Money.</Text>
     <VStack as="section" gap={4}><Heading level={2}>The service</Heading>
       <Text as="p" color="secondary">The connector is a beta service that lets supported MCP clients request financial information from Lunch Money. The service enforces read-only access to financial data. Availability and compatibility may change, and the service may be changed or discontinued.</Text>
@@ -47,7 +47,7 @@ export default function LegalPage({path}: {path: string}) {
       <Text as="p" role="status">{status}</Text>
     </VStack>
     <VStack as="section" gap={4}><Heading level={2}>Stopping use</Heading>
-      <Text as="p" color="secondary">You may stop using the service at any time. Run <code>lunchmoney_disconnect</code> to block further reads and request deletion of the Nango connection; retry if deletion is pending. Revoke the token separately in Lunch Money. Uninstalling a plugin does not perform these steps. The privacy notice describes records retained after disconnecting.</Text>
+      <Text as="p" color="secondary">You may stop using the service at any time. Run <code>lunchmoney_disconnect</code> to delete the Nango connection. The connector marks the connection deleted after success; if deletion fails, access may remain active, so retry and confirm success. Revoke the token separately in Lunch Money. Uninstalling a plugin does not perform these steps. The privacy notice describes records retained after disconnecting.</Text>
     </VStack>
     <VStack as="section" gap={4}><Heading level={2}>Source code and changes</Heading>
       <Text as="p" color="secondary">The repository's source code is available under its MIT license. That license governs the code; these terms govern use of this hosted service. Updated service terms will be published here with a revised date.</Text>
@@ -59,14 +59,26 @@ export default function LegalPage({path}: {path: string}) {
       </>}
       {path === "/security" && <>
 
-    <Heading level={1} type="display-2">Security and data</Heading>
-    <Text as="p" type="supporting">Last updated September 15, 2026</Text>
-    <Text as="p" color="secondary">This unofficial plugin connects your chosen AI app to Lunch Money. Here is what passes through the service, what is stored, and how to stop access. For the full notice, read our <Link hasUnderline href="/privacy">Privacy policy</Link>.</Text>
-    <VStack as="section" gap={4}><Heading level={2}>Read-only access</Heading>
-      <Text as="p" color="secondary">The connector exposes tools for reading accounts, transactions, categories, tags, recurring items, and budgets. It does not expose tools to edit your financial records. Read-only access is enforced by this connector; your Lunch Money API token may have broader permissions.</Text>
-      <Text as="p" color="secondary">Enter your token only on the browser connection page. Never paste it into a conversation. Nango stores the token, and the connector retrieves it temporarily to make allowed requests to Lunch Money.</Text>
+    <Heading level={1} type="display-2">Financial data privacy and security</Heading>
+    <Text as="p" type="supporting">Reviewed September 16, 2026</Text>
+    <Text as="p" color="secondary">Using an AI financial assistant means sharing the records it needs to answer your question. This unofficial Lunch Money connector limits financial access to reads, but those records still reach your AI app. This page explains the data flow and your controls. Read the <Link hasUnderline href="/privacy">privacy notice</Link> and <Link hasUnderline href="/terms">terms of service</Link> for the full notices.</Text>
+    <VStack as="section" gap={4} id="data-flow"><Heading level={2}>Where does my financial data go?</Heading>
+      <Text as="p" color="secondary"><strong>Request:</strong> your AI app sends a tool request to the hosted connector. The connector checks your sign-in and associated connection, retrieves the token from Nango, and requests the allowed records from Lunch Money.</Text>
+      <Text as="p" color="secondary"><strong>Response:</strong> Lunch Money returns records to the connector. The adapter selects supported fields, then the connector returns the result to your AI app. Your app may pass those records to its model provider to generate an answer. This is a hosted service, not an entirely local workflow.</Text>
     </VStack>
-    <VStack as="section" gap={4}><Heading level={2}>What we process and retain</Heading>
+    <VStack as="section" gap={4} id="token"><Heading level={2}>Where is my Lunch Money token stored?</Heading>
+      <Text as="p" color="secondary">Enter your token only in Nango's browser connection flow, never in chat or an MCP configuration file. Nango stores the credential. The connector retrieves it into server memory to authenticate requests to Lunch Money; it does not store the token in its identity database or return it as a tool result.</Text>
+      <Text as="p" color="secondary">Nango documents encryption of stored credentials in its <Link hasUnderline href="https://nango.dev/docs/guides/platform/security">security documentation</Link>. That is a provider-described control, not an independent audit of this deployment. This review does not verify provider dashboard settings, backup deletion, or retention periods.</Text>
+    </VStack>
+    <VStack as="section" gap={4} id="read-only"><Heading level={2}>What does read-only access protect?</Heading>
+      <Text as="p" color="secondary">The connector exposes tools for reading accounts, transactions, categories, tags, recurring items, and budget summaries. Its adapter permits only GET requests to a fixed Lunch Money API origin and an allowlist of read endpoints. It cannot edit financial records or move money through these tools. Connection tools can still create or delete the saved connection.</Text>
+      <Text as="p" color="secondary">This restriction belongs to the connector, not necessarily to your Lunch Money token. A token used elsewhere may have broader permissions. Read-only access does not stop sensitive records from being read, included in an AI answer, retained by a provider, or shared from your conversation. Review which tools and records you authorize your AI app to use.</Text>
+    </VStack>
+    <VStack as="section" gap={4} id="ai-client"><Heading level={2}>What can my AI app and model provider receive?</Heading>
+      <Text as="p" color="secondary">Depending on the requested tool, results can include account names and balances; transaction dates, payees, amounts, currencies and category or tag identifiers; category and tag names; recurring items; and budget summaries. Transaction notes and undeclared fields are removed by the adapter, but the returned records remain sensitive and are not anonymous.</Text>
+      <Text as="p" color="secondary">Your AI app decides how to use tool results and which conversation context to send to its model provider. The connector cannot enforce that provider's storage, training, sharing, or deletion settings. Check the policies and data controls for your specific app, account plan, and model before connecting. Disconnecting later does not recall records already returned.</Text>
+    </VStack>
+    <VStack as="section" gap={4} id="retention"><Heading level={2}>What does the connector retain?</Heading>
       <ul>
         <li><strong>Account and connection records:</strong> internal user ID, authentication issuer and subject, connection identifiers, status, environment, and timestamps are stored in Cloudflare D1 to associate your connection with your account.</li>
         <li><strong>Financial results:</strong> requested records pass through the connector to your AI app. The connector does not persist financial responses in its database. Your AI app and its model provider may retain those results in conversations under their own settings and policies.</li>
@@ -87,8 +99,9 @@ export default function LegalPage({path}: {path: string}) {
       </ul>
       <Text as="p" color="secondary">Your chosen AI app also receives the requested financial results. Review its privacy policy and data controls before connecting: <Link hasUnderline href="https://openai.com/policies/privacy-policy/">OpenAI (ChatGPT and Codex)</Link>, <Link hasUnderline href="https://www.anthropic.com/legal/privacy">Anthropic (Claude)</Link>, <Link hasUnderline href="https://cursor.com/privacy">Cursor</Link>, or <Link hasUnderline href="https://x.ai/legal/privacy-policy">xAI (Grok)</Link>. Listing a provider here does not mean its integration is available or verified.</Text>
     </VStack>
-    <VStack as="section" gap={4}><Heading level={2}>Disconnecting and deleting data</Heading>
-      <Text as="p" color="secondary">Ask your AI to disconnect Lunch Money using the plugin's disconnect tool. This blocks further reads and requests deletion of the Nango connection. If deletion is pending, retry until it succeeds. To revoke the original token, use <Link hasUnderline href="https://my.lunchmoney.app/developers">Lunch Money's Developers page</Link>. Uninstalling the plugin alone does not disconnect it or revoke the token.</Text>
+    <VStack as="section" gap={4} id="disconnect"><Heading level={2}>How is disconnecting different from revoking my token?</Heading>
+      <Text as="p" color="secondary"><strong>Disconnect the saved connection:</strong> ask your AI to run <code>lunchmoney_disconnect</code>. The server requests deletion of the Nango connection, then marks its connection record deleted after success. If deletion fails, access may remain active; retry and confirm success.</Text>
+      <Text as="p" color="secondary"><strong>Revoke the original token:</strong> open <Link hasUnderline href="https://my.lunchmoney.app/developers">Lunch Money's Developers page</Link> and revoke that token. This invalidates the credential for future API requests, including uses outside this connector. Lunch Money describes this control in its <Link hasUnderline href="https://lunchmoney.dev/getting-started">API getting-started guide</Link>. Disconnecting does not revoke the token, and uninstalling the plugin performs neither action.</Text>
       <Text as="p" color="secondary">Identity and connection lifecycle records remain after disconnect to preserve ownership and prevent replay or reconnection races. They do not currently have an automatic expiry. Provider logs and backups follow their respective retention settings. This integration does not configure automatic deletion of PostHog events.</Text>
       <Text as="p" color="secondary">Disconnecting does not delete your AI chat history. Manage that through your AI provider. For removal of retained connector records, contact <Link hasUnderline href="mailto:oliver@newth.ai">oliver@newth.ai</Link>.</Text>
     </VStack>
@@ -100,7 +113,7 @@ export default function LegalPage({path}: {path: string}) {
       {path === "/privacy" && <>
 
     <Heading level={1} type="display-2">Privacy</Heading>
-    <Text as="p" type="supporting">Last updated September 15, 2026</Text>
+    <Text as="p" type="supporting">Last updated September 16, 2026</Text>
     <Text as="p" color="secondary">Lunch Money for Agents is operated by Oliver Newth as an independent project. It is not affiliated with, endorsed by, or sponsored by Lunch Money. This notice covers lunchmoney.sh and its hosted MCP connector.</Text>
 
     <VStack as="section" gap={4}><Heading level={2}>Information processed</Heading>
@@ -121,7 +134,7 @@ export default function LegalPage({path}: {path: string}) {
       <Text as="p" color="secondary">Connector telemetry in Cloudflare contains allowlisted event labels, requested tool names and HTTP status codes, so we can measure request volume and reliability. Tool counts represent authenticated requests admitted by rate limits, not necessarily successful results. It includes no user identifiers, tool arguments, tokens, connection links, request bodies, or financial results. Hosting and authentication providers may retain their own operational or security logs, including network information such as IP addresses. These operational counts are separate from optional website analytics and are not sent to PostHog.</Text>
     </VStack>
     <VStack as="section" gap={4}><Heading level={2}>Disconnecting and retention</Heading>
-      <Text as="p" color="secondary">Call <code>lunchmoney_disconnect</code> to block further reads and request deletion of the Nango connection. If deletion is pending, retry until it succeeds. Disconnecting does not revoke the original Lunch Money token: revoke it in Lunch Money to prevent its further use elsewhere.</Text>
+      <Text as="p" color="secondary">Call <code>lunchmoney_disconnect</code> to delete the Nango connection. The connector marks the connection deleted after success; if deletion fails, access may remain active, so retry and confirm success. Disconnecting does not revoke the original Lunch Money token: revoke it in Lunch Money to prevent its further use elsewhere.</Text>
       <Text as="p" color="secondary">Identity records and connection lifecycle records remain after disconnect to preserve ownership and prevent replay or reconnection races. The service does not currently apply an automatic expiry period to these records. Infrastructure backups and provider logs follow the respective providers' retention settings. Uninstalling a plugin alone does not disconnect the service.</Text>
       <Text as="p" color="secondary">For a request about your information or removal of retained connector records, contact <Link hasUnderline href="mailto:oliver@newth.ai">oliver@newth.ai</Link>. Do not include API tokens or financial records in your email.</Text>
       <Text as="p" color="secondary">Website analytics are hosted by PostHog in the United States. This integration does not configure an automatic event-deletion period; events remain subject to the project's retention settings until deleted. Because event identifiers are not retained in your browser or linked to your identity, we may be unable to locate individual analytics events in response to a request. See <Link hasUnderline href="https://posthog.com/privacy">PostHog's privacy notice</Link> for its handling of information.</Text>
