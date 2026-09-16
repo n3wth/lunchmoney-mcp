@@ -97,6 +97,13 @@ Auth0 registration of these URIs is done outside this repository by ops
 (Billy). Do not treat a docs or package change as proof they are live on the
 tenant.
 
+## Cursor directory
+
+Public listing: https://cursor.directory/plugins/lunch-money
+
+This community directory page is public. It is separate from Cursor Marketplace
+review and from the one-click MCP install deeplink.
+
 ## Official MCP Registry
 
 Published version `0.1.0` on 2026-09-15 as `io.github.n3wth/lunchmoney-mcp`.

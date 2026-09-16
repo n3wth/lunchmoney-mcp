@@ -70,6 +70,7 @@ codex plugin add codex-plugin@lunchmoney-mcp
 For the Codex app, use **Plugins → Create menu → Add marketplace** with
 `n3wth/lunchmoney-mcp`, then install **Lunch Money**.
 **Cursor** — [Add to Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=lunchmoney&config=eyJ1cmwiOiJodHRwczovL21jcC5sdW5jaG1vbmV5LnNoL21jcCIsImF1dGgiOnsiQ0xJRU5UX0lEIjoieERBRk13WWt3akMzR2lXb0tzclF2WmFFcU9nOHNieEkiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJsdW5jaG1vbmV5OnJlYWQiXX19),
+the [Cursor directory listing](https://cursor.directory/plugins/lunch-money),
 or select **Cursor** on the [website](https://lunchmoney.sh/#connect).
 Start a new session after installing, sign in, then ask “Connect Lunch Money”.
 

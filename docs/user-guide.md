@@ -11,6 +11,8 @@ Lunch Money. It is read-only: it can view your data, never change it.
    [Cursor](../packages/cursor-plugin/README.md) setup instructions.
    Cursor also has a one-click installer:
    [Add to Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=lunchmoney&config=eyJ1cmwiOiJodHRwczovL21jcC5sdW5jaG1vbmV5LnNoL21jcCIsImF1dGgiOnsiQ0xJRU5UX0lEIjoieERBRk13WWt3akMzR2lXb0tzclF2WmFFcU9nOHNieEkiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJsdW5jaG1vbmV5OnJlYWQiXX19).
+   The public [Cursor directory listing](https://cursor.directory/plugins/lunch-money)
+   is separate from that deeplink.
    Production is available at `https://mcp.lunchmoney.sh/mcp`, with login at
    `auth.n3wth.com`. Staging remains at `https://mcp-staging.lunchmoney.sh/mcp`.
    Each environment requires its own connection.
@@ -40,6 +42,7 @@ compatibility have not been verified. See [submission status](plugin-submissions
 - [Cowork plugins](https://claude.com/docs/cowork/guide/plugins)
 - [Codex plugin format](https://developers.openai.com/codex/plugins/build)
 - [Add to Cursor](cursor://anysphere.cursor-deeplink/mcp/install?name=lunchmoney&config=eyJ1cmwiOiJodHRwczovL21jcC5sdW5jaG1vbmV5LnNoL21jcCIsImF1dGgiOnsiQ0xJRU5UX0lEIjoieERBRk13WWt3akMzR2lXb0tzclF2WmFFcU9nOHNieEkiLCJzY29wZXMiOlsib3BlbmlkIiwib2ZmbGluZV9hY2Nlc3MiLCJsdW5jaG1vbmV5OnJlYWQiXX19)
+- [Cursor directory listing](https://cursor.directory/plugins/lunch-money)
 - [Cursor install links](https://cursor.com/docs/mcp/install-links)
 - [Cursor OAuth configuration](https://cursor.com/docs/mcp)
 - [Compound Engineering installation example](https://github.com/EveryInc/compound-engineering-plugin)

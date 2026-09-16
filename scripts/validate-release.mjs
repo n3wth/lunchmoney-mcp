@@ -78,7 +78,12 @@ for (const path of [cursorManifest.mcpServers, cursorManifest.logo]) {
 const cursorConfig = await readJson('packages/cursor-plugin/mcp.json')
 assert.deepEqual(Object.keys(cursorConfig.mcpServers), ['lunchmoney'])
 const cursorServer = cursorConfig.mcpServers.lunchmoney
-const {cursorInstallUrl, cursorInstallMarkdown} = await import('../src/app/client-installation.mjs')
+const {
+  cursorInstallUrl,
+  cursorInstallMarkdown,
+  cursorDirectoryUrl,
+  cursorDirectoryMarkdown,
+} = await import('../src/app/client-installation.mjs')
 const installUrl = new URL(cursorInstallUrl)
 assert.equal(installUrl.protocol, 'cursor:')
 assert.equal(installUrl.searchParams.get('name'), 'lunchmoney')
@@ -87,13 +92,28 @@ assert.equal(
   `[Add to Cursor](${cursorInstallUrl})`,
   'Cursor markdown install link must wrap the shared deeplink'
 )
+assert.equal(cursorDirectoryUrl, 'https://cursor.directory/plugins/lunch-money')
+assert.equal(
+  cursorDirectoryMarkdown,
+  `[Cursor directory listing](${cursorDirectoryUrl})`,
+  'Cursor directory markdown link must wrap the shared listing URL'
+)
 assert.deepEqual(JSON.parse(Buffer.from(installUrl.searchParams.get('config'), 'base64').toString()), cursorServer,
   'Cursor install link must carry the packaged server configuration, including OAuth')
-for (const doc of ['README.md', 'packages/cursor-plugin/README.md', 'docs/user-guide.md']) {
+const setupPrompt = await readFile(resolve(root, 'src/app/SetupPrompt.tsx'), 'utf8')
+assert.ok(setupPrompt.includes('cursorInstallUrl'), 'site Add to Cursor button must use the shared deeplink')
+assert.ok(setupPrompt.includes('cursorDirectoryUrl'), 'site Cursor setup must link to the shared directory listing')
+for (const doc of ['README.md', 'packages/cursor-plugin/README.md', 'docs/user-guide.md', 'docs/plugin-submissions.md']) {
   const text = await readFile(resolve(root, doc), 'utf8')
+  if (doc !== 'docs/plugin-submissions.md') {
+    assert.ok(
+      text.includes(cursorInstallMarkdown),
+      `${doc} must include the shared Add to Cursor markdown link so docs do not drift from the site`
+    )
+  }
   assert.ok(
-    text.includes(cursorInstallMarkdown),
-    `${doc} must include the shared Add to Cursor markdown link so docs do not drift from the site`
+    text.includes(doc === 'docs/plugin-submissions.md' ? cursorDirectoryUrl : cursorDirectoryMarkdown),
+    `${doc} must include the shared Cursor directory listing URL`
   )
 }
 assert.equal(cursorServer.url, endpoint)

@@ -7,6 +7,9 @@ export const cursorInstallUrl = 'cursor://anysphere.cursor-deeplink/mcp/install?
 
 export const cursorInstallMarkdown = `[Add to Cursor](${cursorInstallUrl})`
 
+export const cursorDirectoryUrl = 'https://cursor.directory/plugins/lunch-money'
+export const cursorDirectoryMarkdown = `[Cursor directory listing](${cursorDirectoryUrl})`
+
 export const clients = [
   {
     value: 'grok', label: 'Grok Bot',
@@ -44,7 +47,7 @@ export const clients = [
   },
   {
     value: 'cursor', label: 'Cursor',
-    description: 'Open the install link, review the connection in Cursor, and confirm. No configuration file editing is needed.',
+    description: 'Open the install link or the Cursor directory listing, review the connection in Cursor, and confirm. No configuration file editing is needed.',
     next: 'Enable Lunch Money in Cursor’s MCP settings and complete sign-in.',
     guide: 'packages/cursor-plugin/README.md'
   },
