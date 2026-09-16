@@ -1,0 +1,10 @@
+@font-face { font-family: 'Suisse Intl'; src: url('/fonts/SuisseIntl-Book.otf') format('opentype'); font-weight: 400; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Suisse Intl'; src: url('/fonts/SuisseIntl-BookItalic.otf') format('opentype'); font-weight: 400; font-style: italic; font-display: swap; }
+@font-face { font-family: 'Suisse Intl'; src: url('/fonts/SuisseIntl-Medium.otf') format('opentype'); font-weight: 500; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Suisse Intl'; src: url('/fonts/SuisseIntl-Semibold.otf') format('opentype'); font-weight: 600; font-style: normal; font-display: swap; }
+@font-face { font-family: 'Suisse Intl'; src: url('/fonts/SuisseIntl-Bold.otf') format('opentype'); font-weight: 700; font-style: normal; font-display: swap; }
+@layer base {
+  body { margin: 0; }
+  .skip-link { position: absolute; transform: translateY(-200%); }
+  .skip-link:focus { transform: none; }
+}

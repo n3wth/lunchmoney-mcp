@@ -38,17 +38,23 @@ export class NangoProvider implements CredentialProvider, ConnectSessionProvider
   private readonly baseUrl: string
   private readonly lunchmoneyUrl: string
   private readonly fetchImpl: typeof globalThis.fetch
+  private readonly timeoutMs: number
 
   constructor(options: {
     secretKey: string
     baseUrl?: string
     lunchmoneyUrl?: string
     fetch?: typeof globalThis.fetch
+    timeoutMs?: number
   }) {
     if (options.secretKey === '') throw new Error('nango secret key required')
     this.secretKey = options.secretKey
     this.baseUrl = options.baseUrl ?? DEFAULT_NANGO_URL
     this.lunchmoneyUrl = options.lunchmoneyUrl ?? DEFAULT_LUNCHMONEY_URL
+    this.timeoutMs = options.timeoutMs ?? 10000
+    if (!Number.isInteger(this.timeoutMs) || this.timeoutMs <= 0 || this.timeoutMs > 60000) {
+      throw new Error('invalid credential request timeout')
+    }
     // Wrap rather than storing the impl directly: `this.fetchImpl(...)` invokes
     // it with the provider as `this`, and workerd's `fetch` throws
     // "Illegal invocation" on a non-global receiver (Node's fetch ignores it).
@@ -56,12 +62,56 @@ export class NangoProvider implements CredentialProvider, ConnectSessionProvider
     this.fetchImpl = (input, init) => (provided ?? globalThis.fetch)(input, init)
   }
 
+  // One deadline covers headers and the JSON body. Never retry lifecycle writes:
+  // a timeout can mean the upstream accepted a request but its response was lost.
+  private async request(url: URL, init: RequestInit, readBody = true): Promise<Response> {
+    const controller = new AbortController()
+    let reader: ReadableStreamDefaultReader<Uint8Array> | undefined
+    let timer: ReturnType<typeof setTimeout> | undefined
+    const deadline = new Promise<never>((_, reject) => {
+      timer = setTimeout(() => {
+        controller.abort()
+        reject(new Error('credential request timed out'))
+      }, this.timeoutMs)
+    })
+    try {
+      return await Promise.race([deadline, (async () => {
+        const response = await this.fetchImpl(url, { ...init, signal: controller.signal })
+        if (controller.signal.aborted) {
+          void response.body?.cancel().catch(() => undefined)
+          controller.signal.throwIfAborted()
+        }
+        if (!readBody || !response.ok || response.body === null) {
+          void response.body?.cancel().catch(() => undefined)
+          return response
+        }
+        reader = response.body.getReader()
+        const chunks: Uint8Array[] = []
+        let size = 0
+        for (;;) {
+          const { done, value } = await reader.read()
+          if (done) break
+          chunks.push(value)
+          size += value.byteLength
+        }
+        const bytes = new Uint8Array(size)
+        let offset = 0
+        for (const chunk of chunks) { bytes.set(chunk, offset); offset += chunk.byteLength }
+        return new Response(bytes, { status: response.status, headers: response.headers })
+      })()])
+    } finally {
+      clearTimeout(timer)
+      controller.abort()
+      void reader?.cancel().catch(() => undefined)
+    }
+  }
+
   async getToken(connectionId: string): Promise<string | undefined> {
     const url = new URL(`/connections/${encodeURIComponent(connectionId)}`, this.baseUrl)
     url.searchParams.set('provider_config_key', INTEGRATION_KEY)
     let response: Response
     try {
-      response = await this.fetchImpl(url, {
+      response = await this.request(url, {
         headers: { authorization: `Bearer ${this.secretKey}` }
       })
     } catch {
@@ -83,7 +133,7 @@ export class NangoProvider implements CredentialProvider, ConnectSessionProvider
   async findConnectionId(endUserId: string): Promise<string | undefined> {
     let response: Response
     try {
-      response = await this.fetchImpl(new URL('/connections', this.baseUrl), {
+      response = await this.request(new URL('/connections', this.baseUrl), {
         headers: { authorization: `Bearer ${this.secretKey}` }
       })
     } catch {
@@ -120,9 +170,9 @@ export class NangoProvider implements CredentialProvider, ConnectSessionProvider
     const url = new URL('/v2/me', this.lunchmoneyUrl)
     let response: Response
     try {
-      response = await this.fetchImpl(url, {
+      response = await this.request(url, {
         headers: { authorization: `Bearer ${token}` }
-      })
+      }, false)
     } catch {
       throw new Error('lunch money credential validation failed')
     }
@@ -134,7 +184,7 @@ export class NangoProvider implements CredentialProvider, ConnectSessionProvider
   async createSession(endUserId: string): Promise<ConnectSessionResult> {
     let response: Response
     try {
-      response = await this.fetchImpl(new URL('/connect/sessions', this.baseUrl), {
+      response = await this.request(new URL('/connect/sessions', this.baseUrl), {
         method: 'POST',
         headers: {
           authorization: `Bearer ${this.secretKey}`,
@@ -170,10 +220,10 @@ export class NangoProvider implements CredentialProvider, ConnectSessionProvider
     url.searchParams.set('provider_config_key', INTEGRATION_KEY)
     let response: Response
     try {
-      response = await this.fetchImpl(url, {
+      response = await this.request(url, {
         method: 'DELETE',
         headers: { authorization: `Bearer ${this.secretKey}` }
-      })
+      }, false)
     } catch {
       throw nangoError('connection delete')
     }

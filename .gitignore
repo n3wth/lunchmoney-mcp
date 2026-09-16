@@ -1,7 +1,10 @@
 dist/
+.cache/
+.superdesign/tmp/
 node_modules/
 .vercel/
 .env*
 .DS_Store
 .vercel
 .wrangler/
+.playwright-mcp/

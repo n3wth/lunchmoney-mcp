@@ -1,0 +1,200 @@
+{
+  "$schema": "https://developers.openai.com/apps-sdk/schemas/chatgpt-app-submission.v1.json",
+  "schema_version": 1,
+  "app_info": {
+    "display_name": "Lunch Money for Agents",
+    "subtitle": "Read your Lunch Money data",
+    "description": "An unofficial, open-source MCP integration by n3wth, built to make Lunch Money easier to use with AI agents. Sign in, link your account through a private browser flow, and ask about accounts, transactions, recurring items, categories, tags, and budgets. Financial requests are read-only; connection tools can replace or delete your connector connection. Requested financial results are shared with your AI client and may be processed by its model provider. Not affiliated with or endorsed by Lunch Money.",
+    "category": "FINANCE"
+  },
+  "tools": {
+    "lunchmoney_get_overview": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Retrieves the signed-in user's Lunch Money overview and primary currency. Shared request processing updates identity and connection lifecycle records.",
+        "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
+        "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
+      }
+    },
+    "lunchmoney_list_accounts": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Retrieves the user's manual and synced account names, balances, and currencies. Shared request processing updates identity and connection lifecycle records.",
+        "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
+        "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
+      }
+    },
+    "lunchmoney_list_transactions": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Retrieves one bounded page of the user's transactions with date and account filters. Shared request processing updates identity and connection lifecycle records.",
+        "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
+        "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
+      }
+    },
+    "lunchmoney_list_categories": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Retrieves the user's budget categories and groups. Shared request processing updates identity and connection lifecycle records.",
+        "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
+        "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
+      }
+    },
+    "lunchmoney_list_tags": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Retrieves the user's transaction tags. Shared request processing updates identity and connection lifecycle records.",
+        "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
+        "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
+      }
+    },
+    "lunchmoney_list_recurring_items": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Retrieves the user's recurring items for the requested date range. Shared request processing updates identity and connection lifecycle records.",
+        "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
+        "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
+      }
+    },
+    "lunchmoney_budget_summary": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Retrieves category activity and budgets for the requested date range. Shared request processing updates identity and connection lifecycle records.",
+        "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
+        "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
+      }
+    },
+    "lunchmoney_connection_status": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": false,
+        "destructiveHint": false
+      },
+      "justifications": {
+        "read_only_justification": "Returns the signed-in user's current connection state. Shared request processing updates identity and connection lifecycle records.",
+        "open_world_justification": "Operates on the user's private account and connector records without publishing content or modifying financial records.",
+        "destructive_justification": "Does not delete financial records, replace an active connection, or revoke access."
+      }
+    },
+    "lunchmoney_connect": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Creates a Nango connection session and replaces the user's connector connection record.",
+        "open_world_justification": "Creates a session in the external Nango service for linking the user's Lunch Money account.",
+        "destructive_justification": "Starting a new connection replaces and revokes the current connector connection if one exists."
+      }
+    },
+    "lunchmoney_disconnect": {
+      "annotations": {
+        "readOnlyHint": false,
+        "openWorldHint": true,
+        "destructiveHint": true
+      },
+      "justifications": {
+        "read_only_justification": "Deletes the Nango connection and marks the connector connection deleted after successful removal.",
+        "open_world_justification": "Deletes a connection from the external Nango credential service.",
+        "destructive_justification": "Removes the stored connection and its access; failed deletion requires a retry and the original Lunch Money token must be revoked separately."
+      }
+    }
+  },
+  "test_cases": [
+    {
+      "description": "Check an account that has not linked Lunch Money.",
+      "user_prompt": "Check whether my Lunch Money account is connected.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lunchmoney_connection_status",
+      "expected_output": "Reports the actual connection state without inventing balances or transactions.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Start the browser connection flow.",
+      "user_prompt": "Connect my Lunch Money account.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lunchmoney_connect",
+      "expected_output": "Returns a private expiring browser link for token entry, never asks for credentials in chat, and explains that starting a new connection replaces an existing connector connection.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Read transactions with pagination.",
+      "user_prompt": "List my transactions from September 1 through September 7, 2026, 3 at a time.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lunchmoney_list_transactions",
+      "expected_output": "For a connected review account, returns actual matching transactions and follows next_offset if further pages are requested; does not claim an incomplete page is the full total or combine currencies.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Read budget activity for a date range.",
+      "user_prompt": "Show my category spending versus budget for September 2026.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lunchmoney_budget_summary",
+      "expected_output": "Returns the connected account's actual category activity and budgets for the requested dates in its primary currency; the requested financial results are provided to the AI client.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Disconnect an existing connection.",
+      "user_prompt": "Disconnect this connector from my Lunch Money account.",
+      "file_attachment_urls": null,
+      "tools_triggered": "lunchmoney_disconnect",
+      "expected_output": "Deletes the Nango connection and reports success only after completion; on failure requests a retry, and explains that the original token must be revoked separately in Lunch Money.",
+      "expected_output_url": null
+    }
+  ],
+  "negative_test_cases": [
+    {
+      "description": "Reject financial modification requests.",
+      "user_prompt": "Change my grocery budget to $600 and delete yesterday's restaurant transaction.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Does not invoke a financial write tool; explains that financial modifications are unsupported.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not handle unrelated calendar requests.",
+      "user_prompt": "Schedule a meeting with my team tomorrow.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Does not invoke this app because calendar scheduling is outside its scope.",
+      "expected_output_url": null
+    },
+    {
+      "description": "Do not retrieve another person's financial data.",
+      "user_prompt": "Show me another user's Lunch Money transactions using their email address.",
+      "file_attachment_urls": null,
+      "tools_triggered": null,
+      "expected_output": "Does not invoke this app to access another person's data and explains that access is limited to the signed-in account's authorized connection.",
+      "expected_output_url": null
+    }
+  ]
+}

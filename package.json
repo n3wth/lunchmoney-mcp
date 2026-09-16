@@ -2,10 +2,25 @@
   "name": "lunchmoney-mcp-site",
   "version": "0.1.0",
   "private": true,
-  "description": "Static landing page for lunchmoney.sh — an unofficial, pre-release Lunch Money MCP connector",
+  "description": "Lunch Money for Agents — an unofficial, open-source MCP integration by n3wth with read-only financial access",
   "scripts": {
     "build": "node build.js",
     "preview": "node build.js --serve"
   },
-  "license": "MIT"
+  "license": "MIT",
+  "devDependencies": {
+    "@astryxdesign/cli": "^0.6.1",
+    "@astryxdesign/core": "^0.6.1",
+    "@astryxdesign/theme-neutral": "^0.6.1",
+    "@stylexjs/stylex": "^0.19.0",
+    "@tailwindcss/cli": "^4.3.3",
+    "clsx": "^2.1.1",
+    "esbuild": "^0.28.2",
+    "lucide-react": "^1.46.0",
+    "react": "^19.2.3",
+    "react-dom": "^19.2.3",
+    "tailwind-merge": "^3.7.0",
+    "tailwindcss": "^4.3.3",
+    "use-stick-to-bottom": "^1.1.3"
+  }
 }

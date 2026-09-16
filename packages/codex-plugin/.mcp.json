@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "lunchmoney": {
+      "type": "http",
+      "url": "https://mcp.lunchmoney.sh/mcp",
+      "oauth": {
+        "clientId": "xDAFMwYkwjC3GiWoKsrQvZaEqOg8sbxI",
+        "callbackUrl": "http://127.0.0.1:1455/callback",
+        "callbackPort": 1455
+      }
+    }
+  }
+}

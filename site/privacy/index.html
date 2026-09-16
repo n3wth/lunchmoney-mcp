@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy — Lunch Money for Agents</title>
+  <meta name="description" content="How the unofficial Lunch Money for Agents connector handles account information, credentials, and financial results.">
+  <link rel="canonical" href="https://lunchmoney.sh/privacy">
+  <meta property="og:title" content="Privacy — Lunch Money for Agents">
+  <meta property="og:description" content="How the unofficial Lunch Money for Agents connector handles account information, credentials, and financial results.">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="Lunch Money for Agents">
+  <meta property="og:locale" content="en_US">
+  <meta property="og:url" content="https://lunchmoney.sh/privacy">
+  <meta property="og:image" content="https://lunchmoney.sh/social-card.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
+  <meta property="og:image:alt" content="Lunch Money for Agents — an unofficial, read-only MCP integration by n3wth">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Privacy — Lunch Money for Agents">
+  <meta name="twitter:description" content="How the unofficial Lunch Money for Agents connector handles account information, credentials, and financial results.">
+  <meta name="twitter:image" content="https://lunchmoney.sh/social-card.png">
+  <meta name="twitter:image:alt" content="Lunch Money for Agents — an unofficial, read-only MCP integration by n3wth">
+  <meta name="robots" content="index, follow, max-image-preview:large">
+  <meta name="theme-color" content="#08090b">
+  <meta name="color-scheme" content="dark">
+  <link rel="icon" href="/favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="/icon-32.png" sizes="32x32" type="image/png">
+  <link rel="apple-touch-icon" href="/apple-touch-icon.png">
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">Skip to content</a>
+  <header class="site-nav">
+    <a class="wordmark" href="/"><img src="/favicon.svg" width="28" height="28" alt="">lunchmoney.sh</a>
+    <nav aria-label="Main"><a href="/#connect">Connect</a><a href="/privacy" aria-current="page">Privacy</a></nav>
+  </header>
+  <main id="main" class="wrap privacy-document">
+    <h1>Privacy</h1>
+    <p class="meta">Last updated September 15, 2026</p>
+    <p>Lunch Money for Agents is operated by Oliver Newth as an independent project. It is not affiliated with, endorsed by, or sponsored by Lunch Money. This notice covers lunchmoney.sh and its hosted MCP connector.</p>
+
+    <section><h2>Information processed</h2>
+      <p>When you sign in through Auth0 at auth.n3wth.com, the connector uses your verified account identifier to associate your connection with your account. It stores an internal user ID, the authentication issuer and subject, connection identifiers, connection status, environment, and timestamps in Cloudflare D1.</p>
+      <p>When you request a financial tool, the connector retrieves the requested information from Lunch Money, such as accounts, transactions, categories, tags, recurring items, or budget summaries. It processes those results to answer your request and does not persist financial responses in its database.</p>
+    </section>
+    <section><h2>Your Lunch Money token</h2>
+      <p>You enter your token in Nango's browser-based connection flow, not in chat. Nango stores the token. The connector retrieves it temporarily to make allowed requests to the Lunch Money API. The connector enforces financial reads only, even if the token itself has broader permissions.</p>
+    </section>
+    <section><h2>Who receives information</h2>
+      <p>Auth0 handles authentication. Nango handles credential storage and connection setup. Cloudflare runs the connector and stores identity and connection records. Vercel hosts the website and routes requests to the connector. Lunch Money processes requests made to its API.</p>
+      <p>Requested financial results are returned to the MCP client you choose, and may be sent to that client's model provider. Your client's privacy settings and provider policies govern their handling and retention of those results. This connector does not control or delete your chat history.</p>
+    </section>
+    <section><h2>Website and operational logs</h2>
+      <p>The website's example conversations use fictional data and run locally. The site includes no third-party analytics or advertising trackers. Authentication providers may use cookies on their login pages.</p>
+      <p>Connector telemetry contains allowlisted event labels and HTTP status codes. The application does not log tokens, connection links, request bodies, or financial results. Hosting and authentication providers may retain their own operational or security logs, including network information such as IP addresses.</p>
+    </section>
+    <section><h2>Disconnecting and retention</h2>
+      <p>Call <code>lunchmoney_disconnect</code> to block further reads and request deletion of the Nango connection. If deletion is pending, retry until it succeeds. Disconnecting does not revoke the original Lunch Money token: revoke it in Lunch Money to prevent its further use elsewhere.</p>
+      <p>Identity records and connection lifecycle records remain after disconnect to preserve ownership and prevent replay or reconnection races. The service does not currently apply an automatic expiry period to these records. Infrastructure backups and provider logs follow the respective providers' retention settings. Uninstalling a plugin alone does not disconnect the service.</p>
+      <p>For a request about your information or removal of retained connector records, contact <a href="mailto:oliver@newth.ai">oliver@newth.ai</a>. Do not include API tokens or financial records in your email.</p>
+    </section>
+    <section><h2>Questions and changes</h2>
+      <p>Contact <a href="mailto:oliver@newth.ai">oliver@newth.ai</a> with privacy questions. Changes to the connector's data handling will be reflected on this page with an updated date.</p>
+    </section>
+  </main>
+  <footer class="wrap site-footer">
+    <div class="footer-identity">
+      <a class="wordmark" href="/"><img src="/favicon.svg" width="28" height="28" alt="">lunchmoney.sh</a>
+      <p>An independent project by <a href="https://n3wth.com">n3wth</a>. Not affiliated with, endorsed by, or sponsored by <a href="https://lunchmoney.app">Lunch Money</a>.</p>
+    </div>
+    <nav class="footer-links" aria-label="Footer"><a href="/privacy" aria-current="page">Privacy</a><a href="/terms">Terms</a><a href="https://github.com/n3wth/lunchmoney-mcp/blob/main/docs/user-guide.md">Setup guide</a><a href="https://github.com/n3wth/lunchmoney-mcp">GitHub</a><a href="mailto:oliver@newth.ai">Contact</a></nav>
+  </footer>
+</body>
+</html>

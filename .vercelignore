@@ -1,0 +1,7 @@
+packages/
+docs/
+.env*
+**/.env*
+**/.wrangler/
+**/node_modules/
+.playwright-mcp/

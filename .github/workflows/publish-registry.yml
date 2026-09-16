@@ -1,0 +1,28 @@
+name: Publish MCP Registry
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+  id-token: write
+jobs:
+  publish:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Verify production endpoint
+        run: node scripts/smoke-public.mjs
+      - name: Install pinned official publisher
+        run: |
+          curl --fail --silent --show-error --location https://github.com/modelcontextprotocol/registry/releases/download/v1.8.1/mcp-publisher_linux_amd64.tar.gz --output publisher.tar.gz
+          echo 'a06c9096dcb9727c13555b6be26c7effa707b01f06a4c561ba7a3635443cf2cc  publisher.tar.gz' | sha256sum --check
+          tar -xzf publisher.tar.gz mcp-publisher
+      - name: Validate registry metadata
+        run: ./mcp-publisher validate server.json
+      - name: Authenticate using repository identity
+        run: ./mcp-publisher login github-oidc
+      - name: Publish version
+        run: ./mcp-publisher publish server.json
