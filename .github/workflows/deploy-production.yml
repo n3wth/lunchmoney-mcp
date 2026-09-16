@@ -44,3 +44,10 @@ jobs:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
           command: deploy --config wrangler.production.jsonc
+
+      - name: Smoke test production endpoints
+        run: |
+          set -eu
+          test "$(curl -fsS -o /dev/null -w '%{http_code}' https://lunchmoney.sh/)" = 200
+          test "$(curl -fsS -o /dev/null -w '%{http_code}' https://mcp.lunchmoney.sh/.well-known/oauth-protected-resource)" = 200
+          test "$(curl -sS -o /dev/null -w '%{http_code}' https://mcp.lunchmoney.sh/mcp)" = 405
