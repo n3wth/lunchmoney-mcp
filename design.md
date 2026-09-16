@@ -167,12 +167,12 @@ chat contents to analytics payloads.
 | `site/` | HTML shell, assets, and static legal pages |
 | `packages/` | MCP service, authentication contract, API adapter, client plugins |
 
-`build.js` copies public assets and legal pages from `site/`, compiles the Astryx
-theme, and renders React into `src/app/document.html` to generate the homepage.
+`build.js` copies public assets from `site/`, compiles the Astryx
+theme, and renders React into `src/app/document.html` for the homepage and policy routes.
 It assembles `app.css` from Astryx reset/core CSS, the compiled theme, and font
 CSS. The old static homepage and `preview/` implementation have been removed.
-`site/legal.css` styles the standalone legal pages. Edit `src/app/` for homepage
-changes; do not edit `dist/` or generated `.cache/` files directly.
+`LegalPage.tsx` renders Terms, Security, and Privacy with the shared header,
+`SiteFooter.tsx`, and theme. Edit `src/app/`; do not edit `dist/` or generated `.cache/` files directly.
 
 At the service level, Auth0 identifies the connector user, Nango manages the
 Lunch Money token, and the Cloudflare MCP service retrieves financial records

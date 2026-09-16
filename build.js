@@ -63,6 +63,21 @@ function build() {
   if (!template.includes('<!-- APP_MARKUP -->')) throw new Error('Missing APP_MARKUP in document template');
   const html = template.replace('<!-- APP_MARKUP -->', () => '<div id="app">' + markup + '</div>');
   fs.writeFileSync(path.join(OUT, 'index.html'), html);
+  for (const [slug, title] of Object.entries({terms: 'Terms of service', security: 'Security and data', privacy: 'Privacy'})) {
+    const url = 'https://lunchmoney.sh/' + slug;
+    const description = title + ' for the unofficial Lunch Money plugin: data handling, providers, and your controls.';
+    const page = template
+      .replace(/<title>.*?<\/title>/, '<title>' + title + ' — Lunch Money for Agents</title>')
+      .replace(/(<meta (?:name|property)="(?:description|og:description|twitter:description)" content=")[^"]*/g, '$1' + description)
+      .replace(/(<meta (?:name|property)="(?:og:title|twitter:title)" content=")[^"]*/g, '$1' + title + ' — Lunch Money for Agents')
+      .replace(/(<link rel="canonical" href=")[^"]*/, '$1' + url)
+      .replace(/(<meta property="og:url" content=")[^"]*/, '$1' + url)
+      .replace(/<script type="application\/ld\+json">.*?<\/script>/, '')
+      .replace(/href="(favicon|icon-32|apple-touch-icon)/g, 'href="/$1')
+      .replace('<!-- APP_MARKUP -->', () => '<div id="app">' + require(renderer).render('/' + slug) + '</div>');
+    fs.mkdirSync(path.join(OUT, slug), {recursive: true});
+    fs.writeFileSync(path.join(OUT, slug, 'index.html'), page);
+  }
   fs.writeFileSync(path.join(OUT, 'app.css'), [
     '@layer reset, theme, base, astryx-base, astryx-theme, components, utilities;',
     fs.readFileSync(require.resolve('@astryxdesign/core/reset.css'), 'utf8'),

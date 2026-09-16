@@ -10,9 +10,11 @@ import ShellTopNav from './shell-top-nav/page'
 import AIChat from './ai-chat/page'
 import SetupPrompt from './SetupPrompt'
 
-const repo = 'https://github.com/n3wth/lunchmoney-mcp'
+import SiteFooter from './SiteFooter'
+import LegalPage from './LegalPage'
 
-export default function App() {
+export default function App({path = "/"}: {path?: string}) {
+  if (["/terms", "/privacy", "/security"].includes(path)) return <LegalPage path={path} />
   return <Theme theme={neutralTheme} mode="light">
     <AppShell height="auto" variant="surface" topNav={<ShellTopNav />}>
       <VStack hAlign="center" paddingInline={3} gap={6}>
@@ -37,8 +39,8 @@ export default function App() {
 
         <VStack width="100%" maxWidth={1120} className="astryx-page-frame">
           <VStack hAlign="center" width="100%">
-          <VStack as="section" id="connect" width="100%" maxWidth={650} gap={10} paddingBlock={10}>
-            <VStack hAlign="center" paddingBlockStart={10}>
+          <VStack as="section" id="connect" className="astryx-page-section" width="100%" maxWidth={650} gap={10}>
+            <VStack hAlign="center">
               <VStack gap={5} maxWidth={650}>
                 <Heading level={2} type="display-2" justify="center" textWrap="balance">Get connected.</Heading>
               </VStack>
@@ -67,7 +69,7 @@ export default function App() {
           </VStack>
 
           <Section variant="transparent" padding={0}>
-          <VStack as="section" id="privacy" className="astryx-privacy-surface" gap={10} padding={8} paddingBlock={10}>
+          <VStack as="section" id="privacy" className="astryx-privacy-surface astryx-page-section" gap={10} paddingInline={8}>
               <VStack gap={5} hAlign="center">
                 <Heading level={2} type="display-2" justify="center" textWrap="balance">Stay in control.</Heading>
               </VStack>
@@ -92,21 +94,7 @@ export default function App() {
           </VStack>
           </Section>
 
-          <VStack as="footer" width="100%" gap={4} paddingBlock={8}>
-            <HStack width="100%" gap={4} wrap="wrap" hAlign="between" vAlign="start">
-              <Link href="https://lunchmoney.app/?refer=94dziuj5" rel="sponsored" label="Powered by Lunch Money (referral link)">
-                <img src="/powered-by-lunch-money.png" width="209" height="60" alt="Powered by Lunch Money" loading="lazy" />
-              </Link>
-            <VStack gap={3} hAlign="end">
-              <Text type="supporting" justify="end">Unofficial integration by <Link href="https://n3wth.com" type="inherit" color="inherit">n3wth</Link>. Not affiliated with or endorsed by Lunch Money.</Text>
-            <HStack gap={4} vAlign="center">
-              <Link href={repo} type="supporting" color="secondary">GitHub</Link>
-              <Link href="/terms" type="supporting" color="secondary">Terms</Link>
-              <Link href="/privacy" type="supporting" color="secondary">Privacy</Link>
-            </HStack>
-            </VStack>
-            </HStack>
-          </VStack>
+          <SiteFooter />
         </VStack>
       </VStack>
     </AppShell>

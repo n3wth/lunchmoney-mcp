@@ -19,13 +19,13 @@ export default function AIChat() {
 
   useEffect(() => {
     const reduced = window.matchMedia('(prefers-reduced-motion: reduce)')
-    const button = document.getElementById('demo-tab-' + active)
+    const button = document.getElementById('demo-tab-' + active)?.querySelector('[data-progress-fill]')
     if (!button) return
     const start = () => {
       timerAnimation.current?.cancel()
       timerAnimation.current = null
       if (reduced.matches) return
-      const animation = button.animate([{backgroundSize: '0% 100%'}, {backgroundSize: '100% 100%'}], {duration: 7000, easing: 'linear', fill: 'forwards'})
+      const animation = button.animate([{clipPath: 'inset(0 100% 0 0)'}, {clipPath: 'inset(0 0% 0 0)'}], {duration: 7000, easing: 'linear', fill: 'forwards'})
       timerAnimation.current = animation
       animation.onfinish = () => setActive(value => (value + 1) % demos.length)
       if (isPaused.current || document.hidden) animation.pause()
@@ -110,7 +110,10 @@ export default function AIChat() {
     </VStack>)}
     </VStack>
     <HStack gap={2} hAlign="center" as="nav" aria-label="Try another question">
-      {demos.map((item, index) => <Button key={item.name} id={'demo-tab-' + index} className={index === active ? 'astryx-demo-timer' : undefined} label={item.name} size="sm" variant={index === active ? 'primary' : 'secondary'} aria-pressed={index === active} onClick={() => setActive(index)} />)}
+      {demos.map((item, index) => <Button key={item.name} id={'demo-tab-' + index} className={index === active ? 'astryx-demo-timer' : undefined} label={item.name} size="sm" variant={index === active ? 'primary' : 'secondary'} aria-pressed={index === active} onClick={() => setActive(index)}>
+        {item.name}
+        {index === active && <Text aria-hidden="true" type="inherit" className="astryx-demo-progress-fill" data-progress-fill>{item.name}</Text>}
+      </Button>)}
     </HStack>
   </VStack>
 }

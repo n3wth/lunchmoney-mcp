@@ -105,7 +105,8 @@ export const neutralTheme = defineTheme({
         'brand-suffix': {base: {display: 'none'}},
         'hero-content': {base: {gap: 'var(--spacing-6)', paddingBlockStart: 'var(--spacing-3)'}},
         'privacy-surface': {base: {padding: 'var(--spacing-5)'}},
-        'top-nav': {base: {paddingInline: 'var(--spacing-2)'}},
+        'top-nav': {base: {paddingInline: 'var(--spacing-2)', paddingBlock: 'var(--spacing-5)'}},
+        'page-section': {base: {paddingBlock: 'var(--spacing-8)'}},
         'chat-message-bubble': {'sender:assistant': {padding: 'var(--spacing-4)'}},
       }},
     }],
@@ -258,6 +259,11 @@ export const neutralTheme = defineTheme({
   },
 
   components: {
+    'selector-popup': {base: {
+      backgroundColor: 'var(--color-background-card)',
+      border: 'var(--border-width-thin, 1px) solid var(--color-border-emphasized)',
+      borderRadius: 'var(--radius-container)',
+    }},
     button: {
       base: {borderRadius: 'var(--radius-full)', boxShadow: 'none', fontWeight: '500', minHeight: '2.75rem'},
       'size:lg': {minHeight: '3rem', paddingInline: 'var(--spacing-6)'},
@@ -455,15 +461,21 @@ export const neutralTheme = defineTheme({
       'level:3': {fontSize: '1.25rem', lineHeight: '1.3'},
     },
     'page-frame': {base: {paddingInline: 'var(--spacing-6)'}},
+    'page-section': {base: {paddingBlock: 'calc(var(--spacing-8) * 2)'}},
     'brand-suffix': {base: {display: 'inline'}},
     'hero-surface': {base: {position: 'relative', isolation: 'isolate', overflow: 'hidden', borderRadius: 'var(--radius-page)', backgroundColor: 'var(--color-hero-background)'}},
     'hero-shader': {base: {position: 'absolute', inset: '0', width: '100%', height: '100%', pointerEvents: 'none', zIndex: '0', borderRadius: 'var(--radius-page)'}},
     'hero-content': {base: {position: 'relative', zIndex: '1'}},
     'demo-stage': {base: {display: 'grid'}},
     'demo-timer': {base: {
-      backgroundImage: 'linear-gradient(color-mix(in srgb, var(--color-chart-teal) 30%, transparent), color-mix(in srgb, var(--color-chart-teal) 30%, transparent))',
-      backgroundRepeat: 'no-repeat',
-      backgroundSize: '0% 100%',
+      position: 'relative', overflow: 'hidden',
+    }},
+    'demo-progress-fill': {base: {
+      position: 'absolute', inset: '0', display: 'grid', placeItems: 'center',
+      backgroundColor: 'var(--color-hero-background)',
+      backgroundImage: 'linear-gradient(var(--color-neutral), var(--color-neutral))',
+      color: 'var(--color-text-primary)',
+      clipPath: 'inset(0 100% 0 0)', pointerEvents: 'none',
     }},
     'chat-message-bubble': {'sender:assistant': {
       padding: 'var(--spacing-5)',
@@ -495,7 +507,7 @@ export const neutralTheme = defineTheme({
       '--text-label-size': 'var(--text-supporting-size)',
       paddingInlineStart: 'var(--spacing-6)',
       paddingInlineEnd: 'var(--spacing-6)',
-      paddingBlock: 'var(--spacing-2)',
+      paddingBlock: 'var(--spacing-8)',
       marginBlock: 'var(--spacing-3)',
       marginInline: 'auto',
       width: 'calc(100% - var(--spacing-6))',
