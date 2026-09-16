@@ -76,6 +76,27 @@ status is recorded as submitted. Acceptance and publication are separate steps.
 The Claude manifest has no documented logo field, so the shared logo is bundled
 and displayed in its README and supplied to the submission form when requested.
 
+## Cursor Marketplace
+
+[Official plugin format](https://cursor.com/docs/reference/plugins) and
+[static OAuth for remote servers](https://cursor.com/docs/mcp#static-oauth-for-remote-servers).
+Submit the public repository at
+[Cursor Marketplace](https://cursor.com/marketplace/publish).
+Direct MCP installation remains separate from Marketplace approval.
+See `packages/cursor-plugin`.
+
+Cursor's OAuth application is the production Auth0 native public client
+`xDAFMwYkwjC3GiWoKsrQvZaEqOg8sbxI` (the public client ID in the README and
+`packages/cursor-plugin/mcp.json`). Auth0 must allow Cursor's documented
+redirect URIs:
+
+- Desktop: `http://localhost:8787/callback`
+- Web and Agents: `https://www.cursor.com/agents/mcp/oauth/callback`
+
+Auth0 registration of these URIs is done outside this repository by ops
+(Billy). Do not treat a docs or package change as proof they are live on the
+tenant.
+
 ## Official MCP Registry
 
 Published version `0.1.0` on 2026-09-15 as `io.github.n3wth/lunchmoney-mcp`.
