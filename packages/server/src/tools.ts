@@ -20,9 +20,14 @@ function fail(message: string): { content: { type: 'text'; text: string }[]; isE
   return { content: [{ type: 'text', text: message }], isError: true }
 }
 
-function ok(data: unknown): { content: { type: 'text'; text: string }[] } {
-  return { content: [{ type: 'text', text: JSON.stringify(data) }] }
+function ok(data: unknown): { content: { type: 'text'; text: string }[]; structuredContent: { result: unknown } } {
+  return { content: [{ type: 'text', text: JSON.stringify(data) }], structuredContent: { result: data } }
 }
+
+// The adapter validates each upstream response before it reaches a tool. The
+// result envelope keeps structuredContent MCP-compliant while allowing the
+// adapter to evolve its provider-specific fields without duplicating schemas.
+const resultOutputSchema = { result: z.unknown() }
 
 function describe(error: unknown): string {
   if (error !== null && typeof error === 'object' && 'code' in error) {
@@ -62,6 +67,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
       title: 'Lunch Money overview',
       description: 'Current user, budget and primary currency summary.',
       inputSchema: {},
+      outputSchema: resultOutputSchema,
       annotations: readonly
     },
     async () => {
@@ -81,6 +87,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
       title: 'List accounts',
       description: 'Manual and synced account names, balances, currencies and status.',
       inputSchema: {},
+      outputSchema: resultOutputSchema,
       annotations: readonly
     },
     async () => {
@@ -114,6 +121,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
         tag_id: z.number().int().min(0).optional(),
         include_pending: z.boolean().optional()
       },
+      outputSchema: resultOutputSchema,
       annotations: readonly
     },
     async (args) => {
@@ -133,6 +141,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
       title: 'List categories',
       description: 'Budget categories and groups with income/exclusion flags.',
       inputSchema: {},
+      outputSchema: resultOutputSchema,
       annotations: readonly
     },
     async () => {
@@ -152,6 +161,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
       title: 'List tags',
       description: 'Transaction tag names and archived flags.',
       inputSchema: {},
+      outputSchema: resultOutputSchema,
       annotations: readonly
     },
     async () => {
@@ -175,6 +185,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
         end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional().describe('YYYY-MM-DD, requires start_date'),
         include_suggested: z.boolean().optional()
       },
+      outputSchema: resultOutputSchema,
       annotations: readonly
     },
     async (args) => {
@@ -197,6 +208,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
         start_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe('YYYY-MM-DD'),
         end_date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).describe('YYYY-MM-DD')
       },
+      outputSchema: resultOutputSchema,
       annotations: readonly
     },
     async (args) => {
@@ -216,6 +228,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
       title: 'Connection status',
       description: 'Current Lunch Money connection state for this account.',
       inputSchema: {},
+      outputSchema: { result: z.object({ state: z.string() }) },
       annotations: readonly
     },
     async () => ok({ state: context.connectionState ?? 'unconnected' })
@@ -227,6 +240,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
       title: 'Connect Lunch Money',
       description: 'Start a connection flow, replacing the current connector connection if present. Returns a private, expiring browser link to enter your Lunch Money token; never send the token in chat.',
       inputSchema: {},
+      outputSchema: resultOutputSchema,
       annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: false, openWorldHint: true }
     },
     async () => {
@@ -253,6 +267,7 @@ export function createReadOnlyServer(context: ToolContext & { connectionState?: 
       title: 'Disconnect Lunch Money',
       description: 'Delete the Nango connection and mark the connector connection deleted after success. If deletion fails, retry; access may remain active. Revoke the original token in Lunch Money to fully revoke.',
       inputSchema: {},
+      outputSchema: resultOutputSchema,
       annotations: { readOnlyHint: false, destructiveHint: true, idempotentHint: true, openWorldHint: true }
     },
     async () => {

@@ -1,6 +1,6 @@
 {
   "name": "codex-plugin",
-  "version": "0.3.1",
+  "version": "0.4.0",
   "description": "Unofficial Lunch Money plugin for exploring your spending, budgets, and balances. Read-only access.",
   "author": { "name": "Oliver Newth" },
   "homepage": "https://lunchmoney.sh",
