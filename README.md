@@ -167,6 +167,24 @@ Staging and production use separate configurations and databases. Default
 Worker commands target staging. Follow the [runbook](docs/runbook.md) for
 deployment, credentials, migrations, and rollback.
 
+## Context7 documentation indexing
+
+[context7.json](context7.json) configures which documentation Context7 indexes.
+It includes this README, the documentation overview, connection, tools, and
+privacy guides, and the Codex, Claude Code, and Cursor setup guides.
+Internal plans, operational records, and agent instructions are
+excluded. Context7 always includes root Markdown files unless excluded by name.
+
+After merging this file into the repository's default branch, open the
+[Context7 library settings](https://context7.com/n3wth/lunchmoney-mcp/admin),
+switch the configuration source to the repository's `context7.json` if it is
+currently managed in the dashboard, and refresh the library. Verify the indexed
+sources include the setup guides and omit the excluded records.
+
+See [Context7's configuration reference](https://context7.com/docs/library-owners)
+for supported fields. This controls indexing only; a hosted Docs7 site uses a
+separate `docs.json` configuration.
+
 ## Contribute
 
 Bug reports, clearer setup instructions, and compatibility fixes are welcome.

@@ -1,0 +1,43 @@
+{
+  "$schema": "https://context7.com/schema/context7.json",
+  "projectTitle": "Lunch Money for Agents",
+  "description": "Unofficial MCP integration for read-only access to Lunch Money transactions, accounts, budgets, categories, tags, and recurring expenses from AI clients.",
+  "folders": [
+    "docs",
+    "packages/codex-plugin",
+    "packages/claude-plugin",
+    "packages/cursor-plugin"
+  ],
+  "excludeFolders": [
+    "node_modules",
+    "dist",
+    "docs/site-preview"
+  ],
+  "excludeFiles": [
+    "AGENTS.md",
+    "design.md",
+    "CHANGELOG.md",
+    "changelog.md",
+    "CHANGELOG.mdx",
+    "changelog.mdx",
+    "LICENSE.md",
+    "license.md",
+    "CODE_OF_CONDUCT.md",
+    "code_of_conduct.md",
+    "devin-handoff.md",
+    "discovery-review.md",
+    "lunch-money-plan.md",
+    "model-routing.md",
+    "plugin-submissions.md",
+    "runbook.md",
+    "threat-model.md"
+  ],
+  "rules": [
+    "Financial data access is read-only. Connection tools can link, replace, or disconnect the service but cannot edit Lunch Money records or move money.",
+    "Use https://mcp.lunchmoney.sh/mcp for production. Staging requires a separate connection.",
+    "Enter Lunch Money API tokens only in the Nango browser connection flow returned by lunchmoney_connect, never in chat, tool arguments, or client configuration.",
+    "Transaction results are paginated. Follow next_offset until it is null before claiming a complete total for a date range.",
+    "Preserve decimal values and currencies as returned. Keep totals separate by currency unless the user explicitly requests a conversion.",
+    "Disconnecting removes the service connection, not the underlying Lunch Money token. Revoke that token in Lunch Money; uninstalling a plugin does not disconnect the service."
+  ]
+}
